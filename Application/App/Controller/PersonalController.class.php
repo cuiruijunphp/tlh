@@ -156,7 +156,7 @@ class PersonalController extends BaseController {
 		$update_result = $user_model->update_data(['id' => $this->user_id], ['is_online' => $is_online]);
 
 		if($update_result === false){
-			$this->result_return(null, 500, '更新用户名失败');
+			$this->result_return(null, 500, '设置在线状态失败');
 		}
 
 		$this->result_return(['result' => 1]);
