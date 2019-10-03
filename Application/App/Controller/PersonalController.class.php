@@ -209,4 +209,122 @@ class PersonalController extends BaseController {
 
 		$this->result_return($data);
 	}
+
+	/**
+	 * 发布动态
+	 * @author cuirj
+	 * @date   2019/10/3 下午6:40
+	 * @url    app/personal/pulish_trends
+	 * @method get
+	 *
+	 * @param  int param
+	 * @return  array
+	 */
+	public function pulish_trends(){
+
+		if(!$_FILES){
+			$this->result_return(null, 500, '请上传文件');
+		}
+
+		$upload = new \Think\Upload();// 实例化上传类
+		$upload->maxSize   =     2048000 ;// 设置附件上传大小
+		$upload->exts      =     array('jpg', 'gif', 'png', 'jpeg');// 设置附件上传类型
+		$upload->rootPath  =      './Uploads/'; // 设置附件上传根目录
+		$upload->savePath  =      $this->user_id . '/' ; // 设置附件上传（子）目录
+//		$upload->saveName  =      $this->user_id . '_' . time(); // 设置附件上传（子）目录
+		// 上传文件
+		$info  =  $upload->upload();
+		if(!$info) {// 上传错误提示错误信息
+			$this->error($upload->getError());
+		}else{// 上传成功 获取上传文件信息
+
+			$file_path = '';
+
+			foreach($info as $file){
+				$file_path .=  $file['savepath'] . $file['savename'] . ',';
+			}
+
+			if($file_path){
+				$user_trends_model = D('UserTrends');
+				$insert_data = [
+					'user_id' => $this->user_id,
+					'desc' => I('post.desc'),
+					'img_list' => trim($file_path, ','),
+					'add_time' => time(),
+				];
+				$insert_result = $user_trends_model->insert_one($insert_data);
+				if($insert_result === false){
+					$this->result_return(null, 500, '发布动态失败');
+				}
+
+				$this->result_return(['result' => 1]);
+			}else{
+				$this->result_return(null, 500, '上传失败');
+			}
+		}
+	}
+
+	/**
+	 * 获取某人动态
+	 * @author cuirj
+	 * @date   2019/10/3 下午7:45
+	 * @url    app/personal/get_trend_list/
+	 * @method get
+	 *
+	 * @param  int param
+	 * @return  array
+	 */
+	public function get_trend_list(){
+		$user_id = I('get.user_id');
+
+		$user_trends_model = D('UserTrends');
+
+		$user_trends_list = $user_trends_model->get_list(['user_id' => $user_id], 3);
+
+		if($user_trends_list){
+			foreach($user_trends_list as $k => $v)
+			{
+				$img_list = array_map(function($v){
+					return UPLOAD_URL . $v;
+				}, explode(',', $v['img_list']));
+				$user_trends_list[$k]['img_list'] = $img_list;
+				$user_trends_list[$k]['add_time'] = date('Y-m-d', $v['add_time']);
+			}
+		}
+
+		$this->result_return($user_trends_list);
+	}
+
+	/**
+	 * 获取某条动态
+	 * @author cuirj
+	 * @date   2019/10/3 下午8:44
+	 * @url    app/personal/get_trend_by_id/
+	 * @method get
+	 *
+	 * @param  int param
+	 * @return  array
+	 */
+	public function get_trend_by_id(){
+		$trend_id = I('get.trend_id');
+
+		$user_trends_model = D('UserTrends');
+
+		$user_trends_result = $user_trends_model->get_one(['id' => $trend_id]);
+
+		if($user_trends_result){
+			$img_list = array_map(function($v){
+				return UPLOAD_URL . $v;
+			}, explode(',', $user_trends_result['img_list']));
+
+			$user_trends_result['img_list'] = $img_list;
+			$user_trends_result['add_time'] = date('Y-m-d', $user_trends_result['add_time']);
+
+			$this->result_return($user_trends_result);
+		}else{
+
+			$this->result_return(null, 500, '这条动态不存在');
+		}
+	}
+
 }

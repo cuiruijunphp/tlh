@@ -25,4 +25,12 @@ class CommonModel extends Model{
 	public function update_data($where, $data){
 		return $this->where($where)->save($data);
 	}
+
+	/*
+	 * 获取多条记录
+	 */
+	public function get_list($where, $limit){
+
+		return $this->where($where)->limit($limit)->select();
+	}
 }
