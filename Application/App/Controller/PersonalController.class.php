@@ -13,7 +13,10 @@ class PersonalController extends BaseController {
 	 * @return  array
 	 */
     public function set_user_name(){
-		$params = I('post.');
+//		$params = I('post.');
+
+		$get_param = file_get_contents('php://input');
+		$params = json_decode($get_param, true);
 
 		$user_name = $params['user_name'];
 
@@ -39,7 +42,10 @@ class PersonalController extends BaseController {
 	 * @return  array
 	 */
     public function set_profile(){
-		$params = I('post.');
+//		$params = I('post.');
+
+		$get_param = file_get_contents('php://input');
+		$params = json_decode($get_param, true);
 
 		$sex = $params['sex'] ? $params['sex'] : 1;
 		$birthday = $params['birthday'] ? strtotime($params['birthday']) : 0;
@@ -147,7 +153,10 @@ class PersonalController extends BaseController {
 	 * @return  array
 	 */
 	public function set_online(){
-		$params = I('post.');
+//		$params = I('post.');
+
+		$get_param = file_get_contents('php://input');
+		$params = json_decode($get_param, true);
 
 		$is_online = $params['is_online'];
 
@@ -226,6 +235,9 @@ class PersonalController extends BaseController {
 			$this->result_return(null, 500, '请上传文件');
 		}
 
+		$get_param = file_get_contents('php://input');
+		$params = json_decode($get_param, true);
+
 		$upload = new \Think\Upload();// 实例化上传类
 		$upload->maxSize   =     2048000 ;// 设置附件上传大小
 		$upload->exts      =     array('jpg', 'gif', 'png', 'jpeg');// 设置附件上传类型
@@ -248,7 +260,7 @@ class PersonalController extends BaseController {
 				$user_trends_model = D('UserTrends');
 				$insert_data = [
 					'user_id' => $this->user_id,
-					'desc' => I('post.desc'),
+					'desc' => $params['desc'],
 					'img_list' => trim($file_path, ','),
 					'add_time' => time(),
 				];
