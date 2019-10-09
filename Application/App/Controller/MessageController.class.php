@@ -78,7 +78,7 @@ class MessageController extends BaseController {
     public function get_dialog_list(){
 
     	$page =  I('get.page') ? I('get.page') : 1;
-    	$page_size =  I('get.page_size') ? I('get.page_size') : 3;
+    	$page_size =  I('get.page_size') ? I('get.page_size') : 6;
 
 		$uid = $this->user_id;
 		$where = '(sender_uid = ' . $uid .' and sender_remove = 0) or (recived_uid = ' . $uid . ' and recived_remove = 0)';
@@ -135,7 +135,7 @@ class MessageController extends BaseController {
 
 		$dialog_id = I('get.dialog_id');
 		$page =  I('get.page') ? I('get.page') : 1;
-		$page_size =  I('get.page_size') ? I('get.page_size') : 3;
+		$page_size =  I('get.page_size') ? I('get.page_size') : 6;
 
 		$limit = ($page - 1) * $page_size;
 
