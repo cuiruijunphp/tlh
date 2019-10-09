@@ -7,9 +7,9 @@ class CommonModel extends Model{
 	/*
 	 * 获取一条记录
 	 */
-	public function get_one($where){
+	public function get_one($where, $order = NULL){
 
-		return $this->where($where)->limit(1)->find();
+		return $this->where($where)->order($order)->limit(1)->find();
 	}
 
 	/*
@@ -29,8 +29,15 @@ class CommonModel extends Model{
 	/*
 	 * 获取多条记录
 	 */
-	public function get_list($where, $limit){
+	public function get_list($where, $limit, $order = NULL){
 
-		return $this->where($where)->limit($limit)->select();
+		return $this->where($where)->order($order)->limit($limit)->select();
+	}
+
+	/*
+	 * 删除数据
+	 */
+	public function del_data($where){
+		return $this->where($where)->delete();
 	}
 }
