@@ -131,6 +131,7 @@ class MessageController extends BaseController {
 				$dialog_list[$k]['message_info'] = [
 					'content' => $message_info['content'],
 					'add_time' => $message_info['add_time'],
+					'uid' => $message_info['uid'],
 				];
 			}
 
