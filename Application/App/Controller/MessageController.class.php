@@ -117,6 +117,7 @@ class MessageController extends BaseController {
 					'user_name' => $user_info['user_name'],
 					'is_online' => $user_info['is_online'],
 					'head_img' => $user_info['head_img'],
+					'uid' => $user_info['id'],
 				];
 
 				// 最后一条记录
@@ -177,6 +178,7 @@ class MessageController extends BaseController {
 			'user_name' => $user_info['user_name'],
 			'is_online' => $user_info['is_online'],
 			'head_img' => $user_info['head_img'],
+			'uid' => $user_info['id'],
 		];
 
 		$data = [
