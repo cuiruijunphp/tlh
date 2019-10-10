@@ -172,10 +172,40 @@ class PersonalController extends BaseController {
 	}
 
 	/**
+	 * 设置在线状态
+	 * @author cuirj
+	 * @date   2019/9/27 下午12:48
+	 *
+	 * @param  int param
+	 * @method post
+	 * @return  array
+	 */
+	public function bind_account(){
+		//		$params = I('post.');
+
+		$get_param = file_get_contents('php://input');
+		$params = json_decode($get_param, true);
+
+		$weixin_account = $params['weixin_account'];
+		$weibo_account = $params['weibo_account'];
+		$alipay_account = $params['alipay_account'];
+
+		$user_model = D('Users');
+
+		$update_result = $user_model->update_data(['id' => $this->user_id], ['weixin_account' => $weixin_account, 'weibo_account' => $weibo_account, 'alipay_account' => $alipay_account]);
+
+		if($update_result === false){
+			$this->result_return(null, 500, '绑定账号失败');
+		}
+
+		$this->result_return(['result' => 1]);
+	}
+
+	/**
 	 * 获取个人信息
 	 * @author cuirj
 	 * @date   2019/9/27 下午7:49
-	 * @url    domain/xxxx/xxxx
+	 * @url    app/personal/get_user_info
 	 * @method get
 	 *
 	 * @param  int param
