@@ -68,7 +68,7 @@ class MessageController extends BaseController {
 		}else{
 			$update_data['recived_remove'] = 0;
 		}
-		
+
 		$dialog_model->update_data(['id' => $dialog_id], $update_data);
 
 		$this->result_return(['result' => 1]);
