@@ -61,6 +61,16 @@ class MessageController extends BaseController {
 			$this->result_return(null, 500, '发送消息失败');
 		}
 
+		//更新对话框为启用状态
+		$result = $dialog_model->get_one(['id' => $dialog_id]);
+		if($result['sender_uid'] == $sender_uid){
+			$update_data['sender_remove'] = 0;
+		}else{
+			$update_data['recived_remove'] = 0;
+		}
+		
+		$dialog_model->update_data(['id' => $dialog_id], $update_data);
+
 		$this->result_return(['result' => 1]);
     }
 
@@ -139,9 +149,6 @@ class MessageController extends BaseController {
 
 		$limit = ($page - 1) * $page_size;
 
-		$message_model = D('Message');
-		$message_list = $message_model->get_list(['dialog_id' => $dialog_id], $limit. ',' . $page_size,  'add_time asc');
-
 		$dialog_model = D('Dialog');
 		$user_model = D('Users');
 
@@ -150,14 +157,21 @@ class MessageController extends BaseController {
 		if($dialog_info['sender_uid'] == $this->user_id){
 			$user_info = $user_model->get_one(['id' => $dialog_info['recived_uid']]);
 			$is_del = $dialog_info['sender_remove'];
+			$where['sender_remove'] = 0;
 		}else{
 			$user_info = $user_model->get_one(['id' => $dialog_info['sender_uid']]);
 			$is_del = $dialog_info['recived_uid'];
+			$where['recived_remove'] = 0;
 		}
 
 		if($is_del == 1){
-			$this->result_return(null, 500, '不能查看被删除的对话');
+			$this->result_return([]);
 		}
+
+		$where['dialog_id'] = $dialog_id;
+
+		$message_model = D('Message');
+		$message_list = $message_model->get_list($where, $limit. ',' . $page_size,  'add_time asc');
 
 		$part_user_info = [
 			'user_name' => $user_info['user_name'],
@@ -201,8 +215,14 @@ class MessageController extends BaseController {
 		if($this->user_id == $dialog_info['sender_uid']){
 			// 把dialog对话框置为删除状态
 			$update_result = $dialog_model->update_data(['id' => $dialog_id], ['sender_remove' => 1]);
+
+			//将相关对话也置为删除状态
+			$update_message_result = $message_model->update_data(['dialog_id' => $dialog_id], ['sender_remove' => 1]);
 		}else{
 			$update_result = $dialog_model->update_data(['id' => $dialog_id], ['revived_remove' => 1]);
+
+			//将相关对话也置为删除状态
+			$update_message_result = $message_model->update_data(['dialog_id' => $dialog_id], ['revived_remove' => 1]);
 		}
 
 		if($update_result === false){
