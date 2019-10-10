@@ -21,6 +21,12 @@ class MessageController extends BaseController {
 		$sender_uid = $this->user_id;
 		$received_uid = $params['received_uid'];
 		$content = $params['content'];
+		$type = $params['type'] ? $params['type'] : 1;
+
+		//如果$type=2,则取判断当前需求是否存在
+		if($type == 2){
+
+		}
 
 		$dialog_model = D('Dialog');
 		$message_model = D('Message');
