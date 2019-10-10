@@ -369,4 +369,40 @@ class PersonalController extends BaseController {
 		}
 	}
 
+	/**
+	 * @description 退出登录
+	 * @author      cuirj
+	 * @date        2018/9/25 下午4:45
+	 * @url         api/app/personal/logout/
+	 * @method get
+	 * @return  array
+	 */
+	public function logout()
+	{
+		if (!$this->user_id)
+		{
+			$this->result_return(null, 500, '获取登录状态失败');
+		}
+
+		$session_app_model = D('UsersSessionApp');
+
+		$token_info = $session_app_model->get_one($_SERVER['HTTP_TLHTOKEN']);
+
+		if ($token_info)
+		{
+			// 更新登录以后的剩余时间
+			if ($token_info['user_id'] != $this->user_id)
+			{
+				$this->result_return(null, 500, '退出登录失败');
+			}
+
+			$session_app_model->update_data(['id' => $token_info['id']], ['lifetime' => -1]);
+
+			$this->result_return(['result' => 1]);
+		}
+		else
+		{
+			$this->result_return(null, 500, '退出登录失败');
+		}
+	}
 }

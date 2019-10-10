@@ -15,20 +15,87 @@ class LoginController extends CommonController {
 	 */
     public function register(){
 		//接收参数
+		$get_param = file_get_contents('php://input');
+		$params = json_decode($get_param, true);
+
+		$phone_number = $params['mobile_number'];
+		$code = $params['code'];
+		$password = $params['password'];
+
+		$code_model = D('Code');
+		$send_result = $code_model->get_one(['mobile_number' => $phone_number, 'type' => 'register'], 'add_time desc');
+
+		if(!$send_result){
+			$this->result_return(null, 500, '验证码错误');
+		}
+
+		if($send_result['code'] != $code){
+			$this->result_return(null, 500, '验证码错误1');
+		}
+
+		// 插入数据库中
+		$user_model = D('Users');
+
+		//先查看手机号是否被注册
+		$is_exist_phone = $user_model->get_one(['mobile_number' => $phone_number]);
+		if($is_exist_phone){
+			$this->result_return(null, 500, '手机号已经被注册了');
+		}
+
+		$insert_user_data = [
+			'mobile_number' => $phone_number,
+			'password' => compile_password($password),
+		];
+		$insert_result = $user_model->insert_one($insert_user_data);
+
+		if($insert_result === false){
+			$this->result_return(null, 500, '注册失败');
+		}
+
+		$this->result_return(['result' => 1]);
     }
 
 	/**
 	 * 发送验证码
 	 * @author cuirj
 	 * @date   2019/9/27 下午12:19
-	 * @url    app/login/send_
+	 * @url    app/login/send_code
 	 * @method get
 	 *
 	 * @param  int param
-	 *             return  array
+	 * @return  array
 	 */
     public function send_code(){
+		$get_param = file_get_contents('php://input');
+		$params = json_decode($get_param, true);
 
+		$type = $params['type'];
+		$phone_number = $params['mobile_number'];
+
+		// type对应的短信模板id
+		$template_arr = [
+			'register' => C('RegisterTemplateCode'),
+			'login' => C('LoginTemplateCode'),
+			're_password' => C('PasswordTemplateCode'),
+		];
+
+		$code = rand(100000, 999999);
+
+		$code_model = D('Code');
+		$send_result = $code_model->get_sms_code($phone_number, $template_arr[$type]);
+
+		if($send_result){
+			//发送成功,往数据库里写入数据
+			$insert_data = [
+				'mobile_number' => $phone_number,
+				'code' => $code,
+				'type' => $type,
+				'add_time' => time(),
+			];
+			$insert_result = $code_model->insert_one($insert_data);
+		}
+
+		$this->result_return(['result' => 1]);
 	}
 
 	/**
@@ -42,7 +109,27 @@ class LoginController extends CommonController {
 	 *             return  array
 	 */
 	public function valid_code(){
-		
+		$get_param = file_get_contents('php://input');
+		$params = json_decode($get_param, true);
+
+		$type = $params['type'];
+		$phone_number = $params['mobile_number'];
+		$code = $params['code'];
+
+		$code_model = D('Code');
+		$send_result = $code_model->get_one(['mobile_number' => $phone_number, 'type' => $type], 'add_time desc');
+
+		if(!$send_result){
+			$this->result_return(null, 500, '验证码错误');
+		}
+
+		if($send_result['code'] != $code){
+			$this->result_return(null, 500, '验证码错误');
+		}
+
+		//是否判断过期时间
+
+		$this->result_return(['result' => 1]);
 	}
 
 	/**
@@ -69,7 +156,7 @@ class LoginController extends CommonController {
 		//实例化model
 		$user_model = D('Users');
 
-		$user_info = $user_model->get_one(['mobile_number' => $mobile_number, 'password' => md5($password)]);
+		$user_info = $user_model->get_one(['mobile_number' => $mobile_number, 'password' => compile_password($password)]);
 
 		if(!$user_info)
 		{
@@ -98,14 +185,66 @@ class LoginController extends CommonController {
 
 		if($token_info){
 			//更新登录时间
-			$session_app_model->update_data(['uuid' => $params['uuid']], ['modified' => time()]);
+			$session_app_model->update_data(['uuid' => $params['uuid']], ['modified' => time(), 'password' => compile_password($password)]);
 		}else{
 			//插入token信息
-			$token_info = $session_app_model->insert_user_session_app($params['uuid'], $password, $user_info['id']);
+			$token_info = $session_app_model->insert_user_session_app($params['uuid'], compile_password($password), $user_info['id']);
 		}
 
 		$data['token'] = $token_info['id'];
 
 		$this->result_return($data);
+	}
+
+	/**
+	 * 找回密码
+	 * @author cuirj
+	 * @date   2019/9/27 下午12:48
+	 * @url    app/login/forget_password/
+	 * @param  int param
+	 * @method post
+	 * @return  array
+	 */
+	public function forget_password(){
+		$get_param = file_get_contents('php://input');
+		$params = json_decode($get_param, true);
+
+		$phone_number = $params['mobile_number'];
+		$code = $params['code'];
+		$password = $params['password'];
+
+		$user_model = D('Users');
+		//先查看手机号是否被注册
+		$is_exist_phone = $user_model->get_one(['mobile_number' => $phone_number]);
+		if(!$is_exist_phone){
+			$this->result_return(null, 500, '请您先注册成为会员');
+		}
+
+		$code_model = D('Code');
+		$send_result = $code_model->get_one(['mobile_number' => $phone_number, 'type' => 're_password'], 'add_time desc');
+
+		//先验证验证码
+		if(!$send_result){
+			$this->result_return(null, 500, '验证码错误');
+		}
+
+		if($send_result['code'] != $code){
+			$this->result_return(null, 500, '验证码错误');
+		}
+
+		$update_result = $user_model->update_data(['id' => $is_exist_phone['id']], ['password' => compile_password($password)]);
+
+		if($update_result === false){
+			$this->result_return(null, 500, '找回密码失败');
+		}
+
+		// 这个时候要更新session表中的密码
+		$session_app_model = D('UsersSessionApp');
+		$token_info = $session_app_model->get_one(['id' => $_SERVER['HTTP_TLHTOKEN']]);
+
+		//更新密码
+		$session_app_model->update_data(['id' => $_SERVER['HTTP_TLHTOKEN']], ['password' => compile_password($password)]);
+
+		$this->result_return(['result' => 1]);
 	}
 }

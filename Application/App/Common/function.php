@@ -61,3 +61,23 @@ function getDistance($lng1, $lat1, $lng2, $lat2)
 	$s = 2 * asin(sqrt(pow(sin($a / 2), 2) + cos($radLat1) * cos($radLat2) * pow(sin($b / 2), 2))) * 6378.137 * 1000;
 	return $s;
 }
+
+/**
+ * 根据 salt 混淆密码
+ *
+ * @param  string
+ * @param  string
+ * @return string
+ */
+function compile_password($password)
+{
+	// md5 password...
+	if (strlen($password) == 32)
+	{
+		return md5($password);
+	}
+
+	$password = md5(md5($password));
+
+	return $password;
+}
