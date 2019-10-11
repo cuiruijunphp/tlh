@@ -29,7 +29,7 @@ class CommonModel extends Model{
 	/*
 	 * 获取多条记录
 	 */
-	public function get_list($where, $limit, $order = NULL){
+	public function get_list($where = null, $limit = null, $order = NULL){
 
 		return $this->where($where)->order($order)->limit($limit)->select();
 	}
