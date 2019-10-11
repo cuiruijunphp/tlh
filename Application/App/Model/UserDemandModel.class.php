@@ -2,7 +2,7 @@
 namespace App\Model;
 use Think\Model;
 
-class UserSkillModel extends CommonModel{
+class UserDemandModel extends CommonModel{
 
 	public function _before_insert(&$data, $options)
 	{

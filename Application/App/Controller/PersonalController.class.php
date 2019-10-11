@@ -215,7 +215,13 @@ class PersonalController extends BaseController {
 		//实例化model
 		$user_model = D('Users');
 
-		$user_info = $user_model->get_one(['id' => $this->user_id]);
+		$user_id = I('get.user_id');
+		if(!$user_id){
+			$user_id = $this->user_id;
+			$is_self = 1;
+		}
+
+		$user_info = $user_model->get_one(['id' => $user_id]);
 
 		if(!$user_info)
 		{
