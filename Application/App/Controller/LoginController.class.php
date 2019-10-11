@@ -30,7 +30,11 @@ class LoginController extends CommonController {
 		}
 
 		if($send_result['code'] != $code){
-			$this->result_return(null, 500, '验证码错误1');
+			$this->result_return(null, 500, '验证码错误');
+		}
+
+		if($send_result['add_time'] + 30 * 60 < time()){
+			$this->result_return(null, 500, '验证码已经过期,请重新发送');
 		}
 
 		// 插入数据库中
@@ -127,6 +131,10 @@ class LoginController extends CommonController {
 
 		if($send_result['code'] != $code){
 			$this->result_return(null, 500, '验证码错误');
+		}
+
+		if($send_result['add_time'] + 30 * 60 < time()){
+			$this->result_return(null, 500, '验证码已经过期,请重新发送');
 		}
 
 		//是否判断过期时间
@@ -232,6 +240,10 @@ class LoginController extends CommonController {
 
 		if($send_result['code'] != $code){
 			$this->result_return(null, 500, '验证码错误');
+		}
+
+		if($send_result['add_time'] + 30 * 60 < time()){
+			$this->result_return(null, 500, '验证码已经过期,请重新发送');
 		}
 
 		$update_result = $user_model->update_data(['id' => $is_exist_phone['id']], ['password' => compile_password($password)]);
