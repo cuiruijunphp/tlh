@@ -167,6 +167,7 @@ class LoginController extends CommonController {
 		$user_model = D('Users');
 
 		$user_info = $user_model->get_one(['mobile_number' => $mobile_number, 'password' => compile_password($password)]);
+		var_dump($user_info);
 
 		if(!$user_info)
 		{
