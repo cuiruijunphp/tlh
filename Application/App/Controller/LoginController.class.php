@@ -79,10 +79,12 @@ class LoginController extends CommonController {
 			're_password' => C('PasswordTemplateCode'),
 		];
 
-		$code = rand(100000, 999999);
+//		$code = rand(100000, 999999);
+		$code = 123456;
 
 		$code_model = D('Code');
-		$send_result = $code_model->get_sms_code($phone_number, $template_arr[$type]);
+//		$send_result = $code_model->get_sms_code($phone_number, $template_arr[$type]);
+		$send_result = 1;
 
 		if($send_result){
 			//发送成功,往数据库里写入数据
