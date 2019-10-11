@@ -159,7 +159,6 @@ class LoginController extends CommonController {
 
 		$get_param = file_get_contents('php://input');
 		$params = json_decode($get_param, true);
-		var_dump($params);
 
 		$mobile_number = $params['mobile_number'];
 		$password = $params['password'];
@@ -168,7 +167,6 @@ class LoginController extends CommonController {
 		$user_model = D('Users');
 
 		$user_info = $user_model->get_one(['mobile_number' => $mobile_number, 'password' => compile_password($password)]);
-		var_dump($user_info);
 
 		if(!$user_info)
 		{
