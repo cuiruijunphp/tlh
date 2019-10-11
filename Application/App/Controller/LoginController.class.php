@@ -159,6 +159,7 @@ class LoginController extends CommonController {
 
 		$get_param = file_get_contents('php://input');
 		$params = json_decode($get_param, true);
+		var_dump($params);
 
 		$mobile_number = $params['mobile_number'];
 		$password = $params['password'];
