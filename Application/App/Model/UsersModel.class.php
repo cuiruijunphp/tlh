@@ -16,4 +16,19 @@ class UsersModel extends CommonModel{
 			->join('user_address as s on u.id=s.user_id', 'left')
 			->select();
 	}
+
+	/*
+	 * 通过uids和技能类型id,查询个人信息, 技能信息和地址信息
+	 */
+	public function get_user_info_skill_by_uids($uids, $type_id){
+
+		$where['u.id'] = ['in', $uids];
+		$where['l.type_id'] = $type_id;
+		return $this->field('u.id,u.user_name,u.head_img,u.is_vefify,u.birthday,u.weixin_account, u.mobile_number,s.province,s.city,s.address,s.area,l.desc,l.superiority')
+			->alias('u')
+			->where($where)
+			->join('user_address as s on u.id=s.user_id', 'left')
+			->join('user_skill as l on u.id=l.user_id', 'left')
+			->select();
+	}
 }

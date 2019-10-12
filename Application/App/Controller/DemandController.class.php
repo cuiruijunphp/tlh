@@ -105,10 +105,18 @@ class DemandController extends BaseController {
 		if($user_demand_result['applicants']){
 			$user_model = D('Users');
 
-			$user_info_list = $user_model->get_user_info_part_by_uids($user_demand_result['applicants']);
+			// 获取应征者个人信息、地址信息、技能优势
+			$user_info_list = $user_model->get_user_info_skill_by_uids($user_demand_result['applicants'], $user_demand_result['type_id']);
 
 			foreach($user_info_list as $u_k => $u_v){
 				$user_info_list[$u_k]['head_img'] = UPLOAD_URL . $u_v['head_img'];
+
+				// 应征成功者信息
+				if($user_demand_result['selected_uid'] && $user_demand_result['selected_uid'] == $u_v['id']){
+					$user_demand_result['selected_user_info'] = $user_info_list[$u_k];
+				}else{
+					$user_demand_result['selected_user_info'] = (object)[];
+				}
 			}
 
 			$user_demand_result['applicants_user_info'] =$user_info_list;
@@ -117,6 +125,49 @@ class DemandController extends BaseController {
 			$user_demand_result['applicants_user_info'] = [];
 		}
 
+		// 获取应征成功者信息
+
 		$this->result_return($user_demand_result);
+	}
+
+	/**
+	 * 确认应征者
+	 * @author cuirj
+	 * @date   2019/10/12 上午10:01
+	 * @url    app/demand/confirm_applicant/
+	 * @method get
+	 *
+	 * @param  int param
+	 * @return  array
+	 */
+	public function confirm_applicant(){
+		$get_param = file_get_contents('php://input');
+		$params = json_decode($get_param, true);
+
+		$user_id = $params['user_id'];
+		$demand_id = $params['demamd_id'];
+
+		// 先查看是否存在
+		$user_demand_model = D('UserDemand');
+		$user_demand_result = $user_demand_model->get_one(['id' => $demand_id]);
+		if(!$user_demand_result){
+			$this->result_return(null, 500, '该条需求不存在');
+		}
+
+		if($user_demand_result['status'] == 1 && $user_demand_result['selected_uid']){
+			$this->result_return(null, 500, '该条需求已经完成');
+		}
+
+		if(!in_array($user_id, explode(',', $user_demand_result['applicants']))){
+			$this->result_return(null, 500, '请在应征者列表中确认应征者');
+		}
+
+		$update_result = $user_demand_model->update_data(['id' => $demand_id], ['selected_uid' => $user_id, 'status' => 1]);
+
+		if($update_result === false){
+			$this->result_return(null, 500, '绑定账号失败');
+		}
+
+		$this->result_return(['result' => 1]);
 	}
 }
