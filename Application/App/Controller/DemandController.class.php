@@ -10,7 +10,7 @@ class DemandController extends BaseController
 	 * 我发布的需求列表
 	 * @author cuirj
 	 * @date   2019/9/27 下午12:48
-	 * @url    /app/skill/get_skill_type_list/
+	 * @url    /app/demand/get_my_demand_list/
 	 *
 	 * @param  int param
 	 * @method post
@@ -94,7 +94,7 @@ class DemandController extends BaseController
 	 * 获取需求详情
 	 * @author cuirj
 	 * @date   2019/9/27 下午6:27
-	 * @url    app/skill/get_my_demand_info/
+	 * @url    app/demand/get_my_demand_info/
 	 * @method get
 	 *
 	 * @param  int page
@@ -255,6 +255,67 @@ class DemandController extends BaseController
 
 		if($insert_result === false){
 			$this->result_return(null, 500, '发布需求失败');
+		}
+
+		$this->result_return(['result' => 1]);
+	}
+
+	/**
+	 * 应征
+	 * @author cuirj
+	 * @date   2019/10/12 下午2:37
+	 * @url    app/demand/recruited/
+	 * @method get
+	 *
+	 * @param  int param
+	 * @return  array
+	 */
+	public function recruited(){
+		$get_param = file_get_contents('php://input');
+		$params = json_decode($get_param, true);
+
+		$user_id = $this->user_id;
+		$demand_id = $params['demamd_id'];
+
+		//查看当前的需求是否存在
+		// 先查看是否存在
+		$user_demand_model = D('UserDemand');
+		$user_demand_result = $user_demand_model->get_one(['id' => $demand_id]);
+		if(!$user_demand_result){
+			$this->result_return(null, 500, '该条需求不存在');
+		}
+
+		if($user_demand_result['status'] == 2 && $user_demand_result['selected_uid']){
+			$this->result_return(null, 500, '该条需求已经完成');
+		}
+
+		if($user_id == $user_demand_result['user_id']){
+			$this->result_return(null, 500, '你不能应征自己的需求哦');
+		}
+
+		//查看自己是否有相应的技能,如果没有,则不能应征
+		$user_skill_model = D('UserSkill');
+		$user_skill_result = $user_skill_model->get_one(['type_id' => $user_demand_result['type_id'], 'user_id' => $user_id, 'status' => 1]);
+
+		if(!$user_skill_result){
+			$this->result_return(null, 500, '需要先发布相应的技能才能应征哦');
+		}
+
+		if($user_demand_result['applicants']){
+			// 不能重复应征
+			if(in_array($user_id, explode(',', $user_demand_result['applicants']))){
+				$this->result_return(null, 500, '你已经应征过这个需求了哦');
+			}
+
+			$applicants = $user_demand_result['applicants'] . ',' . $user_id;
+		}else{
+			$applicants = $user_id;
+		}
+
+		$update_result = $user_demand_model->update_data(['id' => $demand_id], ['applicants' => $applicants]);
+
+		if($update_result === false){
+			$this->result_return(null, 500, '绑定账号失败');
 		}
 
 		$this->result_return(['result' => 1]);
