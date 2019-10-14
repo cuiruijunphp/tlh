@@ -233,6 +233,8 @@ class DemandController extends BaseController
 		$start_time = $params['start_time'];
 		$end_time = $params['end_time'];
 		$earnest_money = $params['earnest_money'];
+		$longitude = $params['longitude'];
+		$latitude = $params['latitude'];
 
 		$skill_type_model = D('SkillType');
 		$skill_type_info = $skill_type_model->get_one(['id' => $type_id, 'is_show' => 1]);
@@ -249,6 +251,8 @@ class DemandController extends BaseController
 			'start_time' => strtotime($start_time),
 			'end_time' => strtotime($end_time),
 			'earnest_money' => $earnest_money,
+			'longitude' => $longitude,
+			'latitude' => $latitude,
 		];
 
 		$insert_result = $user_demand_model->insert_one($insert_data);

@@ -41,6 +41,8 @@ class SkillController extends BaseController {
 		$superiority = $params['superiority'];
 		$mode = $params['mode'];
 		$good_at = $params['good_at'];
+		$longitude = $params['longitude'];
+		$latitude = $params['latitude'];
 
 
 		// 不存在的技能则不插入数据库中
@@ -83,6 +85,8 @@ class SkillController extends BaseController {
 			'add_time' => time(),
 			'img' => $file_path,
 			'user_id' => $this->user_id,
+			'longitude' => $longitude,
+			'latitude' => $latitude,
 		];
 
 		$insert_result = $skill_mode->insert_one($skill_insert_data);
