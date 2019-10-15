@@ -1,0 +1,22 @@
+
+<ul class="nav navbar-nav navbar-right">
+    <li class="">
+        <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+            <if condition="$domain eq 1">
+            您好，{$uf['account']}
+            <else />
+            您好，{$uf['company_name']}
+            </if>
+            <span class=" fa fa-angle-down"></span>
+        </a>
+        <ul class="dropdown-menu dropdown-usermenu pull-right">
+            <li>
+                <if condition="$domain eq 1">
+                <a href="manage/admin/logout"><i class="fa fa-sign-out pull-right"></i> 退出登录</a>
+                <else />
+                <a href="manage/company/logout"><i class="fa fa-sign-out pull-right"></i> 退出登录</a>
+                </if>
+            </li>
+        </ul>
+    </li>
+</ul>

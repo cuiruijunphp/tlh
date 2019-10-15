@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="/Public/static/assets/images/favicon.ico" type="image/ico" />
+
+    <title>后台管理系统</title>
+
+       <!-- Bootstrap -->
+       <link href="/Public/Public/static/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+       <!-- Font Awesome -->
+       <link href="/Public/static/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+       <!-- NProgress加载进度条 -->
+       <link href="/Public/static/vendors/nprogress/nprogress.css" rel="stylesheet">
+       <!-- 样式 -->
+       <link href="/Public/static/build/css/custom.css" rel="stylesheet">
+  </head>
+
+  <body class="nav-md">
+  <div class="container body">
+      <div class="main_container">
+          <div class="col-md-3 left_col">
+              <div class="left_col scroll-view">
+                  <div class="navbar nav_title" style="border: 0;">
+                      <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>首页</span></a>
+                  </div>
+
+                  <div class="clearfix"></div>
+                  <include file="Common/header" />
+              </div>
+          </div>
+
+          <!-- 顶部导航栏 -->
+          <div class="top_nav">
+              <div class="nav_menu">
+                  <nav>
+                      <div class="nav toggle">
+                          <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                      </div>
+                      <!-- 用户名文件在template文件夹下的top_nav.html -->
+                      <div class="top_nav">
+                          <include file="Common/top_nav" />
+                      </div>
+                  </nav>
+              </div>
+          </div>
+          <!-- /顶部导航栏 -->
+
+        <!-- 页面内容 -->
+        <div class="right_col" role="main">
+          <div id="course_list">
+            <a href="manage/job/edit"><button class="btn btn-success btn-sm fr" id="add_course">新增工种</button></a>
+              <table class="full_width_table">
+                 <thead>
+                   <tr>
+                     <th>岗位名称</th>
+                     <th>创建时间</th>
+                     <th>操作</th>
+                   </tr>
+                 </thead>
+                 <foreach name="list" key="k" item="v">
+                 <tr>
+                   <td>{$v.name}</td>
+                   <td>{$v.created_time|date='Y年m月d日 H时i分',###}</td>
+                   <td>
+                      <a href="/manage/job/edit?id={$v.id}"><button class="btn btn-success btn-sm">编辑</button></a>
+                     <button class="btn btn-danger btn-sm del" idvalue="{$v.id}">删除</button>
+                   </td>
+                 </tr>
+                 </foreach>
+               </table>
+          </div>
+        </div>
+        <!-- /页面内容 -->
+
+        <!-- 底部 -->
+        <footer>
+          <div class="pull-right" style="text-align:center;width: 100%;">
+            后台管理系统
+          </div>
+          <div class="clearfix"></div>
+        </footer>
+        <!-- /底部 -->
+      </div>
+    </div>
+
+           <!-- jQuery -->
+ <script src="/Public/static/vendors/jquery/dist/jquery.min.js"></script>
+ <!-- Bootstrap -->
+ <script src="/Public/static/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+ <!-- FastClick -->
+ <script src="/Public/static/vendors/fastclick/lib/fastclick.js"></script>
+ <!-- NProgress -->
+ <script src="/Public/static/vendors/nprogress/nprogress.js"></script>
+ <!-- Custom Theme Scripts -->
+ <script src="/Public/static/build/js/custom.js"></script>
+    <script>
+      $(".del").click(function () {
+        if(confirm("确认删除?") == true){
+          id = $(this).attr('idvalue');
+
+          $.ajax({
+            url: 'manage/job/del',
+            type: 'POST',
+            dataType: 'JSON',
+            data: {"id":id},
+            success: function (e) {
+              if (e.code != 0) {
+                alert(e.msg)
+              } else {
+                window.location.href = '/manage/job';
+              }
+            }
+          })
+        }
+        return false
+      })
+    </script>
+  </body>
+</html>

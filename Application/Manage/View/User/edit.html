@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="/static/assets/images/favicon.ico" type="image/ico" />
+
+    <title>后台管理系统</title>
+
+      <!-- Bootstrap -->
+      <link href="/static/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+      <!-- Font Awesome -->
+      <link href="/static/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+      <!-- NProgress加载进度条 -->
+      <link href="/static/vendors/nprogress/nprogress.css" rel="stylesheet">
+      <!-- 样式 -->
+      <link href="/static/build/css/custom.css" rel="stylesheet">
+  </head>
+
+  <body class="nav-md">
+  <div class="container body">
+    <div class="main_container">
+      <div class="col-md-3 left_col">
+        <div class="left_col scroll-view">
+          <div class="navbar nav_title" style="border: 0;">
+            <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>首页</span></a>
+          </div>
+
+          <div class="clearfix"></div>
+          <include file="public/header" />
+        </div>
+      </div>
+
+      <!-- 顶部导航栏 -->
+      <div class="top_nav">
+        <div class="nav_menu">
+          <nav>
+            <div class="nav toggle">
+              <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+            </div>
+            <!-- 用户名文件在template文件夹下的top_nav.html -->
+            <div class="top_nav">
+              <include file="public/top_nav" />
+            </div>
+          </nav>
+        </div>
+      </div>
+      <!-- /顶部导航栏 -->
+
+        <!-- 页面内容 -->
+        <div class="right_col" role="main">
+          <div id="add_edit_course">
+            <h3 class="title"><if condition="$list.id != ''">修改<else />新增</if>岗位</h3>
+            <form action="" method="post" class="form-horizontal form-label-left" id="form" url="/manage/job/edit">
+              <div class="form-group">
+                <label for="name" class="control-label col-md-3 col-sm-3 col-xs-12">岗位名称</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <input type="text" id="course_name" name="name" class="form-control col-md-7 col-xs-12 parsley-success" value="{$list.name}" placeholder="请填写岗位名称">
+                  <input type="hidden" name="id" value="{$list.id}">
+                </div>
+              </div>
+
+              <div class="btns col-xs-12" style="text-align: center;margin-top: 20px;">
+                <button class="btn btn-default btn-sm" type="button">取消</button>
+                <button class="btn btn-success btn-sm" type="submit">保存</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <!-- /页面内容 -->
+
+        <!-- 底部 -->
+        <footer>
+          <div class="pull-right" style="text-align:center;width: 100%;">
+            后台管理系统
+          </div>
+          <div class="clearfix"></div>
+        </footer>
+        <!-- /底部 -->
+      </div>
+    </div>
+
+       <!-- jQuery -->
+ <script src="/static/vendors/jquery/dist/jquery.min.js"></script>
+ <!-- Bootstrap -->
+ <script src="/static/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+ <!-- FastClick -->
+ <script src="/static/vendors/fastclick/lib/fastclick.js"></script>
+ <!-- NProgress -->
+ <script src="/static/vendors/nprogress/nprogress.js"></script>
+ <!-- Custom Theme Scripts -->
+ <script src="/static/build/js/custom.js"></script>
+    <!-- 新增、编辑课程js -->
+    <script src="/static/build/js/course_add_edit.js"></script>
+
+    <script>
+        $("#form").submit(function () {
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                dataType: 'JSON',
+                data: $(this).serialize(),
+                success: function (e) {
+                    if (e.code != 0) {
+                        alert(e.msg)
+                    } else {
+                        window.location.href = '/manage/job';
+                    }
+                }
+            })
+            return false
+        })
+    </script>
+  </body>
+</html>

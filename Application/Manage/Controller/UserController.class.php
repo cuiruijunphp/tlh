@@ -1,9 +1,9 @@
 <?php
 namespace Manage\Controller;
 use Think\Controller;
-class AccountController extends Controller {
+class UserController extends Controller {
 
     public function index(){
-		$this->display('company/index');
+		$this->display();
     }
 }
