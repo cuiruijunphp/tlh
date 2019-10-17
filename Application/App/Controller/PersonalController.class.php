@@ -392,7 +392,7 @@ class PersonalController extends BaseController {
 
 		$session_app_model = D('UsersSessionApp');
 
-		$token_info = $session_app_model->get_one($_SERVER['HTTP_TLHTOKEN']);
+		$token_info = $session_app_model->get_one(['id' => $_SERVER['HTTP_TLHTOKEN']]);
 
 		if ($token_info)
 		{
