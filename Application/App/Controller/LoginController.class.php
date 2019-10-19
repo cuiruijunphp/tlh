@@ -195,7 +195,7 @@ class LoginController extends CommonController {
 
 		if($token_info){
 			//更新登录时间
-			$session_app_model->update_data(['uuid' => $params['uuid']], ['modified' => time(), 'password' => compile_password($password)]);
+			$session_app_model->update_data(['uuid' => $params['uuid']], ['modified' => time(), 'password' => compile_password($password), 'lifetime' => 30 * 24 * 3600]);
 		}else{
 			//插入token信息
 			$token_info = $session_app_model->insert_user_session_app($params['uuid'], compile_password($password), $user_info['id']);
