@@ -29,7 +29,7 @@ function random_from_dev($length)
 	}
 	else
 	{
-		throw new Zend_Exception('Can not open /dev/urandom');
+		return false;
 	}
 
 	// convert from binary to string

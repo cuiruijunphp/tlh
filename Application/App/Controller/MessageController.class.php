@@ -151,23 +151,40 @@ class MessageController extends BaseController {
 	 */
 	public function get_dialog_detail(){
 
-		$dialog_id = I('get.dialog_id');
+		$received_uid = I('get.user_id');
+		$sender_uid = $this->user_id;
+
 		$page =  I('get.page') ? I('get.page') : 1;
 		$page_size =  I('get.page_size') ? I('get.page_size') : 6;
 
 		$limit = ($page - 1) * $page_size;
 
+		$where = '(sender_uid = ' . $sender_uid . ' and recived_uid = ' . $received_uid . ') or (sender_uid = ' . $received_uid . ' and recived_uid = ' . $sender_uid . ')';
+
 		$dialog_model = D('Dialog');
 		$user_model = D('Users');
 
-		$dialog_info = $dialog_model->get_one(['id' => $dialog_id]);
+		$dialog_info = $dialog_model->where($where)->find();
+
+		$user_info = $user_model->get_one(['id' => $received_uid]);
+		$part_user_info = [
+			'user_name' => $user_info['user_name'],
+			'is_online' => $user_info['is_online'],
+			'head_img' => $user_info['head_img'],
+			'uid' => $user_info['id'],
+		];
+
+
+		if(!$dialog_info){
+			$this->result_return(['message_list' => [], 'user_info' => $part_user_info]);
+		}
+
+		$dialog_id = $dialog_info['id'];
 
 		if($dialog_info['sender_uid'] == $this->user_id){
-			$user_info = $user_model->get_one(['id' => $dialog_info['recived_uid']]);
 			$is_del = $dialog_info['sender_remove'];
 			$where['sender_remove'] = 0;
 		}else{
-			$user_info = $user_model->get_one(['id' => $dialog_info['sender_uid']]);
 			$is_del = $dialog_info['recived_uid'];
 			$where['recived_remove'] = 0;
 		}
@@ -180,13 +197,6 @@ class MessageController extends BaseController {
 
 		$message_model = D('Message');
 		$message_list = $message_model->get_list($where, $limit. ',' . $page_size,  'add_time asc');
-
-		$part_user_info = [
-			'user_name' => $user_info['user_name'],
-			'is_online' => $user_info['is_online'],
-			'head_img' => $user_info['head_img'],
-			'uid' => $user_info['id'],
-		];
 
 		$data = [
 			'message_list' => $message_list,
