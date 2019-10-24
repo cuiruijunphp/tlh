@@ -184,6 +184,7 @@ class LoginController extends CommonController {
 			'company' => $user_info['company'],
 			'desc' => $user_info['desc'],
 			'birthday' => $user_info['birthday'],
+			'id' => $user_info['id'],
 		];
 
 		$token = '';
