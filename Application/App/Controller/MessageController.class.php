@@ -180,7 +180,6 @@ class MessageController extends BaseController {
 			'uid' => $user_info['id'],
 		];
 
-
 		if(!$dialog_info){
 			$this->result_return(['message_list' => [], 'user_info' => $part_user_info]);
 		}
@@ -205,7 +204,7 @@ class MessageController extends BaseController {
 		$message_list = $message_model->get_list($message_where, $limit. ',' . $page_size,  'add_time desc');
 
 		$data = [
-			'message_list' => $message_list,
+			'message_list' => $message_list ? array_reverse($message_list) : [],
 			'user_info' => $part_user_info,
 		];
 
