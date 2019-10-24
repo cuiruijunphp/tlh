@@ -134,11 +134,11 @@ class MessageController extends BaseController {
 					'uid' => $message_info['uid'],
 				];
 			}
-
-			$dialog_list = $dialog_list ? $dialog_list : [];
-
-			$this->result_return($dialog_list);
 		}
+
+		$dialog_list = $dialog_list ? $dialog_list : [];
+
+		$this->result_return($dialog_list);
 	}
 
 	/**
