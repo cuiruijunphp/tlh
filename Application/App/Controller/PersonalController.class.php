@@ -238,7 +238,7 @@ class PersonalController extends BaseController {
 			'is_online' => $user_info['is_online'],
 			'company' => $user_info['company'],
 			'desc' => $user_info['desc'],
-			'birthday' => date('Y-m-d', $user_info['birthday']),
+			'birthday' => $user_info['birthday'],
 			'weixin_account' => $user_info['weixin_account'],
 			'weibo_account' => $user_info['weibo_account'],
 			'alipay_account' => $user_info['alipay_account'],
