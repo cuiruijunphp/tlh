@@ -15,7 +15,7 @@ class UsersSessionAppModel extends CommonModel{
 		}
 
 		$token_id = $this->add([
-			'id' => random_from_dev(168),
+			'id' => session_create_random_id(168),
 			'uuid' => $uuid,
 			'modified' => time(),
 			'lifetime' => 30 * 24 * 60 * 60,
