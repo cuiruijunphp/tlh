@@ -122,7 +122,7 @@ class MessageController extends BaseController {
 				$dialog_list[$k]['user_info'] = [
 					'user_name' => $user_info['user_name'],
 					'is_online' => $user_info['is_online'],
-					'head_img' => UPLOAD_URL . $user_info['head_img'],
+					'head_img' => $user_info['head_img'] ? UPLOAD_URL . $user_info['head_img'] : '',
 					'uid' => $user_info['id'],
 				];
 
@@ -176,7 +176,7 @@ class MessageController extends BaseController {
 		$part_user_info = [
 			'user_name' => $user_info['user_name'],
 			'is_online' => $user_info['is_online'],
-			'head_img' => UPLOAD_URL . $user_info['head_img'],
+			'head_img' => $user_info['head_img'] ? UPLOAD_URL . $user_info['head_img'] : '',
 			'uid' => $user_info['id'],
 		];
 

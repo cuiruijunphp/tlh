@@ -178,7 +178,7 @@ class LoginController extends CommonController {
 			'user_name' => $user_info['user_name'],
 			'is_vefify' => $user_info['is_vefify'],
 			'is_vip' => $user_info['is_vip'],
-			'head_img' => UPLOAD_URL . $user_info['head_img'],
+			'head_img' => $user_info['head_img'] ? UPLOAD_URL . $user_info['head_img'] : '',
 			'sex' => $user_info['sex'],
 			'is_online' => $user_info['is_online'],
 			'company' => $user_info['company'],
