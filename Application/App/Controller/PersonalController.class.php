@@ -274,8 +274,8 @@ class PersonalController extends BaseController {
 			$this->result_return(null, 500, '请上传文件');
 		}
 
-		$get_param = file_get_contents('php://input');
-		$params = json_decode($get_param, true);
+//		$get_param = file_get_contents('php://input');
+		$params = I('post.');
 
 		$upload = new \Think\Upload();// 实例化上传类
 		$upload->maxSize   =     2048000 ;// 设置附件上传大小
