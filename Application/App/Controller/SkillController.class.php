@@ -115,6 +115,8 @@ class SkillController extends BaseController {
 			// 如果是在自己的列表里,则需要给个标识
 			$user_id = $this->user_id;
 			$is_self = 1;
+		}elseif($user_id == $this->user_id){
+			$is_self = 1;
 		}
 
 		$where = [
