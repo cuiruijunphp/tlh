@@ -156,6 +156,10 @@ class MessageController extends BaseController {
 		$received_uid = I('get.user_id');
 		$sender_uid = $this->user_id;
 
+		if($sender_uid == $received_uid){
+			$this->result_return(null, 500, '不能给自己发消息');
+		}
+
 		$page =  I('get.page') ? I('get.page') : 1;
 		$page_size =  I('get.page_size') ? I('get.page_size') : 6;
 
@@ -185,20 +189,20 @@ class MessageController extends BaseController {
 
 		if($dialog_info['sender_uid'] == $this->user_id){
 			$is_del = $dialog_info['sender_remove'];
-			$where['sender_remove'] = 0;
+			$message_where['sender_remove'] = 0;
 		}else{
 			$is_del = $dialog_info['recived_uid'];
-			$where['recived_remove'] = 0;
+			$message_where['recived_remove'] = 0;
 		}
 
 		if($is_del == 1){
 			$this->result_return([]);
 		}
 
-		$where['dialog_id'] = $dialog_id;
+		$message_where['dialog_id'] = $dialog_id;
 
 		$message_model = D('Message');
-		$message_list = $message_model->get_list($where, $limit. ',' . $page_size,  'add_time desc');
+		$message_list = $message_model->get_list($message_where, $limit. ',' . $page_size,  'add_time desc');
 
 		$data = [
 			'message_list' => $message_list,
