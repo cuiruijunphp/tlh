@@ -328,9 +328,14 @@ class PersonalController extends BaseController {
 	public function get_trend_list(){
 		$user_id = I('get.user_id');
 
+		$page =  I('get.page') ? I('get.page') : 1;
+		$page_size =  I('get.page_size') ? I('get.page_size') : 6;
+
+		$limit = ($page - 1) * $page_size;
+
 		$user_trends_model = D('UserTrends');
 
-		$user_trends_list = $user_trends_model->get_list(['user_id' => $user_id], 3);
+		$user_trends_list = $user_trends_model->get_list(['user_id' => $user_id], $limit. ',' . $page_size);
 
 		if($user_trends_list){
 			foreach($user_trends_list as $k => $v)
