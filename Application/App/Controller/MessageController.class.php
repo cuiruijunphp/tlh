@@ -196,7 +196,7 @@ class MessageController extends BaseController {
 		$where['dialog_id'] = $dialog_id;
 
 		$message_model = D('Message');
-		$message_list = $message_model->get_list($where, $limit. ',' . $page_size,  'add_time asc');
+		$message_list = $message_model->get_list($where, $limit. ',' . $page_size,  'add_time desc');
 
 		$data = [
 			'message_list' => $message_list,
