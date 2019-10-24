@@ -239,6 +239,9 @@ class PersonalController extends BaseController {
 			'company' => $user_info['company'],
 			'desc' => $user_info['desc'],
 			'birthday' => date('Y-m-d', $user_info['birthday']),
+			'weixin_account' => $user_info['weixin_account'],
+			'weibo_account' => $user_info['weibo_account'],
+			'alipay_account' => $user_info['alipay_account'],
 		];
 
 		//地址信息
