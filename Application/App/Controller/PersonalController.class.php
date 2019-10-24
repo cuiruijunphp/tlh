@@ -344,7 +344,6 @@ class PersonalController extends BaseController {
 					return UPLOAD_URL . $v;
 				}, explode(',', $v['img_list']));
 				$user_trends_list[$k]['img_list'] = $img_list;
-				$user_trends_list[$k]['add_time'] = date('Y-m-d', $v['add_time']);
 			}
 		}
 
@@ -374,7 +373,6 @@ class PersonalController extends BaseController {
 			}, explode(',', $user_trends_result['img_list']));
 
 			$user_trends_result['img_list'] = $img_list;
-			$user_trends_result['add_time'] = date('Y-m-d', $user_trends_result['add_time']);
 
 			$this->result_return($user_trends_result);
 		}else{
