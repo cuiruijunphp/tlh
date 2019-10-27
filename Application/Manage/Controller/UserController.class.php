@@ -18,9 +18,13 @@ class UserController extends BaseController {
 	public function index(){
 
 		$user_model = D('Users');
-		$user_list = $user_model->get_list();
-		$data['list'] = $user_list;
 
+		$page = I('get.p');
+		$user_list = $user_model->get_page_list(null, $page);
+		$user_count = $user_model->get_count();
+		$data['list'] = $user_list;
+		// 加上分页
+		$data['page'] = $this->page_new($user_count);
 		$this->assign($data);
 		$this->display();
     }

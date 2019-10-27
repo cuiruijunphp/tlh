@@ -4608,3 +4608,5 @@ table thead .checkbox.radio { margin-top:-7px;margin-top:-21px; }
 .test_paper_wrap .paper_content .item:nth-last-of-type(1) .line{
     border: 0;
 }
+
+.hwh-page-info a{color: #CCC;}.hwh-page-info a em{font-style: normal;margin: 0 2px;}

@@ -51,4 +51,18 @@ class CommonModel extends Model{
 	public function del_data($where){
 		return $this->where($where)->delete();
 	}
+
+	/*
+	 * 统计数量
+	 */
+	public function get_count($where = null){
+		return $this->where($where)->count();
+	}
+
+	/*
+	 * 查询分页数据
+	 */
+	public function get_page_list($where = null, $page = 1, $page_size = 10){
+		return $this->where($where)->limit($page_size)->page($page)->select();
+	}
 }
