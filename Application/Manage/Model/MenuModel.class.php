@@ -2,6 +2,6 @@
 namespace Manage\Model;
 use Think\Model;
 
-class UserAddressModel extends CommonModel{
+class MenuModel extends CommonModel{
 
 }

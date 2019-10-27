@@ -11,7 +11,7 @@
     <title>后台管理系统</title>
 
        <!-- Bootstrap -->
-       <link href="/Public/Public/static/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+       <link href="/Public/static/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
        <!-- Font Awesome -->
        <link href="/Public/static/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
        <!-- NProgress加载进度条 -->
@@ -53,22 +53,34 @@
         <!-- 页面内容 -->
         <div class="right_col" role="main">
           <div id="course_list">
-            <a href="manage/job/edit"><button class="btn btn-success btn-sm fr" id="add_course">新增工种</button></a>
+            <a href="{:U('Manage/user/add')}"><button class="btn btn-success btn-sm fr" id="add_course">新增代理商</button></a>
               <table class="full_width_table">
                  <thead>
                    <tr>
-                     <th>岗位名称</th>
-                     <th>创建时间</th>
+                     <th>账户名</th>
+                     <th>账户类型</th>
+                     <th>手机号</th>
+                     <th>vip等级</th>
+                     <th>vip过期时间</th>
+                     <th>认证</th>
+                     <th>性别</th>
+                     <th>注册时间</th>
                      <th>操作</th>
                    </tr>
                  </thead>
                  <foreach name="list" key="k" item="v">
                  <tr>
-                   <td>{$v.name}</td>
-                   <td>{$v.created_time|date='Y年m月d日 H时i分',###}</td>
+                   <td>{$v.user_name}</td>
+                   <td>{$user_type_arr[$v["type"]]}</td>
+                   <td>{$v["mobile_number"]}</td>
+                   <td>{$v["is_vip"] ? $v["vip_level"] : '非vip'}</td>
+                   <td>{$v["vip_expire_time"] ? ($v["vip_expire_time"]|date='Y年m月d日 H时i分',###) : ''}</td>
+                   <td>{$v["is_vefify"] ? '是' : '否'}</td>
+                   <td>{$v["sex"] == 1 ? '男' : '女'}</td>
+                   <td>{$v["add_time"]|date='Y年m月d日 H时i分',###}</td>
                    <td>
-                      <a href="/manage/job/edit?id={$v.id}"><button class="btn btn-success btn-sm">编辑</button></a>
-                     <button class="btn btn-danger btn-sm del" idvalue="{$v.id}">删除</button>
+                      <!--<a href="{:U('Manage/user/edit?id='.$v['id'])}"><button class="btn btn-success btn-sm">编辑</button></a>-->
+                     <!--<button class="btn btn-danger btn-sm del" idvalue="{$v['id']}">删除</button>-->
                    </td>
                  </tr>
                  </foreach>

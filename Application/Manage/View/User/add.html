@@ -55,7 +55,7 @@
           <a href="javascript:history.go(-1);"><button class="btn btn-success btn-sm fl" id="add_course"><< 返回列表</button></a>
           <div id="add_edit_course" style="clear:both">
             <!-- <h3 class="title"><if condition="$list.id != ''">修改<else />新增</if>课程</h3> -->
-            <form action="" method="post" class="form-horizontal form-label-left" id="form" url="/manage/job/edit">
+            <form action="{:U('Manage/user/add_deal')}" method="post" class="form-horizontal form-label-left" id="form" url="{:U('Manage/user/add_deal')}">
               <div class="form-group">
                 <label for="user_name" class="control-label col-md-3 col-sm-3 col-xs-12">用户名</label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
@@ -79,29 +79,16 @@
               </div>
 
               <div class="form-group">
-                <label for="job_id" class="control-label col-md-3 col-sm-3 col-xs-12">课程类型</label>
+                <label for="amount" class="control-label col-md-3 col-sm-3 col-xs-12">省份</label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                  <select id="type" class="form-control" name="type">
-                    <option value="0" <if condition="0 eq $list['type']">selected</if>>专业课程</option>
-                    <option value="1" <if condition="1 eq $list['type']">selected</if>>通用课程</option>
-                  </select>
-                </div>
-                </div>
-              <div class="form-group" id="job_show_display" <if condition="isset($list['job_id']) && $list['job_id'] eq 0">style="display:none"</if>>
-                <label for="job_id" class="control-label col-md-3 col-sm-3 col-xs-12">岗位</label>
-                <div class="col-md-6 col-sm-6 col-xs-12">
-                  <select id="job_id" class="form-control" name="job_id">
-                    <option value="0">请选择岗位</option>
-                    <foreach name="jobs" key="k" item="v">
-                      <option value="{$k}" <if condition="$k eq $list['job_id']">selected</if>>{$v}</option>
-                    </foreach>
-                  </select>
+                  <input type="text" name="province" id="province" class="form-control col-md-7 col-xs-12 parsley-success" value="{$list.amount}" placeholder="">
                 </div>
               </div>
+
               <div class="form-group">
-                <label for="detail" class="control-label col-md-3 col-sm-3 col-xs-12">简介</label>
+                <label for="amount" class="control-label col-md-3 col-sm-3 col-xs-12">市区</label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                  <textarea name="detail" id="intro" rows="10" class="form-control">{$list.detail}</textarea>
+                  <input type="text" name="city" id="city" class="form-control col-md-7 col-xs-12 parsley-success" value="{$list.amount}" placeholder="">
                 </div>
               </div>
 
@@ -139,29 +126,17 @@
     <script src="/Public/static/build/js/course_add_edit.js"></script>
 
     <script>
-
-      //如果是专业课程,则不选择岗位
-      $('#type').change(function(){
-        type = $(this).val();
-        if(type == 0){
-          $('#job_show_display').show();
-        }else{
-          $('#job_show_display').hide();
-        }
-      })
-
         $("#form").submit(function () {
-
             $.ajax({
                 url: $(this).attr('action'),
                 type: 'POST',
                 dataType: 'JSON',
                 data: $(this).serialize(),
                 success: function (e) {
-                    if (e.code != 0) {
-                        alert(e.msg)
+                    if (e.code != 200) {
+                        alert(e.message)
                     } else {
-                        window.location.href = '/manage/course';
+                        window.location.href = '<?php echo U("Manage/user/index");?>';
                     }
                 }
             })

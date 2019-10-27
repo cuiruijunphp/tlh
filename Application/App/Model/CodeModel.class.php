@@ -40,6 +40,5 @@ class CodeModel extends CommonModel{
 		} catch (ServerException $e) {
 			echo $e->getErrorMessage() . PHP_EOL;
 		}
-
 	}
 }

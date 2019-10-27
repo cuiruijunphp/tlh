@@ -4,6 +4,17 @@ use Think\Model;
 
 class CommonModel extends Model{
 
+	public function _before_insert(&$data, $options)
+	{
+		$data['add_time'] = time();
+		$data['update_time'] = time();
+	}
+
+	public function _before_update(&$data, $options)
+	{
+		$data['update_time'] = time();
+	}
+
 	/*
 	 * 获取一条记录
 	 */
