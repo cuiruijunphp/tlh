@@ -53,32 +53,42 @@
         <!-- 页面内容 -->
         <div class="right_col" role="main">
           <div id="course_list">
-            <a href="{:U('Manage/skill_type/edit')}"><button class="btn btn-success btn-sm fr" id="add_course">新增技能类型</button></a>
+            <!--<a href="{:U('Manage/skill/edit')}"><button class="btn btn-success btn-sm fr" id="add_course">新增技能类型</button></a>-->
               <table class="full_width_table">
                  <thead>
                    <tr>
-                     <th>技能类型名称</th>
+                     <th>技能图片</th>
+                     <th>用户名</th>
+                     <th>技能名称</th>
+                     <th>技能类型</th>
+                     <th>价格</th>
+                     <th>描述</th>
+                     <th>状态</th>
                      <th>添加时间</th>
-                     <th>是否显示</th>
+                     <th>审核</th>
                      <th>操作</th>
                    </tr>
                  </thead>
                  <foreach name="list" key="k" item="v">
                  <tr>
+                   <td><img src="{$Think.const.UPLOAD_URL}{$v['img']}" height="50px" width="50px" /></td>
+                   <td>{$v["user_name"]}</td>
+                   <td>{$v["skill_name"]}</td>
                    <td>{$v["type_name"]}</td>
+                   <td>{$v["price"]}</td>
+                   <td>{$v["desc"]}</td>
+                   <td>{$skill_status_arr[$v["status"]]}</td>
                    <td>{$v["add_time"]|date='Y年m月d日 H时i分',###}</td>
-                     <td>
-                         {$v["is_show"] ? '显示' : '不显示'}
-                     </td>
                    <td>
-                       <if condition="$v['is_show'] eq 1">
-                           <button class="btn btn-danger btn-sm change_status" value="0" idvalue="{$v.id}">下架</button>
-                           <else/>
-                           <button class="btn btn-success btn-sm change_status" value="1" idvalue="{$v.id}">显示</button>
-                       </if>
-                      <a href="{:U('Manage/skill_type/edit?id='.$v['id'])}"><button class="btn btn-success btn-sm">编辑</button></a>
+                       <button class="btn btn-success btn-sm change_status" value="1" idvalue="{$v.id}">通过</button>
+
+                       <button class="btn  btn-danger btn-sm change_status" value="2" idvalue="{$v.id}">不通过</button>
+
                      <!--<button class="btn btn-danger btn-sm del" idvalue="{$v['id']}">删除</button>-->
                    </td>
+
+                     <td>
+                         <a href="{:U('Manage/skill/edit?id='.$v['id'])}"><button class="btn btn-success btn-sm">查看详情</button></a>
                  </tr>
                  </foreach>
                </table>
@@ -131,19 +141,19 @@
       })
 
       $(".change_status").click(function () {
-          is_show = $(this).attr('value');
+          status = $(this).attr('value');
           id = $(this).attr('idvalue');
 
           $.ajax({
-              url: '<?php echo U("Manage/skill_type/change_status")?>',
+              url: '<?php echo U("Manage/skill/change_status")?>',
               type: 'POST',
               dataType: 'JSON',
-              data: {"is_show":is_show, "id":id},
+              data: {"status":status, "id":id},
               success: function (e) {
                   if (e.code != 200) {
                       alert(e.message)
                   } else {
-                      window.location.href = '<?php echo U("Manage/skill_type/index")?>';
+                      window.location.href = '<?php echo U("Manage/skill/index")?>';
                   }
               }
           })
