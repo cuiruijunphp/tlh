@@ -32,7 +32,7 @@ class BannerController extends BaseController {
 				'desc' => $params['desc'],
 				'url' => $params['url'],
 				'sort' => (int)$params['sort'],
-				'is_show' => (int)$params['show'],
+				'is_show' => (int)$params['is_show'],
 			];
 
 			//判断是否有图片
