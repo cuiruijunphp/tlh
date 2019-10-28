@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="/Public/static/assets/images/favicon.ico" type="image/ico" />
+
+    <title>后台管理系统</title>
+
+   <!-- Bootstrap -->
+   <link href="/Public/static/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+   <!-- Font Awesome -->
+   <link href="/Public/static/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+   <!-- NProgress -->
+   <link href="/Public/static/vendors/nprogress/nprogress.css" rel="stylesheet">
+   <!-- Custom Theme Style -->
+   <link href="/Public/static/build/css/custom.css" rel="stylesheet">
+  </head>
+
+  <body class="nav-md">
+  <div class="container body">
+    <div class="main_container">
+      <div class="col-md-3 left_col">
+        <div class="left_col scroll-view">
+          <div class="navbar nav_title" style="border: 0;">
+            <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>首页</span></a>
+          </div>
+
+          <div class="clearfix"></div>
+          <include file="Common/header" />
+        </div>
+      </div>
+
+      <!-- 顶部导航栏 -->
+      <div class="top_nav">
+        <div class="nav_menu">
+          <nav>
+            <div class="nav toggle">
+              <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+            </div>
+            <!-- 用户名文件在template文件夹下的top_nav.html -->
+            <div class="top_nav">
+              <include file="Common/top_nav" />
+            </div>
+          </nav>
+        </div>
+      </div>
+      <!-- /顶部导航栏 -->
+
+        <!-- 页面内容 -->
+        <div class="right_col" role="main">
+          <a href="javascript:history.go(-1);"><button class="btn btn-success btn-sm fl" id="add_course"><< 返回列表</button></a>
+          <div id="add_edit_course" style="clear:both">
+            <!-- <h3 class="title"><if condition="$list.id != ''">修改<else />新增</if>课程</h3> -->
+            <form action="{:U('Manage/skill_type/edit')}" method="post" class="form-horizontal form-label-left" id="form" url="">
+              <div class="form-group">
+                <label for="type_name" class="control-label col-md-3 col-sm-3 col-xs-12">技能类型名称</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <input type="text" id="type_name" name="type_name" class="form-control col-md-7 col-xs-12 parsley-success" value="{$list['type_name']}" placeholder="请填写技能类型名称">
+                  <input type="hidden" name="id" value="{$list['id']}">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="is_show" class="control-label col-md-3 col-sm-3 col-xs-12">是否显示</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <select id="is_show" class="form-control" name="is_show">
+                    <option value="1" <if condition="1 eq $list['is_show']">selected</if>>显示</option>
+                    <option value="0" <if condition="0 eq $list['is_show']">selected</if>>不显示</option>
+                  </select>
+                </div>
+                </div>
+
+              <div class="btns col-xs-12" style="text-align: center;margin-top: 20px;">
+                <button class="btn btn-default btn-sm" type="button">取消</button>
+                <button class="btn btn-success btn-sm" type="submit">保存</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <!-- /页面内容 -->
+
+        <!-- 底部 -->
+        <footer>
+          <div class="pull-right" style="text-align:center;width: 100%;">
+            后台管理系统
+          </div>
+          <div class="clearfix"></div>
+        </footer>
+        <!-- /底部 -->
+      </div>
+    </div>
+
+  <!-- jQuery -->
+ <script src="/Public/static/vendors/jquery/dist/jquery.min.js"></script>
+ <!-- Bootstrap -->
+ <script src="/Public/static/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+ <!-- FastClick -->
+ <script src="/Public/static/vendors/fastclick/lib/fastclick.js"></script>
+ <!-- NProgress -->
+ <script src="/Public/static/vendors/nprogress/nprogress.js"></script>
+ <!-- Custom Theme Scripts -->
+ <script src="/Public/static/build/js/custom.js"></script>
+    <!-- 新增、编辑课程js -->
+    <script src="/Public/static/build/js/course_add_edit.js"></script>
+
+    <script>
+
+      //如果是专业课程,则不选择岗位
+      $('#type').change(function(){
+        type = $(this).val();
+        if(type == 0){
+          $('#job_show_display').show();
+        }else{
+          $('#job_show_display').hide();
+        }
+      })
+
+        $("#form").submit(function () {
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                dataType: 'JSON',
+                data: $(this).serialize(),
+                success: function (e) {
+                    if (e.code != 200) {
+                        alert(e.message)
+                    } else {
+                        window.location.href = '<?php echo U("Manage/skill_type/index")?>';
+                    }
+                }
+            })
+            return false
+        })
+    </script>
+  </body>
+</html>
