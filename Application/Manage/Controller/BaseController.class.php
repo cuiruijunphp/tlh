@@ -13,8 +13,6 @@ class BaseController extends CommonController {
 	 */
     public function __construct(){
     	parent::__construct();
-//    	$menu_model = D('menu');
-//		$data['menu'] = $menu_model->get_list();
 
 		$data['menu'] = $this->menu();
 		$this->assign($data);
