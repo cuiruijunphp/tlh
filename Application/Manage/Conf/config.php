@@ -15,7 +15,7 @@ return array(
 	'URL_ROUTER_ON'   => true,
 
 	//开启url模式
-//	'URL_MODEL'             =>   0,
+	'URL_MODEL'             =>   0,
 
 	//url大小写敏感设置
 //	'URL_CASE_INSENSITIVE'  =>  true,   // 默认false 表示URL区分大小写 true则表示不区分大小写
