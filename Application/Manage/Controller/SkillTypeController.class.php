@@ -13,6 +13,7 @@ class SkillTypeController extends BaseController {
 		$data['list'] = $skill_type_list;
 		// 加上分页
 		$data['page'] = $this->page_new($skill_type_count);
+
 		$this->assign($data);
 		$this->display();
     }
@@ -30,6 +31,7 @@ class SkillTypeController extends BaseController {
 			$insert_data = [
 				'type_name' => $params['type_name'],
 				'is_show' => (int)$params['is_show'],
+				'parent_id' => (int)$params['parent_id'],
 			];
 
 			if(!$params['id']){
@@ -56,6 +58,10 @@ class SkillTypeController extends BaseController {
 		if (!empty(I('get.id'))){
 			$skill_type_list = $skill_type_model -> get_one(['id' => I('get.id')]);
 		}
+
+		//加上所有一级分类的信息
+		$parent_skill_type = $skill_type_model->get_list(['parent_id' => 0]);
+		$data['parent_list'] = $parent_skill_type;
 
 		$data['list'] = $skill_type_list;
 		$this->assign($data);

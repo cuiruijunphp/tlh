@@ -57,18 +57,24 @@
               <table class="full_width_table">
                  <thead>
                    <tr>
+                     <th>技能类型id</th>
                      <th>技能类型名称</th>
                      <th>添加时间</th>
                      <th>是否显示</th>
+                     <th>一级分类id</th>
                      <th>操作</th>
                    </tr>
                  </thead>
                  <foreach name="list" key="k" item="v">
                  <tr>
+                   <td>{$v["id"]}</td>
                    <td>{$v["type_name"]}</td>
                    <td>{$v["add_time"]|date='Y年m月d日 H时i分',###}</td>
                      <td>
                          {$v["is_show"] ? '显示' : '不显示'}
+                     </td>
+                     <td>
+                         {$v["parent_id"] ? $v["parent_id"] : '一级分类'}
                      </td>
                    <td>
                        <if condition="$v['is_show'] eq 1">
