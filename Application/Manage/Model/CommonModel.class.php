@@ -65,4 +65,11 @@ class CommonModel extends Model{
 	public function get_page_list($where = null, $page = 1, $page_size = 10){
 		return $this->where($where)->limit($page_size)->page($page)->select();
 	}
+
+	/*
+	 * 删除数据
+	 */
+	public function delete_data($where){
+		return $this->where($where)->delete();
+	}
 }

@@ -37,7 +37,7 @@ class BannerController extends BaseController {
 
 			//判断是否有图片
 			//上传技能图片
-			if($_FILES){
+			if($_FILES['img']['tmp_name']){
 				$upload = new \Think\Upload();// 实例化上传类
 				$upload->maxSize   =     2048000 ;// 设置附件上传大小
 				$upload->exts      =     array('jpg', 'gif', 'png', 'jpeg');// 设置附件上传类型
@@ -90,5 +90,17 @@ class BannerController extends BaseController {
 		$data['list'] = $banner_list;
 		$this->assign($data);
 		$this->display();
+	}
+
+	public function del(){
+		$id = I('post.id');
+		$banner_model = D('Banner');
+		$delete_data = $banner_model->delete_data(['id' => $id]);
+
+		if($delete_data){
+			$this->result_return(['result' => 1]);
+		}else{
+			$this->result_return(null, 500, '删除失败');
+		}
 	}
 }

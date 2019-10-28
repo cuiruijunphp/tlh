@@ -54,14 +54,13 @@
         <div class="right_col" role="main">
           <a href="javascript:history.go(-1);"><button class="btn btn-success btn-sm fl" id="add_course"><< 返回列表</button></a>
           <div id="add_edit_course" style="clear:both">
-             <h3 class="title"><if condition="$list.id != ''">修改<else />新增</if>banner图</h3>
+             <!--<h3 class="title"><if condition="$list.id != ''">修改<else />新增</if>banner图</h3>-->
             <form action="{:U('Manage/banner/edit')}" method="post" class="form-horizontal form-label-left" id="form" enctype="multipart/form-data">
 
               <div class="form-group">
-                <label for="desc" class="cotrol-label col-md-3 col-sm-3 col-xs-12">描述</label>
+                <label for="desc" class="control-label col-md-3 col-sm-3 col-xs-12">描述</label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                  <input type="text" id="desc" name="desc" class="form-control col-md-7 col-xs-12 parsley-success" value="{$list['desc']}" placeholder="">
-                  <input type="hidden" name="id" value="{$list['id']}">
+                  <input type="desc" id="desc" name="desc" class="form-control col-md-7 col-xs-12 parsley-success" value="{$list['desc']}" placeholder="">
                 </div>
               </div>
 
@@ -101,8 +100,9 @@
               </div>
 
               <div class="btns col-xs-12" style="text-align: center;margin-top: 20px;">
+                <input type="hidden" name="id" value="{$list['id']}" >
                 <button class="btn btn-default btn-sm" type="button">取消</button>
-                <button class="btn btn-success btn-sm" id="save" type="submit">保存</button>
+                <button class="btn btn-success btn-sm" id="save">保存</button>
               </div>
             </form>
           </div>
@@ -130,8 +130,9 @@
  <script src="/Public/static/vendors/nprogress/nprogress.js"></script>
  <!-- Custom Theme Scripts -->
  <script src="/Public/static/build/js/custom.js"></script>
-    <!-- 新增、编辑课程js -->
-    <script src="/Public/static/build/js/course_add_edit.js"></script>
+  <!-- web Uploader.js -->
+  <script src="/Public/static/build/js/webuploader.min.js"></script>
+  <script src="/Public/static/build/js/jquery.form.js"></script>
 
     <script>
 
@@ -145,26 +146,6 @@
         }
       })
 
-//        $("#form").submit(function () {
-//
-//            $.ajax({
-//                url: $(this).attr('action'),
-//                type: 'POST',
-//                xhrFields: {
-//                  withCredentials: true
-//                },
-//                crossDomain: true,
-//                success: function (e) {
-//                    if (e.code != 200) {
-//                        alert(e.message)
-//                    } else {
-//                        window.location.href = '<?php echo U("Manage/banner/index")?>';
-//                    }
-//                }
-//            })
-//            return false
-//        })
-
       $('#save').click(function () {
         $('#form').ajaxSubmit({
           url: '<?php echo U("Manage/banner/edit"); ?>',
@@ -174,10 +155,11 @@
           },
           crossDomain: true,
           success: function (e) {
-            if (e.code != 200) {
-              alert(e.message)
+            e_info = JSON.parse(e);
+            if (e_info.code != 200) {
+                alert(e_info.message)
             } else {
-              window.location.href = '<?php echo U("Manage/banner/index")?>';
+                window.location.href = '<?php echo U("Manage/banner/index")?>';
             }
           }
         });
