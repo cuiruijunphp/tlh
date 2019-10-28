@@ -78,4 +78,17 @@ class UserController extends BaseController {
 			$this->result_return(['result' => 1]);
 		}
 	}
+
+	public function logout()
+	{
+		if (!$this->user_id)
+		{
+			$this->result_return(null, 500, '获取登录状态失败');
+		}
+
+		session('user_id', null);
+		cookie('user_id', null);
+
+		$this->redirect(U(('Manage/login/login')));
+	}
 }

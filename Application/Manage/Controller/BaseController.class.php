@@ -3,6 +3,8 @@ namespace Manage\Controller;
 use App\Controller\CommonController;
 use Think\Controller;
 class BaseController extends CommonController {
+
+	protected $user_id;
 	/**
 	 * 接口登录验证
 	 * @author cuirj
@@ -14,6 +16,16 @@ class BaseController extends CommonController {
     public function __construct(){
     	parent::__construct();
 
+		echo 'hello';
+		$is_login = $this->is_login();
+
+		if(!$is_login){
+			$this->redirect(U('Manage/login/login'));
+			exit;
+		}
+
+		$this->user_id = $is_login['id'];
+		$data['user_name'] = $is_login['user_name'];
 		$data['menu'] = $this->menu();
 		$this->assign($data);
     }
@@ -88,5 +100,26 @@ class BaseController extends CommonController {
 		$Page->setConfig('theme','%HEADER% %FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END%');
 		$page_show = $this->bootstrap_page_style($Page->show());//重点在这里
 		return $page_show;
+	}
+
+	/**
+	 * 判断是否登录
+	 * @author cuirj
+	 * @date   2019/10/29 上午1:38
+	 * @method get
+	 *
+	 * @param  int param
+	 * @return  array
+	 */
+	protected function is_login(){
+		if(cookie('user_id') || session('user_id')){
+			$user_id = cookie('user_id') ? cookie('user_id') : session('user_id');
+			$admin_model = D('Admin');
+			$admin_info = $admin_model->get_one(['id' => $user_id]);
+
+			return $admin_info;
+		}else{
+			return false;
+		}
 	}
 }

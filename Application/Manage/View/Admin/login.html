@@ -10,16 +10,16 @@
     <title>后台管理系统</title>
 
     <!-- Bootstrap -->
-    <link href="/static/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/Public/static/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
-    <link href="/static/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/Public/static/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <!-- NProgress -->
-    <link href="/static/vendors/nprogress/nprogress.css" rel="stylesheet">
+    <link href="/Public/static/vendors/nprogress/nprogress.css" rel="stylesheet">
     <!-- Animate.css -->
-    <link href="/static/vendors/animate.css/animate.min.css" rel="stylesheet">
+    <link href="/Public/static/vendors/animate.css/animate.min.css" rel="stylesheet">
 
     <!-- Custom Theme Style -->
-    <link href="/static/build/css/custom.min.css" rel="stylesheet">
+    <link href="/Public/static/build/css/custom.min.css" rel="stylesheet">
 </head>
 
 <body class="login">
@@ -27,10 +27,10 @@
     <div class="login_wrapper">
         <div class="animate form login_form">
             <section class="login_content">
-                <form action="" method="post" class="form-horizontal form-label-left" id="form" url="/index.php/user/login/login">
+                <form action="{:U('Manage/login/login')}" method="post" class="form-horizontal form-label-left" id="form" url="user/login/login">
                     <h1>登录</h1>
                     <div>
-                        <input type="text" name="account" id="account" class="form-control" placeholder="账号"
+                        <input type="text" name="user_name" id="user_name" class="form-control" placeholder="账号"
                                required=""/>
                     </div>
                     <div>
@@ -49,17 +49,16 @@
 </div>
 
 <!-- jQuery -->
-<script src="/static/vendors/jquery/dist/jquery.min.js"></script>
+<script src="/Public/static/vendors/jquery/dist/jquery.min.js"></script>
 <!-- Bootstrap -->
-<script src="/static/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="/Public/static/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
 <!-- FastClick -->
-<script src="/static/vendors/fastclick/lib/fastclick.js"></script>
+<script src="/Public/static/vendors/fastclick/lib/fastclick.js"></script>
 <!-- NProgress -->
-<script src="/static/vendors/nprogress/nprogress.js"></script>
+<script src="/Public/static/vendors/nprogress/nprogress.js"></script>
 <!-- Custom Theme Scripts -->
-<script src="/static/build/js/custom.js"></script>
+<script src="/Public/static/build/js/custom.js"></script>
 <!-- 新增、编辑课程js -->
-<script src="/static/build/js/course_add_edit.js"></script>
 <script>
     $("#login").click(function () {
 
@@ -69,10 +68,10 @@
             dataType: 'JSON',
             data: $("#form").serialize(),
             success: function (e) {
-                if (e.code != 0) {
-                    alert(e.msg)
-                } else {1
-                    window.location.href = '/manage/company/index';
+                if (e.code != 200) {
+                    alert(e.message)
+                } else {
+                    window.location.href = '<?php echo U("Manage/user/index");?>';
                 }
             }
         })
