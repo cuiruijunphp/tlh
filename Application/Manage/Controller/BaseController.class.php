@@ -15,8 +15,7 @@ class BaseController extends CommonController {
 	 */
     public function __construct(){
     	parent::__construct();
-
-		echo 'hello';
+		
 		$is_login = $this->is_login();
 
 		if(!$is_login){
