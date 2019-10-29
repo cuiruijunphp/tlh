@@ -49,7 +49,7 @@ function random_from_dev($length)
  * @param $lat2
  * @return int
  */
-function getDistance($lng1, $lat1, $lng2, $lat2)
+function get_distance($lng1, $lat1, $lng2, $lat2)
 {
 	//将角度转为狐度
 	$radLat1 = deg2rad($lat1);//deg2rad()函数将角度转换为弧度

@@ -50,13 +50,36 @@ class HomeController extends BaseController
 		$params = I('get.');
 
 		$type_id = $params['type_id'];
+		$type = $params['type'];
 		$latitude = $params['latitude'];
 		$longitude = $params['longitude'];
 
 		$demand_model = D('UserDemand');
 		$skill_model = D('UserSkill');
 
+		if($type_id){
+			// 类型
+			$result = $skill_model->get_skill_demand_by_type_id($type_id, $latitude, $longitude);
+		}elseif($type == 'distance'){
+			// 距离最近的
+			$result = $skill_model->get_skill_demand_order_by_distance($latitude, $longitude);
+		}
 
+		// 对结果进行处理
+		if($result){
+			foreach($result as $k => $v){
+				if($type_id){
+					// 如果是技能类型查到的结果,则用php计算距离
+					$result[$k]['distance'] = get_distance($v['longitude'], $v['latitude'], $longitude, $latitude);
+				}
+
+				//头像加上地址前缀
+				$result[$k]['img'] = UPLOAD_URL . $v['img'];
+				$result[$k]['head_img'] = UPLOAD_URL . $v['head_img'];
+			}
+		}
+
+		$this->result_return($result);
 	}
 
 	/**
