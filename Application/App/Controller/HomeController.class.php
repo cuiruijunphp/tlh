@@ -20,7 +20,7 @@ class HomeController extends BaseController
 	public function get_banner_list()
 	{
 		$banner_model = D('Banner');
-		$banner_list = $banner_model->get_list(['is_show' => 1]);
+		$banner_list = $banner_model->get_list(['is_show' => 1], null, 'sort desc');
 
 		foreach($banner_list as $k => $v){
 			$banner_list[$k]['img'] = UPLOAD_URL . $v['img'];

@@ -21,6 +21,7 @@ class LoginController extends CommonController {
 		$phone_number = $params['mobile_number'];
 		$code = $params['code'];
 		$password = $params['password'];
+		$invite_mobile_number = $params['invite_mobile_number'];
 
 		$code_model = D('Code');
 		$send_result = $code_model->get_one(['mobile_number' => $phone_number, 'type' => 'register'], 'add_time desc');
@@ -37,9 +38,15 @@ class LoginController extends CommonController {
 			$this->result_return(null, 500, '验证码已经过期,请重新发送');
 		}
 
-		// 插入数据库中
 		$user_model = D('Users');
 
+		// 查询邀请者是否存在
+		$invite_info = $user_model->get_one(['mobile_number' => $invite_mobile_number]);
+		if($invite_mobile_number && !$invite_info){
+			$this->result_return(null, 500, '请填入正确的邀请人手机号');
+		}
+
+		// 插入数据库中
 		//先查看手机号是否被注册
 		$is_exist_phone = $user_model->get_one(['mobile_number' => $phone_number]);
 		if($is_exist_phone){
@@ -49,6 +56,7 @@ class LoginController extends CommonController {
 		$insert_user_data = [
 			'mobile_number' => $phone_number,
 			'password' => compile_password($password),
+			'invite_user_id' => (int)$invite_info['id'],
 		];
 		$insert_result = $user_model->insert_one($insert_user_data);
 
