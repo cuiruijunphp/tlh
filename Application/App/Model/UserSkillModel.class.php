@@ -9,11 +9,11 @@ class UserSkillModel extends CommonModel{
 	 */
 	public function get_skill_demand_by_type_id($type_id, $lat, $long, $offset = 0, $page_size=10){
 
-		$sql = '(select skill_name as title,user_id,is_online,head_img,user_name,type_id,s.add_time,longitude,latitude,img from user_skill s  left join users u on s.user_id = u.id where s.type_id='.$type_id . ')';
+		$sql = '(select skill_name as title,user_id,is_online,head_img,user_name,type_id,s.add_time,longitude,latitude,img,"skill" as type from user_skill s left join users u on s.user_id = u.id where s.status =1 and s.type_id='.$type_id . ')';
 
 		$sql .= ' union ';
 
-		$sql .= '(select title,user_id,is_online,head_img,user_name,type_id,d.add_time,longitude,latitude,null as img from user_demand as d left join users u on d.user_id = u.id  where status=1  and end_time > '.time().' and type_id = ' . $type_id . ')';
+		$sql .= '(select title,user_id,is_online,head_img,user_name,type_id,d.add_time,longitude,latitude,null as img,"demand" as type from user_demand as d left join users u on d.user_id = u.id  where status=1  and end_time > '.time().' and type_id = ' . $type_id . ')';
 
 		$sql .= ' limit ' . $offset . ',' . $page_size;
 
@@ -41,11 +41,11 @@ class UserSkillModel extends CommonModel{
       )
     ) *1000 as distance from ';
 
-		$sql .= '((select skill_name as title,user_id,is_online,head_img,user_name,type_id,s.add_time,longitude,latitude,img from user_skill s  left join users u on s.user_id = u.id)';
+		$sql .= '((select skill_name as title,user_id,is_online,head_img,user_name,type_id,s.add_time,longitude,latitude,img,"skill" as type from user_skill s left join users u on s.user_id = u.id where s.status =1)';
 
 		$sql .= ' union ';
 
-		$sql .= '(select title,user_id,is_online,head_img,user_name,type_id,d.add_time,longitude,latitude,null as img from user_demand as d left join users u on d.user_id = u.id  where status=1  and end_time > '.time(). ')) as tmp';
+		$sql .= '(select title,user_id,is_online,head_img,user_name,type_id,d.add_time,longitude,latitude,null as img,"demand" as type from user_demand as d left join users u on d.user_id = u.id  where status=1  and end_time > '.time(). ')) as tmp';
 
 		$sql .= ' order by distance limit ' . $offset . ',' . $page_size;
 
