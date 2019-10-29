@@ -56,19 +56,38 @@ class HomeController extends BaseController
 
 		$demand_model = D('UserDemand');
 		$skill_model = D('UserSkill');
+		$skill_type_model = D('SkillType');
 
 		if($type_id){
 			// 类型
-			$result = $skill_model->get_skill_demand_by_type_id($type_id, $latitude, $longitude);
+			//如果是一级分类,则把下面所有的二级分类都取出来
+			$skill_type_info =$skill_type_model->get_one(['id' => $type_id]);
+			if(!$skill_type_info){
+				$this->result_return(null, 500, '请传入正确的类型');
+			}
+
+			if($skill_type_info['parent_id'] == 0){
+				$skill_type_list = $skill_type_model->get_list(['parent_id' => $type_id]);
+
+				$skill_type_ids = array_column($skill_type_list, 'id');
+				$type_ids = implode(',', $skill_type_ids) . ',' . $type_id;
+			}else{
+				$type_ids = $type_id;
+			}
+
+			$result = $skill_model->get_skill_demand_by_type_id($type_ids, $latitude, $longitude);
+
 		}elseif($type == 'distance'){
 			// 距离最近的
 			$result = $skill_model->get_skill_demand_order_by_distance($latitude, $longitude);
+		}elseif($type == 'hot'){
+			$result = $skill_model->get_skill_demand_by_view();
 		}
 
 		// 对结果进行处理
 		if($result){
 			foreach($result as $k => $v){
-				if($type_id){
+				if($type_id || $type == 'hot'){
 					// 如果是技能类型查到的结果,则用php计算距离
 					$result[$k]['distance'] = get_distance($v['longitude'], $v['latitude'], $longitude, $latitude);
 				}
