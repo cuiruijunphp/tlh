@@ -183,7 +183,7 @@ class DemandController extends BaseController
 			$this->result_return(null, 500, '该条需求不存在');
 		}
 
-		if ($user_demand_result['status'] == 2 && $user_demand_result['selected_uid'])
+		if ($user_demand_result['status'] == 3 && $user_demand_result['selected_uid'])
 		{
 			$this->result_return(null, 500, '该条需求已经完成');
 		}
@@ -200,7 +200,7 @@ class DemandController extends BaseController
 
 		$update_result = $user_demand_model->update_data(['id' => $demand_id], [
 			'selected_uid' => $user_id,
-			'status' => 2,
+			'status' => 3,
 		]);
 
 		if ($update_result === false)
@@ -289,7 +289,11 @@ class DemandController extends BaseController
 			$this->result_return(null, 500, '该条需求不存在');
 		}
 
-		if($user_demand_result['status'] == 2 && $user_demand_result['selected_uid']){
+		if($user_demand_result['status'] == 0){
+			$this->result_return(null, 500, '该条需求待审核');
+		}
+
+		if($user_demand_result['status'] == 3 && $user_demand_result['selected_uid']){
 			$this->result_return(null, 500, '该条需求已经完成');
 		}
 

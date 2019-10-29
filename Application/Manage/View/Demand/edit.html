@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="/Public/static/assets/images/favicon.ico" type="image/ico" />
+
+    <title>后台管理系统</title>
+
+   <!-- Bootstrap -->
+   <link href="/Public/static/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+   <!-- Font Awesome -->
+   <link href="/Public/static/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+   <!-- NProgress -->
+   <link href="/Public/static/vendors/nprogress/nprogress.css" rel="stylesheet">
+   <!-- Custom Theme Style -->
+   <link href="/Public/static/build/css/custom.css" rel="stylesheet">
+  </head>
+
+  <body class="nav-md">
+  <div class="container body">
+    <div class="main_container">
+      <div class="col-md-3 left_col">
+        <div class="left_col scroll-view">
+          <div class="navbar nav_title" style="border: 0;">
+            <a href="{:U()}" class="site_title"><i class="fa fa-paw"></i> <span>首页</span></a>
+          </div>
+
+          <div class="clearfix"></div>
+          <include file="Common/header" />
+        </div>
+      </div>
+
+      <!-- 顶部导航栏 -->
+      <div class="top_nav">
+        <div class="nav_menu">
+          <nav>
+            <div class="nav toggle">
+              <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+            </div>
+            <!-- 用户名文件在template文件夹下的top_nav.html -->
+            <div class="top_nav">
+              <include file="Common/top_nav" />
+            </div>
+          </nav>
+        </div>
+      </div>
+      <!-- /顶部导航栏 -->
+
+        <!-- 页面内容 -->
+        <div class="right_col" role="main">
+          <a href="javascript:history.go(-1);"><button class="btn btn-success btn-sm fl" id="add_course"><< 返回列表</button></a>
+          <div id="add_edit_course" style="clear:both">
+            <!-- <h3 class="title"><if condition="$list.id != ''">修改<else />新增</if>课程</h3> -->
+            <form action="{:U('Manage/demand/edit')}" method="post" class="form-horizontal form-label-left" id="form" url="">
+              <div class="form-group">
+                <label for="title" class="control-label col-md-3 col-sm-3 col-xs-12">需求名称</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <input type="text" id="title" name="title" class="form-control col-md-7 col-xs-12 parsley-success" value="{$list['title']}" placeholder="" readonly="readonly">
+                  <input type="hidden" name="id" value="{$list['id']}">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="type_name" class="control-label col-md-3 col-sm-3 col-xs-12">上级技能类型名称</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <select id="type_name" class="form-control" name="type_name" readonly="readonly">
+                    <foreach name="skill_type_list" key="k" item="v">
+                      <option value="{$v['id']}" <if condition="$v['id'] eq $list['type_id']">selected</if>>{$v['type_name']}</option>
+                    </foreach>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="user_name" class="control-label col-md-3 col-sm-3 col-xs-12">用户名</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <input type="text" id="user_name" name="user_name" class="form-control col-md-7 col-xs-12 parsley-success" value="{$list['user_name']}" placeholder="" readonly="readonly">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="earnest_money" class="control-label col-md-3 col-sm-3 col-xs-12">描述</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <input type="text" id="earnest_money" name="earnest_money" class="form-control col-md-7 col-xs-12 parsley-success" value="{$list['earnest_money']}" placeholder="" readonly="readonly">
+
+                  <!--<textarea name="earnest_money" id="earnest_money" rows="5" class="form-control" readonly="readonly">{$list['desc']}</textarea>-->
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="start_time" class="control-label col-md-3 col-sm-3 col-xs-12">开始时间</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <input type="text" id="start_time" name="start_time" class="form-control col-md-7 col-xs-12 parsley-success" value="{$list['start_time']|date='Y年m月d日 H时i分',###}" placeholder="" readonly="readonly">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="end_time" class="control-label col-md-3 col-sm-3 col-xs-12">结束时间</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <input type="text" id="end_time" name="end_time" class="form-control col-md-7 col-xs-12 parsley-success" value="{$list['end_time']|date='Y年m月d日 H时i分',###}" placeholder="" readonly="readonly">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="add_time" class="control-label col-md-3 col-sm-3 col-xs-12">添加时间</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <input type="text" id="add_time" name="add_time" class="form-control col-md-7 col-xs-12 parsley-success" value="{$list['add_time']|date='Y年m月d日 H时i分',###}" placeholder="" readonly="readonly">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="applicants" class="control-label col-md-3 col-sm-3 col-xs-12">应征者</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <input type="text" id="applicants" name="applicants" class="form-control col-md-7 col-xs-12 parsley-success" value="{$list['applicants']}" placeholder="" readonly="readonly">
+                  <!--<textarea name="superiority" id="superiority" rows="5" class="form-control" readonly="readonly">{$list['superiority']}</textarea>-->
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="selected_uid" class="control-label col-md-3 col-sm-3 col-xs-12">应征成功者uid</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <input type="text" id="selected_uid" name="selected_uid" class="form-control col-md-7 col-xs-12 parsley-success" value="{$list['selected_uid']}" placeholder="" readonly="readonly">
+                  <!--<textarea name="superiority" id="superiority" rows="5" class="form-control" readonly="readonly">{$list['superiority']}</textarea>-->
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="status" class="control-label col-md-3 col-sm-3 col-xs-12">状态</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <select id="status" class="form-control" name="status">
+                    <option value="0" <if condition="0 eq $list['status']">selected</if>>待审核</option>
+                    <option value="1" <if condition="1 eq $list['status']">selected</if>>审核通过</option>
+                    <option value="2" <if condition="2 eq $list['status']">selected</if>>审核不通过</option>
+                    <option value="3" <if condition="3 eq $list['status']">selected</if>>已完成</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="btns col-xs-12" style="text-align: center;margin-top: 20px;">
+                <button class="btn btn-default btn-sm" type="button">取消</button>
+                <button class="btn btn-success btn-sm" type="submit">保存</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <!-- /页面内容 -->
+
+        <!-- 底部 -->
+        <footer>
+          <div class="pull-right" style="text-align:center;width: 100%;">
+            后台管理系统
+          </div>
+          <div class="clearfix"></div>
+        </footer>
+        <!-- /底部 -->
+      </div>
+    </div>
+
+  <!-- jQuery -->
+ <script src="/Public/static/vendors/jquery/dist/jquery.min.js"></script>
+ <!-- Bootstrap -->
+ <script src="/Public/static/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+ <!-- FastClick -->
+ <script src="/Public/static/vendors/fastclick/lib/fastclick.js"></script>
+ <!-- NProgress -->
+ <script src="/Public/static/vendors/nprogress/nprogress.js"></script>
+ <!-- Custom Theme Scripts -->
+ <script src="/Public/static/build/js/custom.js"></script>
+    <!-- 新增、编辑课程js -->
+    <script src="/Public/static/build/js/course_add_edit.js"></script>
+
+    <script>
+
+      //如果是专业课程,则不选择岗位
+      $('#type').change(function(){
+        type = $(this).val();
+        if(type == 0){
+          $('#job_show_display').show();
+        }else{
+          $('#job_show_display').hide();
+        }
+      })
+
+        $("#form").submit(function () {
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                dataType: 'JSON',
+                data: $(this).serialize(),
+                success: function (e) {
+                    if (e.code != 200) {
+                        alert(e.message)
+                    } else {
+                        window.location.href = '<?php echo U("Manage/demand/index")?>';
+                    }
+                }
+            })
+            return false
+        })
+    </script>
+  </body>
+</html>

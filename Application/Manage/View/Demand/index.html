@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="/Public/static/assets/images/favicon.ico" type="image/ico" />
+
+    <title>后台管理系统</title>
+
+       <!-- Bootstrap -->
+       <link href="/Public/static/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+       <!-- Font Awesome -->
+       <link href="/Public/static/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+       <!-- NProgress加载进度条 -->
+       <link href="/Public/static/vendors/nprogress/nprogress.css" rel="stylesheet">
+       <!-- 样式 -->
+       <link href="/Public/static/build/css/custom.css" rel="stylesheet">
+  </head>
+
+  <body class="nav-md">
+  <div class="container body">
+      <div class="main_container">
+          <div class="col-md-3 left_col">
+              <div class="left_col scroll-view">
+                  <div class="navbar nav_title" style="border: 0;">
+                      <a href="{:U()}" class="site_title"><i class="fa fa-paw"></i> <span>首页</span></a>
+                  </div>
+
+                  <div class="clearfix"></div>
+                  <include file="Common/header" />
+              </div>
+          </div>
+
+          <!-- 顶部导航栏 -->
+          <div class="top_nav">
+              <div class="nav_menu">
+                  <nav>
+                      <div class="nav toggle">
+                          <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                      </div>
+                      <!-- 用户名文件在template文件夹下的top_nav.html -->
+                      <div class="top_nav">
+                          <include file="Common/top_nav" />
+                      </div>
+                  </nav>
+              </div>
+          </div>
+          <!-- /顶部导航栏 -->
+
+        <!-- 页面内容 -->
+        <div class="right_col" role="main">
+          <div id="course_list">
+            <!--<a href="{:U('Manage/skill/edit')}"><button class="btn btn-success btn-sm fr" id="add_course">新增技能类型</button></a>-->
+              <table class="full_width_table">
+                 <thead>
+                   <tr>
+                     <th>需求名称</th>
+                     <th>发布者</th>
+                     <th>技能类型</th>
+                     <th>诚意金</th>
+                     <th>应征人数</th>
+                     <th>选中的应征者</th>
+                     <th>开始时间</th>
+                     <th>结束时间</th>
+                     <th>添加时间</th>
+                     <th>状态</th>
+                     <th>审核</th>
+                     <th>操作</th>
+                   </tr>
+                 </thead>
+                 <foreach name="list" key="k" item="v">
+                 <tr>
+                   <td>{$v["title"]}</td>
+                   <td>{$v["user_name"]}</td>
+                   <td>{$v["type_name"]}</td>
+                   <td>{$v["earnest_money"]}</td>
+                   <td>{$v["applicants"]|explode=',',###|count}</td>
+                   <td>{$v["selected_uid"]}</td>
+                   <td>{$v["start_time"]|date='Y年m月d日 H时i分',###}</td>
+                   <td>{$v["end_time"]|date='Y年m月d日 H时i分',###}</td>
+                   <td>{$v["add_time"]|date='Y年m月d日 H时i分',###}</td>
+                   <td>{$demand_status_arr[$v["status"]]}</td>
+                   <td>
+                       <button class="btn btn-success btn-sm change_status" value="1" idvalue="{$v.id}">通过</button>
+
+                       <button class="btn  btn-danger btn-sm change_status" value="3" idvalue="{$v.id}">不通过</button>
+
+                     <!--<button class="btn btn-danger btn-sm del" idvalue="{$v['id']}">删除</button>-->
+                   </td>
+
+                     <td>
+                         <a href="{:U('Manage/demand/edit?id='.$v['id'])}"><button class="btn btn-success btn-sm">查看详情</button></a>
+                 </tr>
+                 </foreach>
+               </table>
+              {$page}
+          </div>
+        </div>
+        <!-- /页面内容 -->
+
+        <!-- 底部 -->
+        <footer>
+          <div class="pull-right" style="text-align:center;width: 100%;">
+            后台管理系统
+          </div>
+          <div class="clearfix"></div>
+        </footer>
+        <!-- /底部 -->
+      </div>
+    </div>
+
+           <!-- jQuery -->
+ <script src="/Public/static/vendors/jquery/dist/jquery.min.js"></script>
+ <!-- Bootstrap -->
+ <script src="/Public/static/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+ <!-- FastClick -->
+ <script src="/Public/static/vendors/fastclick/lib/fastclick.js"></script>
+ <!-- NProgress -->
+ <script src="/Public/static/vendors/nprogress/nprogress.js"></script>
+ <!-- Custom Theme Scripts -->
+ <script src="/Public/static/build/js/custom.js"></script>
+    <script>
+      $(".del").click(function () {
+        if(confirm("确认删除?") == true){
+          id = $(this).attr('idvalue');
+
+          $.ajax({
+            url: '<?php echo U("Manage/skill_type/del")?>',
+            type: 'POST',
+            dataType: 'JSON',
+            data: {"id":id},
+            success: function (e) {
+              if (e.code != 200) {
+                alert(e.message)
+              } else {
+                window.location.href = '<?php echo U("Manage/skill_type/index")?>';
+              }
+            }
+          })
+        }
+        return false
+      })
+
+      $(".change_status").click(function () {
+          status = $(this).attr('value');
+          id = $(this).attr('idvalue');
+
+          $.ajax({
+              url: '<?php echo U("Manage/demand/change_status")?>',
+              type: 'POST',
+              dataType: 'JSON',
+              data: {"status":status, "id":id},
+              success: function (e) {
+                  if (e.code != 200) {
+                      alert(e.message)
+                  } else {
+                      window.location.href = '<?php echo U("Manage/demand/index")?>';
+                  }
+              }
+          })
+          return false
+      })
+    </script>
+  </body>
+</html>
