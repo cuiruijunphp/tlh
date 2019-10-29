@@ -50,11 +50,13 @@ class HomeController extends BaseController
 		$params = I('get.');
 
 		$type_id = $params['type_id'];
-		$type_id = $params['type_id'];
-		$type_id = $params['type_id'];
+		$latitude = $params['latitude'];
+		$longitude = $params['longitude'];
 
 		$demand_model = D('UserDemand');
 		$skill_model = D('UserSkill');
+
+
 	}
 
 	/**

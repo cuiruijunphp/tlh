@@ -192,7 +192,10 @@ class LoginController extends CommonController {
 			'company' => $user_info['company'],
 			'desc' => $user_info['desc'],
 			'birthday' => $user_info['birthday'],
+			'weixin_account' => $user_info['weixin_account'],
 			'id' => $user_info['id'],
+			'weibo_account' => $user_info['weibo_account'],
+			'alipay_account' => $user_info['alipay_account'],
 		];
 
 		$token = '';
