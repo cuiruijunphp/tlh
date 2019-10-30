@@ -55,6 +55,7 @@ class PersonalController extends BaseController {
 		$province = $params['province'];
 		$city = $params['city'];
 		$area = $params['area'];
+		$user_name = $params['user_name'];
 
 		$user_model = D('Users');
 
@@ -63,6 +64,7 @@ class PersonalController extends BaseController {
 			'birthday' => $birthday,
 			'company' => $company,
 			'desc' => $desc,
+			'user_name' => $user_name,
 		];
 		$users_update_result = $user_model->update_data(['id' => $this->user_id], $user_data);
 
