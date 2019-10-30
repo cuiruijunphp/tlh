@@ -207,47 +207,52 @@ class MessageController extends BaseController {
 		$message_list = $message_model->get_list($common_message_where, $limit. ',' . $page_size,  'add_time desc');
 
 		// 取最近的一条有效的需求/技能
-		$skill_demand = $message_model->get_list($special_message_where);
-		$demand_model = D('UserDemand');
-		$skill_model = D('UserSkill');
+		if($page == 1){
+			$skill_demand = $message_model->get_list($special_message_where);
+			$demand_model = D('UserDemand');
+			$skill_model = D('UserSkill');
 
-		$type_result = [];
+			$type_result = [];
 
-		if($skill_demand){
-			foreach($skill_demand as $s_k => $s_v){
-				if($s_v['type'] == 2){
-					// 查看需求是否完成
-					$demand_info = $demand_model->get_one(['id' => $s_v['type_id']]);
-					if($demand_info['status'] == 1){
-						$type_result = [
-							'id' => $demand_info['id'],
-							'title' => $demand_info['title'],
-							'earnest_money' => $demand_info['earnest_money'],
-							'type' => 'demand'
-						];
-						break;
-					}
-				}else{
-					// 技能
-					$skill_info = $skill_model->get_one(['id' => $s_v['type_id']]);
-					if($skill_info['status'] == 1){
-						$type_result = [
-							'id' => $skill_info['id'],
-							'title' => $demand_info['skill_name'],
-							'earnest_money' => $demand_info['price'],
-							'type' => 'skill',
-							'desc' => $demand_info['desc'],
-						];
-						break;
+			if($skill_demand){
+				foreach($skill_demand as $s_k => $s_v){
+					if($s_v['type'] == 2){
+						// 查看需求是否完成
+						$demand_info = $demand_model->get_one(['id' => $s_v['type_id']]);
+						if($demand_info['status'] == 1){
+							$type_result = $s_v;
+
+							$type_result['title'] = $demand_info['title'];
+							$type_result['earnest_money'] = $demand_info['earnest_money'];
+
+							break;
+						}
+					}else{
+						// 技能
+						$skill_info = $skill_model->get_one(['id' => $s_v['type_id']]);
+						if($skill_info['status'] == 1){
+							$type_result = $s_v;
+
+							$type_result['title'] = $skill_info['skill_name'];
+							$type_result['earnest_money'] = $skill_info['price'];
+							$type_result['desc'] = $skill_info['desc'];
+
+							break;
+						}
 					}
 				}
+			}
+
+			//当做一条普通消息处理
+			if($type_result){
+				$message_list[] = $type_result;
 			}
 		}
 
 		$data = [
 			'message_list' => $message_list ? array_reverse($message_list) : [],
 			'user_info' => $part_user_info,
-			'message_type' => $type_result ? $type_result : [],
+//			'message_type' => $type_result ? $type_result : [],
 		];
 
 		$this->result_return($data);
