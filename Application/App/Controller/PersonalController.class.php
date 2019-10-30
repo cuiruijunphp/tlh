@@ -216,7 +216,7 @@ class PersonalController extends BaseController {
 		$user_model = D('Users');
 
 		$user_id = I('get.user_id');
-		if(!$user_id){
+		if(!$user_id || ($this->user_id == $user_id)){
 			$user_id = $this->user_id;
 			$is_self = 1;
 		}
@@ -228,8 +228,14 @@ class PersonalController extends BaseController {
 			$this->result_return(null, 500, '未查询到个人信息');
 		}
 
+		//如果不是自己访问的主页,则需要将view+1
+		if(!$is_self){
+			$user_model->update_data(['id' => $user_id], ['view' => $user_info['view'] + 1]);
+		}
+
 		//返回个人信息和token信息
 		$data = [
+			'id' => $user_info['id'],
 			'user_name' => $user_info['user_name'],
 			'is_vefify' => $user_info['is_vefify'],
 			'is_vip' => $user_info['is_vip'],
@@ -242,6 +248,7 @@ class PersonalController extends BaseController {
 			'weixin_account' => $user_info['weixin_account'],
 			'weibo_account' => $user_info['weibo_account'],
 			'alipay_account' => $user_info['alipay_account'],
+			'view' => $user_info['view'],
 		];
 
 		//地址信息
