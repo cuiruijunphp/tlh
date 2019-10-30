@@ -58,6 +58,7 @@
                  <thead>
                    <tr>
                      <th>技能类型id</th>
+                     <th>技能类型图片</th>
                      <th>技能类型名称</th>
                      <th>添加时间</th>
                      <th>是否显示</th>
@@ -68,6 +69,7 @@
                  <foreach name="list" key="k" item="v">
                  <tr>
                    <td>{$v["id"]}</td>
+                   <td><img src="{$Think.const.UPLOAD_URL}{$v['img']}" height="50px" width="50px" /></td>
                    <td>{$v["type_name"]}</td>
                    <td>{$v["add_time"]|date='Y年m月d日 H时i分',###}</td>
                      <td>

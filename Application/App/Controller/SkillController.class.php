@@ -17,6 +17,10 @@ class SkillController extends BaseController {
 		$skill_type_model = D('SkillType');
 		$skill_type_result = $skill_type_model->get_list();
 
+		foreach($skill_type_result as $k => $v){
+			$skill_type_result[$k]['img'] = UPLOAD_URL . $v['img'];
+		}
+
 		$this->result_return($skill_type_result);
     }
 

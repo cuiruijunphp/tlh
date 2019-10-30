@@ -55,7 +55,7 @@
           <a href="javascript:history.go(-1);"><button class="btn btn-success btn-sm fl" id="add_course"><< 返回列表</button></a>
           <div id="add_edit_course" style="clear:both">
              <h3 class="title"><if condition="$list.id != ''">修改<else />新增</if>技能类型</h3>
-            <form action="{:U('Manage/skill_type/edit')}" method="post" class="form-horizontal form-label-left" id="form" url="">
+            <form action="{:U('Manage/skill_type/edit')}" method="post" class="form-horizontal form-label-left" id="form" url="" enctype="multipart/form-data">
               <div class="form-group">
                 <label for="type_name" class="control-label col-md-3 col-sm-3 col-xs-12">技能类型名称</label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
@@ -86,9 +86,19 @@
               </div>
               </div>
 
+              <div class="form-group">
+                <label for="img" class="control-label col-md-3 col-sm-3 col-xs-12">技能图片</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <input type="file" name="img">
+                  <if condition="$list['img']">
+                    <img src="{$Think.const.UPLOAD_URL}{$list['img']}" class="float-right">
+                  </if>
+                </div>
+              </div>
+
               <div class="btns col-xs-12" style="text-align: center;margin-top: 20px;">
                 <button class="btn btn-default btn-sm" type="button">取消</button>
-                <button class="btn btn-success btn-sm" type="submit">保存</button>
+                <button class="btn btn-success btn-sm" id="save" type="submit">保存</button>
               </div>
             </form>
           </div>
@@ -117,7 +127,8 @@
  <!-- Custom Theme Scripts -->
  <script src="/Public/static/build/js/custom.js"></script>
     <!-- 新增、编辑课程js -->
-    <script src="/Public/static/build/js/course_add_edit.js"></script>
+  <script src="/Public/static/build/js/webuploader.min.js"></script>
+  <script src="/Public/static/build/js/jquery.form.js"></script>
 
     <script>
 
@@ -131,23 +142,25 @@
         }
       })
 
-        $("#form").submit(function () {
-
-            $.ajax({
-                url: $(this).attr('action'),
-                type: 'POST',
-                dataType: 'JSON',
-                data: $(this).serialize(),
-                success: function (e) {
-                    if (e.code != 200) {
-                        alert(e.message)
-                    } else {
-                        window.location.href = '<?php echo U("Manage/skill_type/index")?>';
-                    }
-                }
-            })
-            return false
-        })
+      $('#save').click(function () {
+        $('#form').ajaxSubmit({
+          url: '<?php echo U("Manage/skill_type/edit"); ?>',
+          type: 'POST',
+          xhrFields: {
+            withCredentials: true
+          },
+          crossDomain: true,
+          success: function (e) {
+            e_info = JSON.parse(e);
+            if (e_info.code != 200) {
+              alert(e_info.message)
+            } else {
+              window.location.href = '<?php echo U("Manage/skill_type/index")?>';
+            }
+          }
+        });
+        return false
+      })
     </script>
   </body>
 </html>
