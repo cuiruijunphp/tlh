@@ -323,8 +323,33 @@ class DemandController extends BaseController
 		$update_result = $user_demand_model->update_data(['id' => $demand_id], ['applicants' => $applicants]);
 
 		if($update_result === false){
-			$this->result_return(null, 500, '绑定账号失败');
+			$this->result_return(null, 500, '应征失败');
 		}
+
+		// 应征完成以后要写到对话框里
+		$dialog_model = D('Dialog');
+		$message_model = D('Message');
+
+		$dialog_result = $dialog_model->get_dialog_by_uids($user_id, $user_demand_result['user_id']);
+
+		if($dialog_result){
+			//更新对话框为启用状态
+			$dialog_model->update_dialog_active($dialog_result['id'], $user_demand_result['user_id']);
+			$dialog_id = $dialog_result['id'];
+		}else{
+			// 创建对话框
+			$dialog_id = $dialog_model->create_dialog($user_demand_result['user_id'], $user_id);
+		}
+
+		//插入一条数据
+		$insert_message = [
+			'type' => 2,
+			'dialog_id' => $dialog_id,
+			'type_id' => $demand_id,
+			'uid' => $user_demand_result['user_id'],
+			'content' => '需求类型',
+		];
+		$message_model->insert_one($insert_message);
 
 		$this->result_return(['result' => 1]);
 	}

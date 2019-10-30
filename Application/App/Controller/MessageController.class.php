@@ -42,7 +42,6 @@ class MessageController extends BaseController {
 			$insert_data = [
 				'sender_uid' => $sender_uid,
 				'recived_uid' => $received_uid,
-				'add_time' => time(),
 			];
 			$insert_dialog_result = $dialog_model->insert_one($insert_data);
 
@@ -58,7 +57,6 @@ class MessageController extends BaseController {
 			'uid' => $sender_uid,
 			'content' => $content,
 			'dialog_id' => $dialog_id,
-			'add_time' => time(),
 		];
 
 		$message_insert_result = $message_model->insert_one($message_insert_data);
@@ -127,7 +125,7 @@ class MessageController extends BaseController {
 				];
 
 				// 最后一条记录
-				$message_info = $message_model->get_one(['dialog_id' => $v['id']], 'add_time desc');
+				$message_info = $message_model->get_one(['dialog_id' => $v['id'], 'type' => 1], 'add_time desc');
 				$dialog_list[$k]['message_info'] = [
 					'content' => $message_info['content'],
 					'add_time' => $message_info['add_time'],
@@ -181,7 +179,7 @@ class MessageController extends BaseController {
 		];
 
 		if(!$dialog_info){
-			$this->result_return(['message_list' => [], 'user_info' => $part_user_info]);
+			$this->result_return(['message_list' => [], 'user_info' => $part_user_info, 'message_type' => []]);
 		}
 
 		$dialog_id = $dialog_info['id'];
@@ -199,13 +197,57 @@ class MessageController extends BaseController {
 		}
 
 		$message_where['dialog_id'] = $dialog_id;
+		$common_message_where = $message_where;
+		$special_message_where = $message_where;
+
+		$common_message_where['type'] = 1;
+		$special_message_where['type'] = ['in', '2,3'];
 
 		$message_model = D('Message');
-		$message_list = $message_model->get_list($message_where, $limit. ',' . $page_size,  'add_time desc');
+		$message_list = $message_model->get_list($common_message_where, $limit. ',' . $page_size,  'add_time desc');
+
+		// 取最近的一条有效的需求/技能
+		$skill_demand = $message_model->get_list($special_message_where);
+		$demand_model = D('UserDemand');
+		$skill_model = D('UserSkill');
+
+		$type_result = [];
+
+		if($skill_demand){
+			foreach($skill_demand as $s_k => $s_v){
+				if($s_v['type'] == 2){
+					// 查看需求是否完成
+					$demand_info = $demand_model->get_one(['id' => $s_v['type_id']]);
+					if($demand_info['status'] == 1){
+						$type_result = [
+							'id' => $demand_info['id'],
+							'title' => $demand_info['title'],
+							'earnest_money' => $demand_info['earnest_money'],
+							'type' => 'demand'
+						];
+						break;
+					}
+				}else{
+					// 技能
+					$skill_info = $skill_model->get_one(['id' => $s_v['type_id']]);
+					if($skill_info['status'] == 1){
+						$type_result = [
+							'id' => $skill_info['id'],
+							'title' => $demand_info['skill_name'],
+							'earnest_money' => $demand_info['price'],
+							'type' => 'skill',
+							'desc' => $demand_info['desc'],
+						];
+						break;
+					}
+				}
+			}
+		}
 
 		$data = [
 			'message_list' => $message_list ? array_reverse($message_list) : [],
 			'user_info' => $part_user_info,
+			'message_type' => $type_result ? $type_result : [],
 		];
 
 		$this->result_return($data);
