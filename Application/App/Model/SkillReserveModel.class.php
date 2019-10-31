@@ -39,4 +39,17 @@ class SkillReserveModel extends CommonModel{
 			->where(['r.id' => $reserve_id])
 			->find();
 	}
+
+	/*
+	 * 获取预约详情
+	 */
+	public function get_reserve_info_by_id($reserve_id){
+		return $this->field('r.*,k.user_id as publish_user_id,k.status as pulish_status,u.user_name,u.head_img,u.is_vefify,u.birthday,s.province,s.city,s.address,s.area,u.weixin_account,u.mobile_number')
+			->alias('r')
+			->join('user_skill k on r.skill_id = k.id', 'left')
+			->join('users u on r.user_id = u.id', 'left')
+			->join('user_address as s on r.user_id=s.user_id', 'left')
+			->where(['r.id' => $reserve_id])
+			->find();
+	}
 }

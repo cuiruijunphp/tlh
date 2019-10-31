@@ -108,10 +108,12 @@ class DemandController extends BaseController
 
 		$demand_id = $params['demand_id'];
 		$user_id = I('get.user_id');
-//
-//		if($user_id && $user_id != $this->user_id){
-//			$is_other = 1;
-//		}
+
+		if($user_id && $user_id != $this->user_id){
+			$is_other = 1;
+		}else{
+			$user_id = $this->user_id;
+		}
 
 		$user_demand_model = D('UserDemand');
 		$user_demand_result = $user_demand_model->get_one(['id' => $demand_id]);

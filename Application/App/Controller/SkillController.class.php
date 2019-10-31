@@ -203,6 +203,26 @@ class SkillController extends BaseController {
 	}
 
 	/**
+	 * 获取预约详情
+	 * @date   2019/10/31 下午5:31
+	 * @url    app/skill/get_skill_reserve
+	 * @method get
+	 *
+	 * @param  int param
+	 * @return  array
+	 */
+	public function get_skill_reserve(){
+
+		$reserve_id = I('get.reserve_id');
+
+		$skill_reserve_model = D('SkillReserve');
+		$skill_info = $skill_reserve_model->get_reserve_info_by_id($reserve_id);
+
+		$skill_info['head_img'] = UPLOAD_URL . $skill_info['head_img'];
+
+		$this->result_return($skill_info);
+	}
+	/**
 	 * 预约
 	 * @author cuirj
 	 * @date   2019/10/31 下午2:23
