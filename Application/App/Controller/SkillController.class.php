@@ -219,6 +219,7 @@ class SkillController extends BaseController {
 		$skill_info = $skill_reserve_model->get_reserve_info_by_id($reserve_id);
 
 		$skill_info['head_img'] = UPLOAD_URL . $skill_info['head_img'];
+		$skill_info['earnest_money'] = 50;
 
 		$this->result_return($skill_info);
 	}
