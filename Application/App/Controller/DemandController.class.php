@@ -94,7 +94,7 @@ class DemandController extends BaseController
 	 * 获取需求详情
 	 * @author cuirj
 	 * @date   2019/9/27 下午6:27
-	 * @url    app/demand/get_my_demand_info/
+	 * @url    app/demand/get_demand_info/
 	 * @method get
 	 *
 	 * @param  int page
@@ -102,12 +102,16 @@ class DemandController extends BaseController
 	 *
 	 * @return  array
 	 */
-	public function get_my_demand_info()
+	public function get_demand_info()
 	{
 		$params = I('get.');
 
 		$demand_id = $params['demand_id'];
-		$user_id = $this->user_id;
+		$user_id = I('get.user_id');
+//
+//		if($user_id && $user_id != $this->user_id){
+//			$is_other = 1;
+//		}
 
 		$user_demand_model = D('UserDemand');
 		$user_demand_result = $user_demand_model->get_one(['id' => $demand_id]);
