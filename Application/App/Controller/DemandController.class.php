@@ -285,7 +285,7 @@ class DemandController extends BaseController
 		$params = json_decode($get_param, true);
 
 		$user_id = $this->user_id;
-		$demand_id = $params['demamd_id'];
+		$demand_id = $params['demand_id'];
 
 		//查看当前的需求是否存在
 		// 先查看是否存在
