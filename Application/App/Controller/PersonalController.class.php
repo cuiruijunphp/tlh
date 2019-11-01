@@ -264,6 +264,22 @@ class PersonalController extends BaseController {
 			$data['address'] = $address_info['address'];
 		}
 
+		// 显示动态
+		$user_trends_model = D('UserTrends');
+
+		$user_trends_one = $user_trends_model->get_one(['user_id' => $user_id], 'add_time desc');
+
+		if($user_trends_one){
+			//如果有动态,则显示第一条动态的前三章图片
+			$img_list = array_map(function($v){
+				return UPLOAD_URL . $v;
+			}, explode(',', $user_trends_one['img_list']));
+
+			$data['trends_img_list'] = array_slice($img_list, 0, 3);
+		}else{
+			$data['trends_img_list'] = [];
+		}
+
 		$this->result_return($data);
 	}
 

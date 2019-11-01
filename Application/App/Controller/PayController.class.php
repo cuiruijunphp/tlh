@@ -1,11 +1,12 @@
 <?php
 namespace App\Controller;
 use Think\Controller;
-use Lib\Wxpay;
+use Lib\Wx;
 class PayController extends BaseController {
 
 	public function pay(){
-		$wx_pay = new \Lib\Wxpay\Wxpay();
+		$wx_pay = new \Lib\Wx\Wxpay();
+		$ali_pay = new \Lib\Ali\Alipay();
 //		$wx_pay = new \Lib\Person;
 //		import("Lib.Person");
 //		$p = new \Person();
@@ -14,8 +15,10 @@ class PayController extends BaseController {
 //		$p->Say();
 
 		$order_sn = session_create_random_id(32);
-		$result = $wx_pay->wx_pay('测试', $order_sn, 0.1);
-		var_dump($result);
+//		$result = $wx_pay->wx_pay('测试', $order_sn, 0.1);
+		$ali_result = $ali_pay->ali_pay('测试', $order_sn, 0.1);
+
+		var_dump($ali_result);
 	}
 
 	// APP支付成功后,会调用你填写的回调地址 .
@@ -62,6 +65,63 @@ class PayController extends BaseController {
 //			$file = fopen('./wx_log.txt', 'a+');
 //			fwrite($file,"错误信息：签名验证失败".date("Y-m-d H:i:s"),time()."\r\n");
 //		}
+	}
+
+	public function ali_notify(){
+		//导入支付宝类
+		Vendor('Alipay.aop.AopClient');
+		$aop = new \AopClient;
+		$aop->alipayrsaPublicKey = C('ALI_CONFIG')['alipayrsaPublicKey'];
+		$flag = $aop->rsaCheckV1($_POST, NULL, "RSA2");
+		if($flag){
+			//商户订单号
+			$out_trade_no = $_POST['out_trade_no'];
+			//支付宝交易号
+			$trade_no = $_POST['trade_no'];
+			//交易状态
+			$trade_status = $_POST['trade_status'];
+			//订单的实际金额
+			$total_amount = $_POST['total_amount'];
+			//appid
+			$appid = $_POST['app_id'];
+			$seller_id = $_POST['seller_id'];
+			//验证app_id是否为商户本身
+			if($appid != C('ALI_CONFIG')['appId']){
+				exit('fail');
+			}
+			//判断交易通知状态是否为TRADE_SUCCESS或TRADE_FINISH
+			if($trade_status!='TRADE_FINISH' && $trade_status !='TRADE_SUCCESS'){
+				exit('fail');
+			}
+			//验证订单的准确性
+			if(!empty($out_trade_no)){
+				//在这里可以通过返回的商家订单号查询出该订单的信息
+				$res = xxx;
+				if(!$res){
+					exit('fail');
+				}
+
+				//判断total_amount是否确实为该订单的实际金额
+				if($total_amount != $res){
+					exit('fail');
+				}
+				//判断seller_id是否与商户的id相同
+				if($seller_id != C('ALI_CONFIG')['seller_id']){
+					exit('fail');
+				}
+			}
+			//全部验证成功后修改订单状态
+			//doAliPay方法用于进行修改订单状态的逻辑，可以放手发挥了
+            $data = $this->doAliPay($out_trade_no,$trade_no);
+            if($data){
+				//处理业务逻辑
+				echo 'success';
+			} else {
+				echo 'fail';
+			}
+        } else {
+			echo 'fail';
+		}
 	}
 
 }
