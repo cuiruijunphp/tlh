@@ -114,6 +114,8 @@ class SkillController extends BaseController {
 	 */
 	public function get_skill_list(){
 		$user_id = I('get.user_id');
+		$page = I('get.page');
+		$page_size = I('get.page_size');
 
 		if(!$user_id){
 			// 如果是在自己的列表里,则需要给个标识
@@ -133,7 +135,7 @@ class SkillController extends BaseController {
 
 		$skill_mode = D('UserSkill');
 		$skill_reserve_mode = D('SkillReserve');
-		$skill_list = $skill_mode->get_list($where);
+		$skill_list = $skill_mode->get_skill_list($where, $page, $page_size);
 
 		if($skill_list){
 			foreach($skill_list  as $k => $v){

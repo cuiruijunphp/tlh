@@ -89,4 +89,17 @@ class UserSkillModel extends CommonModel{
 
 		return $this->query($sql);
 	}
+
+	/*
+	 * 获取列表
+	 */
+	public function get_skill_list($where, $page = 1, $page_size = 3){
+
+		return $this->field('s.*, t.type_name')
+			->alias('s')
+			->join('skill_type as t on s.type_id = t.id', 'left')
+			->where($where)
+			->page($page, $page_size)
+			->select();
+	}
 }
