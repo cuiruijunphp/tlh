@@ -265,6 +265,31 @@ class SkillController extends BaseController {
 		//预约成功以后增加预约人数
 		$skill_model->update_data(['id' => $skill_id], ['reservation_count' => $skill_info['reservation_count'] + 1]);
 
+		// 预约完成以后要写到对话框里
+		$dialog_model = D('Dialog');
+		$message_model = D('Message');
+
+		$dialog_result = $dialog_model->get_dialog_by_uids($this->user_id, $skill_info['user_id']);
+
+		if($dialog_result){
+			//更新对话框为启用状态
+			$dialog_model->update_dialog_active($dialog_result['id'], $skill_info['user_id']);
+			$dialog_id = $dialog_result['id'];
+		}else{
+			// 创建对话框
+			$dialog_id = $dialog_model->create_dialog($skill_info['user_id'], $this->user_id);
+		}
+
+		//插入一条数据
+		$insert_message = [
+			'type' => 2,
+			'dialog_id' => $dialog_id,
+			'type_id' => $skill_id,
+			'uid' => $skill_info['user_id'],
+			'content' => '技能类型',
+		];
+		$message_model->insert_one($insert_message);
+
 		$this->result_return(['result' => 1]);
 	}
 
