@@ -256,7 +256,7 @@ class PersonalController extends BaseController {
 		//地址信息
 		$user_address_model = D('UserAddress');
 
-		$address_info = $user_address_model->get_one(['user_id' => $this->user_id]);
+		$address_info = $user_address_model->get_one(['user_id' => $user_id]);
 		if($address_info){
 			$data['province'] = $address_info['province'];
 			$data['city'] = $address_info['city'];
