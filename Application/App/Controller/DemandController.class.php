@@ -255,7 +255,7 @@ class DemandController extends BaseController
 			'title' => $title,
 			'type_id' => $type_id,
 			'start_time' => strtotime($start_time),
-			'end_time' => strtotime($end_time),
+			'end_time' => $end_time,
 			'earnest_money' => $earnest_money,
 			'longitude' => $longitude,
 			'latitude' => $latitude,
