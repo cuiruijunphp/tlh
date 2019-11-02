@@ -48,7 +48,7 @@ class PersonalController extends BaseController {
 		$params = json_decode($get_param, true);
 
 		$sex = $params['sex'] ? $params['sex'] : 1;
-		$birthday = $params['birthday'] ? strtotime($params['birthday']) : 0;
+		$birthday = $params['birthday'];
 		$company = $params['company'];
 		$desc = $params['desc'];
 		$address = $params['address'];
