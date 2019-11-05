@@ -253,6 +253,12 @@ class PersonalController extends BaseController {
 			'view' => $user_info['view'],
 		];
 
+		// 如果是主态,则返回多余信息
+		if($is_self){
+			// 返回账户余额
+			$data['account_balance'] = $user_info['account_balance'];
+		}
+
 		//地址信息
 		$user_address_model = D('UserAddress');
 
