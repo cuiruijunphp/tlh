@@ -194,7 +194,7 @@ class PersonalController extends BaseController {
 
 		$user_model = D('Users');
 
-		$update_result = $user_model->update_data(['id' => $this->user_id], ['weixin_account' => $weixin_account, 'weibo_account' => $weibo_account, 'alipay_account' => $alipay_account]);
+		$update_result = $user_model->update_data(['id' => $this->user_id], ['weixin_account' => $weixin_account, 'weibo_account' => $weibo_account, 'alipay_account' => $alipay_account, 'is_vefify' => 1]);
 
 		if($update_result === false){
 			$this->result_return(null, 500, '绑定账号失败');
