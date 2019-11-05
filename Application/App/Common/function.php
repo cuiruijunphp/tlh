@@ -307,3 +307,23 @@ function out_json($code = 0, $msg = '', $data = [])
 		"data" => $data
 	];
 }
+
+
+/**
+ * 写入日志,日志目录格式为 定义的目录/年-月-日.log,日志格式为 2018-06-05 14:22:53 url 访问ip 写入日志内容
+ * @author cuirj
+ * @param  string path 写入日志文件夹
+ * @param  string content 写入日志内容
+ * return  array
+ */
+function write_log($path, $content)
+{
+	if (!file_exists($path))
+	{
+		mkdir($path, 0777, true);
+	}
+
+	$content_default = date('Y-m-d H:i:s', time()) . ' ' . ROUTES_URI_CONTROLLER . '/' . ROUTES_URI_ACT . '/	' . get_client_ip_new(). ' ';
+
+	file_put_contents(ROOT_PATH . $path . date('Y-m-d', time()) . '.log', $content_default . $content . PHP_EOL, FILE_APPEND);
+}
