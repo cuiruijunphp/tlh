@@ -138,73 +138,31 @@ class PayController extends BaseController {
 	/**
 	 * 成功了以后的回调
 	 * @date   2019/11/4 下午5:53
-	 * @url    app/pay/success/
+	 * @url    app/pay/res_callback/
 	 * @method get
 	 *
 	 * @param  int param
 	 * @return  array
 	 */
-	public function success(){
+	public function res_callback(){
 		$get_param = file_get_contents('php://input');
 		$params = json_decode($get_param, true);
 
 		$order_id = $params['order_id'];
+		$result = $params['result'];
 		$user_id = $this->user_id;
 
 		$order_model = D('Order');
-		$order_info = $order_model->get_one(['order_id' => $order_id]);
+		$res = $order_model->update_result($order_id, $user_id, $result);
 
-		// 查看是否存在
-//		if(!$order_info['payment_id']){
-//			$this->result_return(null, 500, '未找到该付款信息');
-//		}
-
-		if($order_info['user_id'] != $user_id){
-			$this->result_return(null, 500, '非法操作');
+		if(is_string($res)){
+			$this->result_return(null, 500, $res);
 		}
 
-		// 改变订单状态
-		$update_data = [
-			'payment_time' => time(),
-			'status' => 1
-		];
-
-		$update_res = $order_model->update_data(['id' => $order_info['id']], $update_data);
-
-		if($update_res !== false){
-			//增加业务逻辑
-			if($order_info['source_type'] == 1){
-				// 将会员时间延长
-				$user_model = D('Users');
-
-				$vip_aging_type = json_decode($order_info['extra_info'], true);
-				$vip_aging_time = $this->source_type_arr[$vip_aging_type['vip_aging_type']]['time'] * 24 * 3600;
-
-				if($this->user_info['vip_expire_time'] < time()){
-					//会员已经过期
-					$vip_expire_time = time() + $vip_aging_time;
-				}else{
-					// 未过期的会员,在此基础上增加时效
-					$vip_expire_time = $this->user_info['vip_expire_time'] + $vip_aging_time;
-				}
-
-				$user_update_data = [
-					'is_vip' => 1,
-					'vip_expire_time' => $vip_expire_time,
-				];
-				$update_res = $user_model->update_data(['id' => $user_id], $user_update_data);
-			}elseif($order_info['source_type'] == 2){
-				// 需求发布成功
-				$demand_model = D('UserDemand');
-				$update_res = $demand_model->update(['id' => $order_info['source_id']], ['status' => 1]);
-			}elseif($order_info['source_type'] == 3){
-				//技能预约成功
-				$skill_reserve_model = D('SkillReserve');
-
-				$update_res = $skill_reserve_model->update_data(['id' => $order_info['source_id']], ['status' => 2]);
-			}
+		if($res !==false){
+			$this->result_return(['result' => 1]);
+		}else{
+			$this->result_return(null, 500, '更新状态失败');
 		}
-
-		$this->result_return(['result' => 1]);
 	}
 }

@@ -295,8 +295,8 @@ class DemandController extends BaseController
 			$this->result_return(null, 500, '该条需求不存在');
 		}
 
-		if($user_demand_result['status'] == 0){
-			$this->result_return(null, 500, '该条需求待审核');
+		if($user_demand_result['status'] != 1){
+			$this->result_return(null, 500, '该条需求不在应征状态');
 		}
 
 		if($user_demand_result['status'] == 3 && $user_demand_result['selected_uid']){

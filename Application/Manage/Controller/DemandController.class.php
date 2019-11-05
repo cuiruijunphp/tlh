@@ -10,6 +10,8 @@ class DemandController extends BaseController {
 			1 => '应征中',
 			2 => '审核不通过',
 			3 => '已完成',
+			4 => '待付款',
+			5 => '付款失败',
 		];
 
 		$data['demand_status_arr'] = $skill_status_arr;
