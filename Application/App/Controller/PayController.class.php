@@ -4,17 +4,6 @@ use Think\Controller;
 use Lib\Wx;
 class PayController extends BaseController {
 
-	protected $source_type_arr = [
-		1 => [
-			'price' => 10,
-			'time' => 30,
-		],
-		2 => [
-			'price' => 100,
-			'time' => 365,
-		]
-	];
-
 	public function pay(){
 		$wx_pay = new \Lib\Wx\Wxpay();
 		$ali_pay = new \Lib\Ali\Alipay();

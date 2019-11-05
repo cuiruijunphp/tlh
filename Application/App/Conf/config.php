@@ -7,5 +7,13 @@ return array(
 	//'配置项'=>'配置值'
 	'AUTOLOAD_NAMESPACE' => array(
 		'Lib' => APP_PATH.'App/Lib',
-	)
+	),
+
+	//会员套餐列表
+	'source_type_arr' => [
+		1 => [
+			'price' => 100,
+			'time' => 365,
+		]
+	],
 );

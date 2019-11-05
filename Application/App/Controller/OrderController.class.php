@@ -27,16 +27,7 @@ class OrderController extends BaseController {
 
 		// 如果是vip时效
 		if($source_type == 1){
-			$source_type_arr = [
-				1 => [
-					'price' => 10,
-					'time' => 30,
-				],
-				2 => [
-					'price' => 100,
-					'time' => 365,
-				],
-			];
+			$source_type_arr = C('source_type_arr');
 
 			if($source_type_arr[$vip_aging_type]['price'] != $price){
 				$this->result_return(null, 500, '创建订单失败,金额非法');
