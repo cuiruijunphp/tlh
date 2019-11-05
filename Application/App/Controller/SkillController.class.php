@@ -86,7 +86,6 @@ class SkillController extends BaseController {
 			'superiority' => $superiority,
 			'mode' => $mode,
 			'good_at' => $good_at,
-			'add_time' => time(),
 			'img' => $file_path,
 			'user_id' => $this->user_id,
 			'longitude' => $longitude,
@@ -256,9 +255,17 @@ class SkillController extends BaseController {
 			$this->result_return(null, 500, '该技能不存在或者未通过审核');
 		}
 
-		$insert_result = $skill_reserve_model->insert_one($insert_data);
+		$skill_type_model = D('SkillType');
+		$skill_type_info = $skill_type_model->get_one(['id' => $skill_info['type_id']]);
 
-		if($insert_result === false){
+		if($skill_type_info['free_type'] == 2){
+			//如果是农林类型的,则直接将状态置为待发布者审核状态
+			$insert_data['status'] = 2;
+		}
+
+		$reserve_id = $skill_reserve_model->insert_one($insert_data);
+
+		if($reserve_id === false){
 			$this->result_return(null, 500, '预约失败');
 		}
 
@@ -326,6 +333,8 @@ class SkillController extends BaseController {
 		}
 
 		$update_result = $skill_reserve_model->update_data(['id' => $reserve_id], ['status' => $status]);
+
+		//更新order表中的状态
 
 		if($update_result === false){
 			$this->result_return(null, 500, '审核失败');
