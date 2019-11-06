@@ -33,9 +33,10 @@ class SkillReserveModel extends CommonModel{
 	 */
 	public function get_skill_info_by_reserve_id($reserve_id){
 
-		return $this->field('r.*,s.user_id as publish_user_id,s.status as pulish_status')
+		return $this->field('r.*,s.user_id as publish_user_id,s.status as pulish_status,t.free_type')
 			->alias('r')
 			->join('user_skill s on r.skill_id = s.id', 'left')
+			->join('skill_type t on s.type_id = t.id', 'left')
 			->where(['r.id' => $reserve_id])
 			->find();
 	}
