@@ -514,8 +514,8 @@ class PersonalController extends BaseController {
 		if($demand_count < 5){
 			$is_demand_pulish = 1;
 
-			//如果是会员,则每天能免费发3条需求
-			if($demand_count < 3 && $is_vip){
+			//如果是会员,则每天能免费发1条需求
+			if($demand_count < 1 && $is_vip){
 				$is_vip_demand_pulish_free = 1;
 			}
 		}
