@@ -53,4 +53,11 @@ class SkillReserveModel extends CommonModel{
 			->where(['r.id' => $reserve_id])
 			->find();
 	}
+
+	/*
+	 * 获取今天/查询条件下预约的条数
+	 */
+	public function get_reserve_count($where){
+		return $this->where($where)->count();
+	}
 }

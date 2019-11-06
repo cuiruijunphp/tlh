@@ -467,4 +467,82 @@ class PersonalController extends BaseController {
 
 		$this->result_return(array_values($vip_package_info));
 	}
+
+	/**
+	 * 获取今天发布的需求和预约的技能总数
+	 * @date   2019/11/6 下午9:20
+	 * @url    app/personal/get_today_demand_skill_count/
+	 * @method get
+	 *
+	 * @param  int param
+	 * @return  array
+	 */
+	public function get_today_demand_skill_count(){
+		$user_id = $this->user_id;
+		$vip_expire_time = $this->user_info['vip_expire_time'];
+
+		if($vip_expire_time < time()){
+			$is_vip = 0;
+		}else{
+			$is_vip = 1;
+		}
+
+		$start_time = strtotime(date('Y-m-d', time()));
+		$end_time = $start_time + 24 * 3600;
+		//查看今天发布了多少条需求/技能
+		$skill_model = D('UserSkill');
+		$demand_model = D('UserDemand');
+
+		$skill_where = [
+			'add_time' => [['gt', $start_time], ['lt', $end_time]],
+			'user_id' => $user_id,
+		];
+
+		$demand_where = [
+			'status' => ['not in', '4,5'],
+			'add_time' => [['gt', $start_time], ['lt', $end_time]],
+			'user_id' => $user_id,
+		];
+		$skill_count = $skill_model->get_pulish_count($skill_where);
+		$demand_count = $demand_model->get_pulish_count($demand_where);
+
+		// 发布需求或者技能 1天限制5次
+		if($skill_count < 5){
+			$is_skill_pulish = 1;
+		}
+
+		if($demand_count < 5){
+			$is_demand_pulish = 1;
+
+			//如果是会员,则每天能免费发3条需求
+			if($demand_count < 3 && $is_vip){
+				$is_vip_demand_pulish_free = 1;
+			}
+		}
+
+		// 如果是会员,则每天只能免费预约3条
+		if($is_vip){
+			$reserve_model = D('SkillReserve');
+			$reserve_where = [
+				'status' => ['NEQ', '1'],
+				'add_time' => [['gt', $start_time], ['lt', $end_time]],
+				'user_id' => $user_id,
+			];
+
+			$reserve_count = $reserve_model->get_reserve_count($reserve_where);
+
+			if($reserve_count < 3 && $is_vip){
+				$is_vip_reserve_free = 1;
+			}
+		}
+
+		$data = [
+			'is_skill_pulish' => intval($is_skill_pulish),
+			'is_vip_demand_pulish_free' => intval($is_vip_demand_pulish_free),
+			'is_vip_reserve_free' => intval($is_vip_reserve_free),
+			'is_demand_pulish' => intval($is_demand_pulish),
+		];
+
+		$this->result_return($data);
+	}
 }
