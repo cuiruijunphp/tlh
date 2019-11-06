@@ -2,59 +2,7 @@
 namespace App\Controller;
 use Think\Controller;
 use Lib\Wx;
-class PayController extends BaseController {
-
-	/**
-	 * 支付
-	 * @date   2019/11/6 下午5:05
-	 * @url    app/pay/submit_pay/
-	 * @method get
-	 *
-	 * @param  string order_id
-	 * @param  string pay_type wx_app/alipay_app
-	 * @return  array
-	 */
-	public function submit_pay(){
-
-		$get_param = file_get_contents('php://input');
-		$params = json_decode($get_param, true);
-
-		$order_id = $params['order_id'];
-		$pay_type = $params['pay_type'];
-
-		if(!in_array($pay_type, ['wx_app', 'alipay_app'])){
-			$this->result_return(null, 500, '请选择正确的支付方式');
-		}
-
-		$user_id = $this->user_id;
-
-		$order_model = D('Order');
-		$order_info = $order_model->get_one(['order_id' => $order_id]);
-
-		if(!$order_info){
-			$this->result_return(null, 500, '未查询到订单信息');
-		}
-
-		if($order_info['user_id'] != $user_id){
-			$this->result_return(null, 500, '不能给别人付款哦~');
-		}
-
-		//更新付款方式
-		$order_model->update_data(['id' => $order_info['id']],['pay_type' => $pay_type]);
-
-		$source_type_title = [
-			1 => '会员充值',
-			2 => '需求发布诚意金',
-			3 => '技能预约',
-		];
-
-		if($order_info['pay_type'] == 'alipay_app'){
-			$ali_pay = new \Lib\Ali\Alipay();
-			$alipay_app_result = $ali_pay->alipay_app_pay($source_type_title[$order_info['source_type']], $order_id, $order_info['price']);
-		}
-
-		$this->result_return(['order_string' => $alipay_app_result]);
-	}
+class PaymentController extends CommonController {
 
 	// APP支付成功后,会调用你填写的回调地址 .
 	// 返回参数详见微信文档:https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_7&index=3
@@ -105,7 +53,7 @@ class PayController extends BaseController {
 	/**
 	 * 阿里支付异步通知接口
 	 * @date   2019/11/6 下午5:30
-	 * @url    app/pay/alipay_notify/
+	 * @url    app/payment/alipay_notify/
 	 * @method get
 	 *
 	 * @param  int param
