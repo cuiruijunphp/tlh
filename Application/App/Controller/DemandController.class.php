@@ -274,7 +274,7 @@ class DemandController extends BaseController
 			$this->result_return(null, 500, '发布需求失败');
 		}
 
-		$this->result_return(['result' => 1]);
+		$this->result_return(['demand_id' => $insert_result]);
 	}
 
 	/**

@@ -297,7 +297,7 @@ class SkillController extends BaseController {
 		];
 		$message_model->insert_one($insert_message);
 
-		$this->result_return(['result' => 1]);
+		$this->result_return(['reserve_id' => $reserve_id]);
 	}
 
 	/**
