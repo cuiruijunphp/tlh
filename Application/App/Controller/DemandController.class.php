@@ -366,4 +366,24 @@ class DemandController extends BaseController
 
 		$this->result_return(['result' => 1]);
 	}
+
+	/**
+	 * 诚意金列表
+	 * @date   2019/11/6 下午8:39
+	 * @url    app/demand/get_earnest_money_list/
+	 * @method get
+	 *
+	 * @param  int param
+	 * @return  array
+	 */
+	public function get_earnest_money_list(){
+		$earnest_money_arr = [
+			'0.01',
+			'0.02',
+			'0.03',
+			'0.04'
+		];
+
+		$this->result_return(['earnest_money_list' => $earnest_money_arr]);
+	}
 }
