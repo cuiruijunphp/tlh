@@ -41,7 +41,7 @@ class Alipay
 		$order_amount = number_format($total_amount, 2);
 		$request = new \AlipayTradeAppPayRequest();
 		$bizcontent = json_encode([
-//			'body' => $body,
+			'body' => $body,
 			'subject' => $subject,
 			'out_trade_no' => $order_sn,//此订单号为商户唯一订单号
 			'total_amount' => $order_amount,//保留两位小数
