@@ -211,7 +211,7 @@ class DemandController extends BaseController
 
 		if ($update_result === false)
 		{
-			$this->result_return(null, 500, '绑定账号失败');
+			$this->result_return(null, 500, '确认应征者失败');
 		}
 
 		$this->result_return(['result' => 1]);
@@ -262,9 +262,36 @@ class DemandController extends BaseController
 			'status' => 4,//待付款状态
 		];
 
+
+		$today_start_time = strtotime(date('Y-m-d', time()));
+		$today_end_time = $start_time + 24 * 3600;
+		$demand_where = [
+			'status' => ['not in', '4,5'],
+			'add_time' => [['gt', $today_start_time], ['lt', $today_end_time]],
+			'user_id' => $user_id,
+		];
+
+		$demand_count = $user_demand_model->get_pulish_count($demand_where);
+		if($demand_count > 4){
+			$this->result_return(null, 500, '你今天已经发布了5条,请明天再来吧');
+		}
+
 		// 如果是免费类型的需求,则不需要付款,直接将状态更改
 		if($skill_type_info['free_type'] == 2){
 			//待审核状态(付款完成)
+			$insert_data['status'] = 0;
+		}
+
+		// 如果是会员,则可以免费发布一条
+		$vip_expire_time = $this->user_info['vip_expire_time'];
+
+		if($vip_expire_time < time()){
+			$is_vip = 0;
+		}else{
+			$is_vip = 1;
+		}
+
+		if($demand_count < 1 && $is_vip){
 			$insert_data['status'] = 0;
 		}
 

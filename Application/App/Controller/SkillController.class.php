@@ -92,6 +92,21 @@ class SkillController extends BaseController {
 			'latitude' => $latitude,
 		];
 
+		//判断今天发了几次
+		$start_time = strtotime(date('Y-m-d', time()));
+		$end_time = $start_time + 24 * 3600;
+		//查看今天发布了多少条需求/技能
+		$skill_where = [
+			'add_time' => [['gt', $start_time], ['lt', $end_time]],
+			'user_id' => $this->user_id,
+		];
+
+		$skill_count = $skill_mode->get_pulish_count($skill_where);
+
+		if($skill_count > 4){
+			$this->result_return(null, 500, '你今天已经发布了5条,请明天再来吧');
+		}
+
 		$insert_result = $skill_mode->insert_one($skill_insert_data);
 
 		if($insert_result === false){
@@ -263,6 +278,30 @@ class SkillController extends BaseController {
 			$insert_data['status'] = 2;
 		}
 
+		// 会员可以每天免费预约3条
+		$start_time = strtotime(date('Y-m-d', time()));
+		$end_time = $start_time + 24 * 3600;
+
+		$vip_expire_time = $this->user_info['vip_expire_time'];
+
+		if($vip_expire_time < time()){
+			$is_vip = 0;
+		}else{
+			$is_vip = 1;
+		}
+
+		$reserve_where = [
+			'status' => ['NEQ', '1'],
+			'add_time' => [['gt', $start_time], ['lt', $end_time]],
+			'user_id' => $this->user_id,
+		];
+
+		$reserve_count = $skill_reserve_model->get_reserve_count($reserve_where);
+
+		if($reserve_count < 3 && $is_vip){
+			$insert_data['status'] = 2;
+		}
+
 		$reserve_id = $skill_reserve_model->insert_one($insert_data);
 
 		if($reserve_id === false){
@@ -338,42 +377,51 @@ class SkillController extends BaseController {
 		//如果拒绝了预约,则需要将钱退给预约者
 		if($status == 4){
 			// 收费模式下,更新order表中的状态,更新账户流水,更新账户余额
-			if($skill_reserve_info['free_type'] == 1){
-				$order_model = D('Order');
-				$users_model = D('Users');
-				$balance_log_model = D('AccountBalanceLog');
 
-				//开启事务
-				$order_model->startTrans();
+			// 如果有订单信息,说明是付过款的
+			$order_model = D('Order');
+			$order_info = $order_model->get_one(['source_type' => 3, 'source_id' => $reserve_id, 'user_id' => $skill_reserve_info['user_id'], 'status' => 1], 'add_time desc');
 
-				// 更新订单
-				$order_info = $order_model->get_one(['source_type' => 3, 'source_id' => $reserve_id, 'user_id' => $skill_reserve_info['user_id']]);
-
-				$order_res = $order_model->update_data(['source_type' => 3, 'source_id' => $reserve_id, 'user_id' => $skill_reserve_info['user_id']], ['status' => 3, 'refund_time' => time()]);
-
-				// 更新账户余额
-				$user_info = $users_model->get_one(['id' => $skill_reserve_info['user_id']]);
-
-				$user_res = $users_model->update_data(['id' => $skill_reserve_info['user_id']], ['account_balance' => $user_info['account_balance'] - $order_info['price']]);
-
-				//更新流水
-				$insert_balance_log_data = [
-					'user_id' => $skill_reserve_info['user_id'],
-					'action' => 'SKILL_REJECT_REFUND',
-					'note' => '技能预约被拒绝退款',
-					'balance' => $order_info['price'],
-					'item_id' => $reserve_id,
-				];
-
-				$balace_res = $balance_log_model->insert_one($insert_balance_log_data);
-
-				if(!empty($order_res) && !empty($user_res) && !empty($balace_res) ){
-					$order_model->commit();
-				}else{
-					$order_model->rollback();
-					//加入日志
-				}
+			if($order_info){
+				$skill_reserve_model->update_refund_info(3, $reserve_id, $skill_reserve_info['user_id']);
 			}
+
+//			if($skill_reserve_info['free_type'] == 1){
+//				$order_model = D('Order');
+//				$users_model = D('Users');
+//				$balance_log_model = D('AccountBalanceLog');
+//
+//				//开启事务
+//				$order_model->startTrans();
+//
+//				// 更新订单
+//				$order_info = $order_model->get_one(['source_type' => 3, 'source_id' => $reserve_id, 'user_id' => $skill_reserve_info['user_id']]);
+//
+//				$order_res = $order_model->update_data(['source_type' => 3, 'source_id' => $reserve_id, 'user_id' => $skill_reserve_info['user_id']], ['status' => 3, 'refund_time' => time()]);
+//
+//				// 更新账户余额
+//				$user_info = $users_model->get_one(['id' => $skill_reserve_info['user_id']]);
+//
+//				$user_res = $users_model->update_data(['id' => $skill_reserve_info['user_id']], ['account_balance' => $user_info['account_balance'] - $order_info['price']]);
+//
+//				//更新流水
+//				$insert_balance_log_data = [
+//					'user_id' => $skill_reserve_info['user_id'],
+//					'action' => 'SKILL_REJECT_REFUND',
+//					'note' => '技能预约被拒绝退款',
+//					'balance' => $order_info['price'],
+//					'item_id' => $reserve_id,
+//				];
+//
+//				$balace_res = $balance_log_model->insert_one($insert_balance_log_data);
+//
+//				if(!empty($order_res) && !empty($user_res) && !empty($balace_res) ){
+//					$order_model->commit();
+//				}else{
+//					$order_model->rollback();
+//					//加入日志
+//				}
+//			}
 		}
 
 		if($update_result === false){

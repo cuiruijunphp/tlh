@@ -131,7 +131,7 @@
               <div class="form-group">
                 <label for="status" class="control-label col-md-3 col-sm-3 col-xs-12">状态</label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                  <select id="status" class="form-control" name="status">
+                  <select id="status" class="form-control" name="status" readonly="readonly">
                     <option value="0" <if condition="0 eq $list['status']">selected</if>>待审核</option>
                     <option value="1" <if condition="1 eq $list['status']">selected</if>>审核通过</option>
                     <option value="2" <if condition="2 eq $list['status']">selected</if>>审核不通过</option>

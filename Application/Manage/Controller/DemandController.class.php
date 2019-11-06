@@ -92,10 +92,11 @@ class DemandController extends BaseController {
 				//查看是否有相应订单,如果有相应订单才会有退钱一系列操作
 				$order_model = D('Order');
 				$demand_info = $demand_model->get_one(['id' => I('post.id')]);
-				$order_info = $order_model->get_one(['source_type' => 2, 'source_id' => I('post.id'), 'user_id' => $demand_info['user_id'], 'status' => 0]);
+				$order_info = $order_model->get_one(['source_type' => 2, 'source_id' => I('post.id'), 'user_id' => $demand_info['user_id'], 'status' => 1], 'add_time desc');
 
 				if($order_info){
 					//如果有订单信息,说明有付款信息,则进行退款操作
+					$order_model->update_refund_info(2, I('post.id'), $demand_info['user_id']);
 				}
 			}
 
