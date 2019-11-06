@@ -65,6 +65,6 @@ class OrderController extends BaseController {
 			$this->result_return(null, 500, '创建订单失败');
 		}
 
-		$this->result_return(['order_id' => $insert_result]);
+		$this->result_return(['order_id' => $order_id]);
 	}
 }
