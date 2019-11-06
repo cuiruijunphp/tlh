@@ -20,16 +20,16 @@ class Alipay
 		$aop->rsaPrivateKey = $aliConfig['rsaPrivateKey'];
 		//支付宝公钥
 		$aop->alipayrsaPublicKey = $aliConfig['alipayrsaPublicKey'];
-//		$aop->apiVersion = '1.0';
-//		//固定参数
-//		$aop->postCharset = 'utf-8';//固定参数
-//		$aop->format = 'json';//固定参数
-//		$aop->signType = 'RSA2';//固定参数
-
 		$aop->apiVersion = '1.0';
-		$aop->signType = 'RSA2';
-		$aop->postCharset='GBK';
-		$aop->format='json';
+		//固定参数
+		$aop->postCharset = 'utf-8';//固定参数
+		$aop->format = 'json';//固定参数
+		$aop->signType = 'RSA2';//固定参数
+
+//		$aop->apiVersion = '1.0';
+//		$aop->signType = 'RSA2';
+//		$aop->postCharset='GBK';
+//		$aop->format='json';
 
 		//商户订单编号
 		$out_trade_no = $order_sn;//商家自己生成的订单id
@@ -41,14 +41,14 @@ class Alipay
 		$order_amount = number_format($total_amount, 2);
 		$request = new \AlipayTradeAppPayRequest();
 		$bizcontent = json_encode([
-			'body' => $body,
+//			'body' => $body,
 			'subject' => $subject,
 			'out_trade_no' => $order_sn,//此订单号为商户唯一订单号
 			'total_amount' => $total_amount,//保留两位小数
 			'product_code' => 'QUICK_MSECURITY_PAY',
 		]);
 		//异步回调地址
-		$request->setNotifyUrl($_SERVER['HTTP_HOST'] . $aliConfig['notifyUrl']);
+//		$request->setNotifyUrl($_SERVER['HTTP_HOST'] . $aliConfig['notifyUrl']);
 		//发送数据内容到支付宝
 		$request->setBizContent($bizcontent);
 		$result = $aop->sdkExecute($request);

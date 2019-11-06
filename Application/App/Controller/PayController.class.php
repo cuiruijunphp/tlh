@@ -5,7 +5,7 @@ use Lib\Wx;
 class PayController extends BaseController {
 
 	public function pay(){
-		$wx_pay = new \Lib\Wx\Wxpay();
+//		$wx_pay = new \Lib\Wx\Wxpay();
 		$ali_pay = new \Lib\Ali\Alipay();
 //		$wx_pay = new \Lib\Person;
 //		import("Lib.Person");
@@ -16,9 +16,11 @@ class PayController extends BaseController {
 
 		$order_sn = session_create_random_id(32);
 //		$result = $wx_pay->wx_pay('测试', $order_sn, 0.1);
-		$ali_result = $ali_pay->ali_pay('测试', $order_sn, 0.1);
+		$ali_result = $ali_pay->ali_pay('测试', $order_sn, 0.01);
 
-		var_dump($ali_result);
+		$this->result_return(['order_string' => htmlspecialchars($ali_result)]);
+
+//		echo htmlspecialchars($ali_result);
 	}
 
 	// APP支付成功后,会调用你填写的回调地址 .
@@ -246,8 +248,8 @@ class PayController extends BaseController {
 			"      }" .
 			"    }" .
 			"  }");
-		$result = $aop->sdkExecute ( $request);
+		$result = $aop->sdkExecute ($request);
 
-		var_dump($result);
+		echo htmlspecialchars($result);;
 	}
 }
