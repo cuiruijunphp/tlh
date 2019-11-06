@@ -201,6 +201,17 @@ class LoginController extends CommonController {
 
 		$token = '';
 
+		//地址信息
+		$user_address_model = D('UserAddress');
+
+		$address_info = $user_address_model->get_one(['user_id' => $user_info['id']]);
+		if($address_info){
+			$data['province'] = $address_info['province'];
+			$data['city'] = $address_info['city'];
+			$data['area'] = $address_info['area'];
+			$data['address'] = $address_info['address'];
+		}
+
 		//用uuid换token
 		//如果有uuid,则直接取出来,如果没有uuid,则先存到数据库中,过期时间设置为30天
 		$session_app_model = D('UsersSessionApp');

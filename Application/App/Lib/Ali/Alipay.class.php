@@ -4,7 +4,7 @@ namespace Lib\Ali;
 
 class Alipay
 {
-	public function ali_pay($subject, $order_sn, $total_amount)
+	public function alipay_app_pay($subject, $order_sn, $total_amount)
 	{
 		//导入支付宝类
 		Vendor('Alipay.aop.AopClient');

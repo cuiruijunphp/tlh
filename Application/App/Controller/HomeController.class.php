@@ -99,7 +99,7 @@ class HomeController extends BaseController
 				}
 
 				//头像加上地址前缀
-				$result[$k]['img'] = UPLOAD_URL . $v['img'];
+				$result[$k]['img'] = $v['img'] ? UPLOAD_URL . $v['img'] : '';
 				$result[$k]['head_img'] = UPLOAD_URL . $v['head_img'];
 			}
 		}

@@ -23,7 +23,9 @@ class OrderController extends BaseController {
 		$vip_aging_type = $params['vip_aging_type'];//vip时效
 
 		$price = $params['price'];
-		$pay_type = $params['pay_type'];
+//		$pay_type = $params['pay_type'];
+
+		//验证支付方式
 
 		// 如果是vip时效
 		if($source_type == 1){
@@ -47,7 +49,7 @@ class OrderController extends BaseController {
 			'order_id' => $order_id,
 			'user_id' => $user_id,
 			'price' => $price,
-			'pay_type' => $pay_type,
+//			'pay_type' => $pay_type,
 			'source_type' => $source_type,
 			'source_id' => $source_id,
 		];
