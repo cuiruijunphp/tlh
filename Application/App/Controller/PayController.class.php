@@ -18,7 +18,7 @@ class PayController extends BaseController {
 //		$result = $wx_pay->wx_pay('测试', $order_sn, 0.1);
 		$ali_result = $ali_pay->ali_pay('测试', $order_sn, 0.01);
 
-		$this->result_return(['order_string' => (str_replace('alipay_sdk=alipay-sdk-php-easyalipay-20190926&', '', $ali_result))]);
+		$this->result_return(['order_string' => $ali_result]);
 
 //		echo htmlspecialchars($ali_result);
 	}
