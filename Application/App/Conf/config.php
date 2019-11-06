@@ -12,8 +12,9 @@ return array(
 	//会员套餐列表
 	'source_type_arr' => [
 		1 => [
-			'price' => 0.01,
+			'price' => '0.01',
 			'time' => 365,
+			'note' => '一年'
 		]
 	],
 );

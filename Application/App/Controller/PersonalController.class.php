@@ -448,4 +448,23 @@ class PersonalController extends BaseController {
 			$this->result_return(null, 500, '退出登录失败');
 		}
 	}
+
+	/**
+	 * vip套餐列表信息
+	 * @date   2019/11/6 下午8:55
+	 * @url    app/personal/get_vip_package_info/
+	 * @method get
+	 *
+	 * @param  int param
+	 * @return  array
+	 */
+	public function get_vip_package_info(){
+		$vip_package_info = C('source_type_arr');
+
+		foreach($vip_package_info as $k => $v){
+			$vip_package_info[$k]['vip_type_id'] = $k;
+		}
+
+		$this->result_return(array_values($vip_package_info));
+	}
 }
