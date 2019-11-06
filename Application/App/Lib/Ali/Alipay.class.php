@@ -44,7 +44,7 @@ class Alipay
 //			'body' => $body,
 			'subject' => $subject,
 			'out_trade_no' => $order_sn,//此订单号为商户唯一订单号
-			'total_amount' => $total_amount,//保留两位小数
+			'total_amount' => $order_amount,//保留两位小数
 			'product_code' => 'QUICK_MSECURITY_PAY',
 		]);
 		//异步回调地址
