@@ -259,7 +259,14 @@ class DemandController extends BaseController
 			'earnest_money' => $earnest_money,
 			'longitude' => $longitude,
 			'latitude' => $latitude,
+			'status' => 4,//待付款状态
 		];
+
+		// 如果是免费类型的需求,则不需要付款,直接将状态更改
+		if($skill_type_info['free_type'] == 2){
+			//待审核状态(付款完成)
+			$insert_data['status'] = 0;
+		}
 
 		$insert_result = $user_demand_model->insert_one($insert_data);
 

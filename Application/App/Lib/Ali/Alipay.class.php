@@ -31,8 +31,6 @@ class Alipay
 //		$aop->postCharset='GBK';
 //		$aop->format='json';
 
-		//商户订单编号
-		$out_trade_no = $order_sn;//商家自己生成的订单id
 		//描述
 		$body = 'test';
 		//标题
