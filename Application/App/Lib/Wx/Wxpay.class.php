@@ -19,6 +19,7 @@ class Wxpay
 		$wxapp_pay_config = C('WXAPP_PAY_CONFIG');
 		$data['appid'] = $wxapp_pay_config['appid'];          //appid
 		$data['mch_id'] = $wxapp_pay_config['mch_id'];        //商户号
+//		$data['body'] = iconv("UTF-8", "ISO-8859-1//IGNORE", $subject);                           //商品描述
 		$data['body'] = $subject;                           //商品描述
 		$data['spbill_create_ip'] = get_client_ip();   //ip地址
 		$data['total_fee'] = $total_amount;                 //金额
@@ -30,9 +31,11 @@ class Wxpay
 		//注意：以上几个参数是追加到$data中的，$data中应该同时包含开发文档中要求必填的剔除sign以外的所有数据
 		$data['sign'] = $this->get_sign($data);           //获取签名
 		$xml = to_xml($data);//数组转xml
+		echo $xml;
 		//curl 传递给微信方
 		$url = $wxapp_pay_config['url'];
 //		header("Content-type:text/xml");
+
 		$data = http_post_request($url, $xml);
 
 		//返回结果

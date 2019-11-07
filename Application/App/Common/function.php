@@ -172,43 +172,34 @@ function getSign($params) {
  * @param false/true   $json    false $data数组格式  true $data json格式
  * @return  返回json数据
  */
-function http_post_request($url, $data = null,$json = FALSE){
-	//创建了一个curl会话资源，成功返回一个句柄；
-	$curl = curl_init();
-	//设置url
-	curl_setopt($curl, CURLOPT_URL, $url);
+function http_post_request($url, $data){
 
-	if (substr($url, 0, 8) == 'https://')
-	{
-		//设置为FALSE 禁止 cURL 验证对等证书（peer’s certificate）
-		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
-		//设置为 1 是检查服务器SSL证书中是否存在一个公用名(common name)
-		curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE);
+//	header("Content-type:text/xml");
+	$ch = curl_init();
+	curl_setopt($ch,CURLOPT_URL, $url);
+	if(stripos($url,"https://")!==FALSE){
+		curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+	} else {
+		curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,TRUE);
+		curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,2);//严格校验
 	}
-
-	if (!empty($data)){
-		//设置请求为POST
-		curl_setopt($curl, CURLOPT_POST, 1);
-		//curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 60); //最长的可忍受的连接时间
-		//设置POST的数据域
-		curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-		if($json){
-			curl_setopt($curl, CURLOPT_HEADER, 0);
-			curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-					'Content-Type: application/json; charset=utf-8',
-					'Content-Length: ' . strlen($data)
-				)
-			);
-
-		}
-	}
-	//设置是否将响应结果存入变量，1是存入，0是直接输出
-	curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
-	//然后将响应结果存入变量
-	$output = curl_exec($curl);
+	//设置header
+	curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1);
+	curl_setopt($ch, CURLOPT_HEADER, FALSE);
+	//要求结果为字符串且输出到屏幕上
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+	//设置超时
+	curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+	curl_setopt($ch, CURLOPT_POST, TRUE);
+	//传输文件
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+	//运行curl
+	$data = curl_exec($ch);
 	//关闭这个curl会话资源
-	curl_close($curl);
-	return $output;
+	curl_close($ch);
+	return $data;
 }
 
 /**
