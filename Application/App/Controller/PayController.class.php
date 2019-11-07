@@ -50,10 +50,25 @@ class PayController extends BaseController {
 
 		if($order_info['pay_type'] == 'alipay_app'){
 			$ali_pay = new \Lib\Ali\Alipay();
-			$alipay_app_result = $ali_pay->alipay_app_pay($source_type_title[$order_info['source_type']], $order_id, $order_info['price']);
+			$order_string = $ali_pay->alipay_app_pay($source_type_title[$order_info['source_type']], $order_id, $order_info['price']);
+		}else{
+			$wxapp_pay = new \Lib\Wx\Wxpay();
+			$wxapp_res = $wxapp_pay->wxapp_pay($source_type_title[$order_info['source_type']], $order_id, $order_info['price']);
+
+			$wx_res = json_decode($wxapp_res, true);
+			if($wx_res){
+				if($wxapp_res['status'] == 1){
+					// 说明调用成功,则返回给app端正确的order_string
+					$order_string = $wxapp_res['data'];
+				}else{
+					$this->result_return(null, 500, $wx_res['msg']);
+				}
+			}else{
+				$this->result_return(null, 500, '调用微信支付失败');
+			}
 		}
 
-		$this->result_return(['order_string' => $alipay_app_result]);
+		$this->result_return(['order_string' => $order_string]);
 	}
 
 	// APP支付成功后,会调用你填写的回调地址 .

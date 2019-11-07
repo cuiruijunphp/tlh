@@ -7,7 +7,7 @@ class PaymentController extends CommonController {
 	// APP支付成功后,会调用你填写的回调地址 .
 	// 返回参数详见微信文档:https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_7&index=3
 	// 微信支付回调 案例
-	protected function wx_notify(){
+	public function wxapp_notify(){
 		//接收微信返回的数据数据,返回的xml格式
 		$xmlData = file_get_contents('php://input');
 		//将xml格式转换为数组

@@ -24,7 +24,7 @@ class Wxpay
 		$data['total_fee'] = $total_amount;                 //金额
 		$data['out_trade_no'] = $order_sn;                  //商户订单号,不能重复
 		$data['nonce_str'] = $nonce_str;                    //随机字符串
-		$data['notify_url'] = $wxapp_pay_config['notify_url'];//回调地址,用户接收支付后的通知,必须为能直接访问的网址,不能跟参数
+		$data['notify_url'] = $_SERVER['HTTP_HOST'] . $wxapp_pay_config['notify_url'];//回调地址,用户接收支付后的通知,必须为能直接访问的网址,不能跟参数
 		$data['trade_type'] = 'APP';                        //支付方式
 		//将参与签名的数据保存到数组
 		//注意：以上几个参数是追加到$data中的，$data中应该同时包含开发文档中要求必填的剔除sign以外的所有数据
@@ -39,7 +39,7 @@ class Wxpay
 		if($data){
 			//返回成功,将xml数据转换为数组.
 			$res = from_xml($data);
-			var_dump($res);
+//			var_dump($res);
 			if($res['return_code'] != 'SUCCESS'){
 				return out_json(0,"微信预支付订单,签名失败！");
 			} else{
@@ -53,12 +53,12 @@ class Wxpay
 					'timestamp' => time(),
 				];
 				//第二次生成签名
-				$sign = $this->getSign($result);
+				$sign = $this->get_sign($result);
 				$result['sign'] = $sign;
 				return out_json(1,'微信预支付订单创建成功',$result);
 			}
 		} else {
-			return $this->outJson(0,"调用微信支付出错");
+			return out_json(0,"调用微信支付出错");
 		}
 	}
 
