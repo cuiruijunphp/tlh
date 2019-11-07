@@ -48,18 +48,17 @@ class PayController extends BaseController {
 			3 => '技能预约',
 		];
 
-		if($order_info['pay_type'] == 'alipay_app'){
+		if($pay_type == 'alipay_app'){
 			$ali_pay = new \Lib\Ali\Alipay();
 			$order_string = $ali_pay->alipay_app_pay($source_type_title[$order_info['source_type']], $order_id, $order_info['price']);
 		}else{
 			$wxapp_pay = new \Lib\Wx\Wxpay();
-			$wxapp_res = $wxapp_pay->wxapp_pay($source_type_title[$order_info['source_type']], $order_id, $order_info['price']);
+			$wx_res = $wxapp_pay->wxapp_pay($source_type_title[$order_info['source_type']], $order_id, $order_info['price']);
 
-			$wx_res = json_decode($wxapp_res, true);
 			if($wx_res){
-				if($wxapp_res['status'] == 1){
+				if($wx_res['status'] == 1){
 					// 说明调用成功,则返回给app端正确的order_string
-					$order_string = $wxapp_res['data'];
+					$order_string = $wx_res['data'];
 				}else{
 					$this->result_return(null, 500, $wx_res['msg']);
 				}

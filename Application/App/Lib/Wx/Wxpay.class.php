@@ -40,8 +40,9 @@ class Wxpay
 			//返回成功,将xml数据转换为数组.
 			$res = from_xml($data);
 //			var_dump($res);
+//			die();
 			if($res['return_code'] != 'SUCCESS'){
-				return out_json(0,"微信预支付订单,签名失败！");
+				return out_json(0,$res['return_msg']);
 			} else{
 				//接收微信返回的数据,传给APP
 				$result = [
