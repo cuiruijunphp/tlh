@@ -31,7 +31,7 @@ class Wxpay
 		$data['sign'] = $this->get_sign($data);           //获取签名
 		$xml = to_xml($data);                         //数组转xml
 		//curl 传递给微信方
-		$url = "https://api.mch.weixin.qq.com/pay/unifiedorder";
+		$url = $wxapp_pay_config['url'];
 		//header("Content-type:text/xml");
 		$data = http_post_request($url, $xml);
 
