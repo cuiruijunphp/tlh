@@ -20,7 +20,7 @@ class Wxpay
 		$data['appid'] = $wxapp_pay_config['appid'];          //appid
 		$data['mch_id'] = $wxapp_pay_config['mch_id'];        //商户号
 		$data['body'] = $subject;                           //商品描述
-		$data['spbill_create_ip'] = get_client_ip_new();   //ip地址
+		$data['spbill_create_ip'] = get_client_ip();   //ip地址
 		$data['total_fee'] = $total_amount;                 //金额
 		$data['out_trade_no'] = $order_sn;                  //商户订单号,不能重复
 		$data['nonce_str'] = $nonce_str;                    //随机字符串
@@ -29,10 +29,10 @@ class Wxpay
 		//将参与签名的数据保存到数组
 		//注意：以上几个参数是追加到$data中的，$data中应该同时包含开发文档中要求必填的剔除sign以外的所有数据
 		$data['sign'] = $this->get_sign($data);           //获取签名
-		$xml = to_xml($data);                         //数组转xml
+		$xml = to_xml($data);//数组转xml
 		//curl 传递给微信方
 		$url = $wxapp_pay_config['url'];
-		//header("Content-type:text/xml");
+//		header("Content-type:text/xml");
 		$data = http_post_request($url, $xml);
 
 		//返回结果

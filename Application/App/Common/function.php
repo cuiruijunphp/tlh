@@ -249,11 +249,13 @@ function to_xml($data = [])
 	$xml = "<xml>";
 	foreach ($data as $key=>$val)
 	{
-		if (is_numeric($val)){
-			$xml.="<".$key.">".$val."</".$key.">";
-		}else{
-			$xml.="<".$key."><![CDATA[".$val."]]></".$key.">";
-		}
+//		if (is_numeric($val)){
+//			$xml.="<".$key.">".$val."</".$key.">";
+//		}else{
+//			$xml.="<".$key."><![CDATA[".$val."]]></".$key.">";
+//		}
+
+		$xml.="<".$key.">".$val."</".$key.">";
 	}
 	$xml.="</xml>";
 	return $xml;
