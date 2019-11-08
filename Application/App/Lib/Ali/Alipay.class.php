@@ -19,7 +19,7 @@ class Alipay
 		//开发者私钥
 		$aop->rsaPrivateKey = $aliConfig['rsaPrivateKey'];
 		//支付宝公钥
-		$aop->alipayrsaPublicKey = $aliConfig['alipayrsaPublicKey'];
+		$aop->alipayrsaPublicKey = $aliConfig['alipayPublicKey'];
 		$aop->apiVersion = '1.0';
 		//固定参数
 		$aop->postCharset = 'utf-8';//固定参数
