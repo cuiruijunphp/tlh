@@ -316,7 +316,32 @@ function write_log($path, $content)
 		mkdir($path, 0777, true);
 	}
 
-	$content_default = date('Y-m-d H:i:s', time()) . ' ' . ROUTES_URI_CONTROLLER . '/' . ROUTES_URI_ACT . '/	' . get_client_ip_new(). ' ';
+	$content_default = date('Y-m-d H:i:s', time()) . ' ' . MODULE_PATH . '/' . CONTROLLER_NAME . '/' . ACTION_NAME . '/	' . get_client_ip_new(). ' ';
 
-	file_put_contents(ROOT_PATH . $path . date('Y-m-d', time()) . '.log', $content_default . $content . PHP_EOL, FILE_APPEND);
+	file_put_contents($path . date('Y-m-d', time()) . '.log', $content_default . $content . PHP_EOL, FILE_APPEND);
+}
+
+
+//这里是微信比较重要的一步了,这个方法会多次用到!生成签名
+function get_sign($params) {
+	//将参数数组按照参数名ASCII码从小到大排序
+	ksort($params);
+	$newArr = [];
+	foreach ($params as $key => $item) {
+		//剔除参数值为空的参数
+		if (!empty($item)) {
+			// 整合新的参数数组
+			$newArr[] = $key.'='.$item;
+		}
+	}
+	//使用 & 符号连接参数
+	$stringA = implode("&", $newArr);
+	$wxapp_pay_config = C('WXAPP_PAY_CONFIG');
+	//拼接key 注意：key是在商户平台API安全里自己设置的
+	$stringSignTemp = $stringA."&key=".$wxapp_pay_config['wx_sign_key'];
+	//将字符串进行MD5加密
+	$stringSignTemp = md5($stringSignTemp);
+	//将所有字符转换为大写
+	$sign = strtoupper($stringSignTemp);
+	return $sign;
 }

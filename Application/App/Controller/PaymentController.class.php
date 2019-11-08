@@ -8,49 +8,77 @@ class PaymentController extends CommonController {
 	// 返回参数详见微信文档:https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_7&index=3
 	// 微信支付回调 案例
 	public function wxapp_notify(){
+
+		$success_xml = '<xml>
+                                      <return_code><![CDATA[SUCCESS]]></return_code>
+                                      <return_msg><![CDATA[OK]]></return_msg>
+                              </xml>';
+
+		$fail_xml = '<xml>
+                              <return_code><![CDATA[FAIL]]></return_code>
+                              <return_msg><![CDATA[ERROR]]></return_msg>
+                          </xml>';;
 		//接收微信返回的数据数据,返回的xml格式
 		$xmlData = file_get_contents('php://input');
-		//将xml格式转换为数组
+//		//将xml格式转换为数组
 		$data = from_xml($xmlData);
-		file_put_contents('log/3.txt', json_encode($xmlData), FILE_APPEND);
-		file_put_contents('log/4.txt', json_encode($data), FILE_APPEND);
 
-//		//用日志记录检查数据是否接受成功，验证成功一次之后，可删除。
-//		$file = fopen('./wx_log.txt', 'a+');
-//		fwrite($file,var_export($data,true));
+//		$data_tmp = '{"appid":"wx92716de5a4d2898e","bank_type":"CFT","cash_fee":"1","fee_type":"CNY","is_subscribe":"N","mch_id":"1559428681","nonce_str":"8fQCPBXvrUSk0zoDyqstwT9VFKbOGIL7","openid":"oeiLvs0cHNpZ2_fBBfTD8vKwe5h0","out_trade_no":"bd35bd0c8c4cd07156fefe95e5b628f5","result_code":"SUCCESS","return_code":"SUCCESS","sign":"64B590D87D210182D876B9145BA67F9D","time_end":"20191108151240","total_fee":"1","trade_type":"APP","transaction_id":"4200000469201911087869698752"}';
+//
+//		$data = json_decode($data_tmp, true);
+
 //		//为了防止假数据，验证签名是否和返回的一样。
 //		//记录一下，返回回来的签名，生成签名的时候，必须剔除sign字段。
-//		$sign = $data['sign'];
-//		unset($data['sign']);
-//		if($sign == $this->getSign($data)){
-//			//签名验证成功后，判断返回微信返回的
-//			if ($data['result_code'] == 'SUCCESS') {
-//				//验证签名通过后 根据返回的订单号做业务逻辑 $data['out_trade_no']
-//				//比如修改订单状态
-//				$re = Db::name('order')->where(['order_sn'=>$data['out_trade_no']])->update(['status' => 1]);
-//				// 处理完成之后，告诉微信成功结果！
-//				if($re){
-//					// 成功返回的
-//					return '<xml>
-//                                      <return_code><![CDATA[SUCCESS]]></return_code>
-//                                      <return_msg><![CDATA[OK]]></return_msg>
-//                              </xml>';
-//				} else {
-//					// 失败返回
-//					return '<xml>
-//                              <return_code><![CDATA[FAIL]]></return_code>
-//                              <return_msg><![CDATA[ERROR]]></return_msg>
-//                          </xml>';
-//				}
-//			} else{
-//				//支付失败，输出错误信息
-//				$file = fopen('./wx_log.txt', 'a+');
-//				fwrite($file,"错误信息：".$data['return_msg'].date("Y-m-d H:i:s"),time()."\r\n");
-//			}
-//		} else{
-//			$file = fopen('./wx_log.txt', 'a+');
-//			fwrite($file,"错误信息：签名验证失败".date("Y-m-d H:i:s"),time()."\r\n");
-//		}
+		$sign = $data['sign'];
+		unset($data['sign']);
+		if($sign == get_sign($data)){
+			//签名验证成功后，处理业务逻辑
+			//商户订单号
+			$out_trade_no = $data['out_trade_no'];
+			//支付宝交易号
+			$trade_no = $data['transaction_id'];
+			//交易状态
+			$trade_result = strtolower($data['return_code']);
+			//订单的实际金额
+			$total_amount = $data['total_fee'] / 100;
+
+			//付款时间
+			$payment_time = $data['time_end'];
+
+			//appid 和 商户id
+			$app_id = $data['appid'];
+			$mch_id = $data['mch_id'];
+
+			$wxConfig = C('WXAPP_PAY_CONFIG');
+			if($app_id != $wxConfig['appid'] || $mch_id != $wxConfig['mch_id']){
+				// 商户id或者appid不正确
+				write_log('log/wxpay/', '微信同步失败,商户id或者appid不正确,参数为' . json_encode($data));
+				echo $fail_xml;
+			}
+
+			//验证订单的准确性
+			if(!empty($out_trade_no)){
+				//在这里可以通过返回的商家订单号查询出该订单的信息
+				$order_model = D('Order');
+
+				$res = $order_model->update_result($out_trade_no, $trade_result, $total_amount, strtotime($payment_time), $trade_no);
+
+				if(is_string($res)){
+					write_log('log/wxpay/', '微信同步失败,失败原因:' . $res . ',参数为' . json_encode($data));
+					echo $fail_xml;
+				}
+
+				if($res ===false){
+					write_log('log/wxpay/', '微信同步失败,更新数据库失败,参数为:' . json_encode($data));
+					echo $fail_xml;
+				}else{
+					echo $success_xml;
+				}
+			}
+		} else{
+			write_log('log/wxpay/', '微信同步失败,验签失败,参数为:' . json_encode($data));
+			echo $fail_xml;
+		}
 	}
 
 	/**
@@ -64,9 +92,14 @@ class PaymentController extends CommonController {
 	 */
 	public function alipay_notify(){
 
-		$params = I('post.');
-
 		$aliConfig = C('ALIPAY_CONFIG');
+
+		$params_json = '{
+	"gmt_create":"2019-11-08 13:13:15","charset":"utf-8","seller_email":"905556960@qq.com","subject":"\u9700\u6c42\u53d1\u5e03\u8bda\u610f\u91d1","sign":"WuWM6WjWBKiZYXdM2FT98ZkKEuuEWG+fd7MMb7P+BelTdDdfzDwfUgPk\/oeVYjtlB0+hrxk5P2iq1YKQZad8WB3Xo9K8Au9K\/aZ4Owy16B4Ox8emTwz019xlIgc7V5sqJuzgDxaVVqUYiPEn29vM8mq4EeYPtNAmK6PRwrphXWt9zt7I6W7MO1L6XIW1NM2e4acRx4u+RR+OxUf2g6\/YQxask+YeZfp\/cp3fyUVA4EdrX7\/zoaSdKYEmwWWRrBuCQQXRYvQNZ\/K2CQIAyWaSYp\/UafEFPSzNJdlLd2Yltd7FUOl3F25rJu1gnWKvVMTGF4CZSmsH\/AJlj+cBLIcTcQ==","body":"test","buyer_id":"2088502963226630","invoice_amount":"0.01","notify_id":"2019110800222131316026630551885912","fund_bill_list":"[{&quot;amount&quot;:&quot;0.01&quot;,&quot;fundChannel&quot;:&quot;ALIPAYACCOUNT&quot;}]","notify_type":"trade_status_sync","trade_status":"TRADE_SUCCESS","receipt_amount":"0.01","app_id":"2019110568909721","buyer_pay_amount":"0.01","sign_type":"RSA2","seller_id":"2088631769825760","gmt_payment":"2019-11-08 13:13:16","notify_time":"2019-11-08 13:13:17","version":"1.0","out_trade_no":"ee40453c25cb67817a6f52fbbd9f5713","total_amount":"0.01","trade_no":"2019110822001426630521721438","auth_app_id":"2019110568909721","buyer_logon_id":"xdi***@163.com","point_amount":"0.00"}';
+
+		$params = json_decode($params_json, true);
+//		$params = $_POST;
+		var_dump($params);
 
 		Vendor('Alipay.aop.AopClient');
 		$aop = new \AopClient();
@@ -74,15 +107,6 @@ class PaymentController extends CommonController {
 		$aop->alipayrsaPublicKey = $aliConfig['alipayrsaPublicKey'];
 		$flag = $aop->rsaCheckV1($params, NULL, "RSA2");
 
-		file_put_contents('log/1.txt', json_encode($flag), FILE_APPEND);
-		file_put_contents('log/2.txt', json_encode($params), FILE_APPEND);
-
-		die();
-		//导入支付宝类
-		Vendor('Alipay.aop.AopClient');
-		$aop = new \AopClient;
-		$aop->alipayrsaPublicKey = C('ALI_CONFIG')['alipayrsaPublicKey'];
-		$flag = $aop->rsaCheckV1($_POST, NULL, "RSA2");
 		if($flag){
 			//商户订单号
 			$out_trade_no = $_POST['out_trade_no'];
@@ -92,45 +116,51 @@ class PaymentController extends CommonController {
 			$trade_status = $_POST['trade_status'];
 			//订单的实际金额
 			$total_amount = $_POST['total_amount'];
+
+			//付款时间
+			$payment_time = $_POST['gmt_payment'];
 			//appid
 			$appid = $_POST['app_id'];
 			$seller_id = $_POST['seller_id'];
 			//验证app_id是否为商户本身
-			if($appid != C('ALI_CONFIG')['appId']){
-				exit('fail');
+			if($appid != $aliConfig['appId'] || $seller_id != $aliConfig['seller_id']){
+				// 商户id或者pid不正确
+//				file_put_contents('log/2.txt', json_encode($params), FILE_APPEND);
+				write_log('log/alipay/', '支付宝同步失败,商户id或者pid不正确,参数为' . json_encode($params));
+				return;
 			}
-			//判断交易通知状态是否为TRADE_SUCCESS或TRADE_FINISH
-			if($trade_status!='TRADE_FINISH' && $trade_status !='TRADE_SUCCESS'){
-				exit('fail');
-			}
+
 			//验证订单的准确性
 			if(!empty($out_trade_no)){
 				//在这里可以通过返回的商家订单号查询出该订单的信息
-				$res = xxx;
-				if(!$res){
-					exit('fail');
+				$order_model = D('Order');
+
+				//判断交易通知状态是否为TRADE_SUCCESS或TRADE_FINISH
+				if(in_array($trade_status, ['TRADE_FINISH', 'TRADE_SUCCESS'])){
+					$trade_result = 'success';
+				}elseif($trade_status == 'TRADE_FAIL'){
+					$trade_result = 'fail';
 				}
 
-				//判断total_amount是否确实为该订单的实际金额
-				if($total_amount != $res){
-					exit('fail');
+				$res = $order_model->update_result($out_trade_no, $trade_result, $total_amount, strtotime($payment_time), $trade_no);
+
+				if(is_string($res)){
+//					$this->result_return(null, 500, $res);
+//					file_put_contents('log/2.txt', json_encode($params), FILE_APPEND);
+					write_log('log/alipay/', '支付宝同步失败,失败原因:' . $res . ',参数为' . json_encode($params));
+					return;
 				}
-				//判断seller_id是否与商户的id相同
-				if($seller_id != C('ALI_CONFIG')['seller_id']){
-					exit('fail');
+
+				if($res ===false){
+//					file_put_contents('log/2.txt', json_encode($params), FILE_APPEND);
+					write_log('log/alipay/', '支付宝同步失败,更新数据库失败,参数为:' . json_encode($params));
+					return;
 				}
-			}
-			//全部验证成功后修改订单状态
-			//doAliPay方法用于进行修改订单状态的逻辑，可以放手发挥了
-            $data = $this->doAliPay($out_trade_no,$trade_no);
-            if($data){
-				//处理业务逻辑
-				echo 'success';
-			} else {
-				echo 'fail';
 			}
         } else {
-			echo 'fail';
+//			file_put_contents('log/2.txt', json_encode($params), FILE_APPEND);
+			write_log('log/alipay/', '支付宝同步失败,验签失败,参数为:' . json_encode($params));
+			return;
 		}
 	}
 }

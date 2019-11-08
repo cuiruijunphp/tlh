@@ -215,7 +215,7 @@ class PayController extends BaseController {
 		$user_id = $this->user_id;
 
 		$order_model = D('Order');
-		$res = $order_model->update_result($order_id, $user_id, $result);
+		$res = $order_model->update_result($order_id, $result);
 
 		if(is_string($res)){
 			$this->result_return(null, 500, $res);

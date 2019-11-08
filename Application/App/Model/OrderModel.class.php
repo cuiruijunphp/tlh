@@ -6,11 +6,20 @@ class OrderModel extends CommonModel{
 
 	/*
 	 * 更新付款结果
+	 * @order_id 商户订单号
+	 * @result 商户订单号
+	 * @total_amount 商户订单号
+	 * @payment_time 商户订单号
+	 * @payment_id 商户订单号
 	 */
-	public function update_result($order_id, $user_id, $result){
+	public function update_result($order_id, $result, $total_amount, $payment_time, $payment_id){
 
 		$order_model = D('Order');
 		$order_info = $order_model->get_one(['order_id' => $order_id]);
+
+		if(!$order_info){
+			return '订单不存在';
+		}
 
 		// 查看是否存在
 //				if(!$order_info['payment_id']){
@@ -22,13 +31,16 @@ class OrderModel extends CommonModel{
 			return '参数非法';
 		}
 
-		if($order_info['user_id'] != $user_id){
-			return '非法操作';
+		if($order_info['price'] != $total_amount){
+			return '订单金额非法';
 		}
+
+		$user_id = $order_info['user_id'];
 
 		// 改变订单状态
 		$update_data = [
-			'payment_time' => time(),
+			'pay_time' => $payment_time,
+			'payment_id' => $payment_id,
 			'status' => $result == 'success' ? 1 : 2,
 		];
 
