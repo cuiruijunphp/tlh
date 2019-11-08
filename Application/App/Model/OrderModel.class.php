@@ -7,10 +7,10 @@ class OrderModel extends CommonModel{
 	/*
 	 * 更新付款结果
 	 * @order_id 商户订单号
-	 * @result 商户订单号
-	 * @total_amount 商户订单号
-	 * @payment_time 商户订单号
-	 * @payment_id 商户订单号
+	 * @result 结果-success/fail
+	 * @total_amount 订单金额
+	 * @payment_time 付款时间
+	 * @payment_id 支付方式流水号
 	 */
 	public function update_result($order_id, $result, $total_amount, $payment_time, $payment_id){
 

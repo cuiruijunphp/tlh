@@ -32,6 +32,7 @@ class SkillTypeController extends BaseController {
 				'type_name' => $params['type_name'],
 				'is_show' => (int)$params['is_show'],
 				'parent_id' => (int)$params['parent_id'],
+				'free_type' => (int)$params['free_type'],
 			];
 
 			//判断是否有图片
