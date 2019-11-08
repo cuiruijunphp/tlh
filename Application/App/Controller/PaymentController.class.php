@@ -11,7 +11,10 @@ class PaymentController extends CommonController {
 		//接收微信返回的数据数据,返回的xml格式
 		$xmlData = file_get_contents('php://input');
 		//将xml格式转换为数组
-//		$data = \wx\WxPay::instance()->FromXml($xmlData);
+		$data = from_xml($xmlData);
+		file_put_contents('log/3.txt', json_encode($xmlData), FILE_APPEND);
+		file_put_contents('log/4.txt', json_encode($data), FILE_APPEND);
+
 //		//用日志记录检查数据是否接受成功，验证成功一次之后，可删除。
 //		$file = fopen('./wx_log.txt', 'a+');
 //		fwrite($file,var_export($data,true));
