@@ -545,4 +545,49 @@ class PersonalController extends BaseController {
 
 		$this->result_return($data);
 	}
+
+	/**
+	 * 获取该账号下邀请人数
+	 * @author cuirj
+	 * @date   2019/11/8 下午10:54
+	 * @url    app/personal/get_invite_users
+	 * @method get
+	 *
+	 * @param  int param
+	 * @return  array
+	 */
+	public function get_invite_users(){
+		$user_id = $this->user_id;
+		$page = I('get.page') ? I('get.page') : 1;
+		$page_size = I('get.page_size') ? I('get.page_size') : 3;
+
+		$limit = ($page - 1) * $page_size;
+
+		$user_model = D('Users');
+
+		$where = ['invite_user_id' => $user_id];
+		$user_list = $user_model->get_list($where, $limit. ',' . $page_size, 'add_time desc');
+
+		$invite_count = $user_model->get_condition_count($where);
+
+		$data = [];
+		foreach($user_list as $k => $v){
+			$data_tmp = [
+				'add_time' => $v['add_time']
+			];
+
+			$data_tmp['head_img'] = $v['head_img'] ? UPLOAD_URL . $v['head_img'] : '';
+
+			if($v['vip_expire_time'] > time()){
+				$data_tmp['is_vip'] = 1;
+			}else{
+				$data_tmp['is_vip'] = 0;
+			}
+
+			$data[] = $data_tmp;
+		}
+
+		$this->result_return(['invite_count' => (int)$invite_count, 'invite_user_list' => $data]);
+
+	}
 }
