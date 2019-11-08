@@ -404,12 +404,7 @@ class DemandController extends BaseController
 	 * @return  array
 	 */
 	public function get_earnest_money_list(){
-		$earnest_money_arr = [
-			'0.01',
-			'0.02',
-			'0.03',
-			'0.04'
-		];
+		$earnest_money_arr = C('earnest_money_arr');
 
 		$this->result_return(['earnest_money_list' => $earnest_money_arr]);
 	}

@@ -53,23 +53,32 @@ class OrderController extends BaseController {
 			// 如果是充会员,则需要写入会员套餐信息
 			$insert_data['extra_info'] = json_encode(['vip_aging_type' => $vip_aging_type]);
 
-		}elseif($source_type == 2){
-			//验证是否存在该条需求
-			$demand_model = D('UserDemand');
-			$demand_info = $demand_model->get_one(['id' => $source_id]);
-			if(!$demand_info){
-				$this->result_return(null, 500, '该条需求不满足付款条件');
+		}else{
+			if($source_type == 2){
+				//验证是否存在该条需求
+				$demand_model = D('UserDemand');
+				$demand_info = $demand_model->get_one(['id' => $source_id]);
+				if(!$demand_info){
+					$this->result_return(null, 500, '该条需求不满足付款条件');
+				}
+
+			}elseif($source_type == 3){
+				//验证是否存在该条需技能
+				$reserve_model = D('SkillReserve');
+				$reserve_info = $reserve_model->get_one(['id' => $source_id]);
+
+				if(!$reserve_info){
+					$this->result_return(null, 500, '不存在的预约,不能付款哦');
+				}
 			}
 
-		}elseif($source_type == 3){
-			//验证是否存在该条需技能
-			$reserve_model = D('SkillReserve');
-			$reserve_info = $reserve_model->get_one(['id' => $source_id]);
-
-			if(!$reserve_info){
-				$this->result_return(null, 500, '不存在的预约,不能付款哦');
+			// 判断诚意金是否在可选范围内
+			$earnest_money_list = C('earnest_money_arr');
+			if(!in_array($price, $earnest_money_list)){
+				$this->result_return(null, 500, '诚意金不在可选范围');
 			}
 		}
+
 
 		$order_model = D('Order');
 		$insert_result = $order_model->insert_one($insert_data);
