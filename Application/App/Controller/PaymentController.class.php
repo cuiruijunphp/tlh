@@ -133,35 +133,4 @@ class PaymentController extends CommonController {
 			echo 'fail';
 		}
 	}
-
-	/**
-	 * 成功了以后的回调
-	 * @date   2019/11/4 下午5:53
-	 * @url    app/pay/result_callback/
-	 * @method get
-	 *
-	 * @param  int param
-	 * @return  array
-	 */
-	public function result_callback(){
-		$get_param = file_get_contents('php://input');
-		$params = json_decode($get_param, true);
-
-		$order_id = $params['order_id'];
-		$result = $params['result'];
-		$user_id = $this->user_id;
-
-		$order_model = D('Order');
-		$res = $order_model->update_result($order_id, $user_id, $result);
-
-		if(is_string($res)){
-			$this->result_return(null, 500, $res);
-		}
-
-		if($res !==false){
-			$this->result_return(['result' => 1]);
-		}else{
-			$this->result_return(null, 500, '更新状态失败');
-		}
-	}
 }
