@@ -70,7 +70,7 @@ class OrderModel extends CommonModel{
 				// 需求发布成功
 				$demand_status = ($result == 'success') ? 0 : 5;
 				$demand_model = D('UserDemand');
-				$update_result = $demand_model->update(['id' => $order_info['source_id']], ['status' => $demand_status]);
+				$update_result = $demand_model->update_data(['id' => $order_info['source_id']], ['status' => $demand_status]);
 			}elseif($order_info['source_type'] == 3){
 
 				$reserve_status = ($result == 'success') ? 2 : 1;
