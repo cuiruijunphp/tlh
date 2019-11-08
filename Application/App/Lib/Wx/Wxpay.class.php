@@ -31,7 +31,7 @@ class Wxpay
 		//注意：以上几个参数是追加到$data中的，$data中应该同时包含开发文档中要求必填的剔除sign以外的所有数据
 		$data['sign'] = $this->get_sign($data);           //获取签名
 		$xml = to_xml($data);//数组转xml
-		echo $xml;
+//		echo $xml;
 		//curl 传递给微信方
 		$url = $wxapp_pay_config['url'];
 //		header("Content-type:text/xml");
