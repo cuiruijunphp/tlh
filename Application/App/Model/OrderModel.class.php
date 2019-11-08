@@ -52,17 +52,18 @@ class OrderModel extends CommonModel{
 			if($order_info['source_type'] == 1){
 				// 将会员时间延长
 				$user_model = D('Users');
+				$user_info = $user_model->get_one(['id' => $user_id]);
 
 				$vip_aging_type = json_decode($order_info['extra_info'], true);
 				$souce_type_arr = C('source_type_arr');
 				$vip_aging_time = $souce_type_arr[$vip_aging_type['vip_aging_type']]['time'] * 24 * 3600;
 
-				if($this->user_info['vip_expire_time'] < time()){
+				if($user_info['vip_expire_time'] < time()){
 					//会员已经过期
 					$vip_expire_time = time() + $vip_aging_time;
 				}else{
 					// 未过期的会员,在此基础上增加时效
-					$vip_expire_time = (int)$this->user_info['vip_expire_time'] + $vip_aging_time;
+					$vip_expire_time = $user_info['vip_expire_time'] + $vip_aging_time;
 
 					//首冲送一年
 					$is_first_vip_charge = $order_model->get_one(['status' => 1, 'user_id' => $user_id, 'source_type' => 1]);
