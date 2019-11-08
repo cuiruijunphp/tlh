@@ -35,7 +35,7 @@ class OrderController extends BaseController {
 		$insert_data = [
 			'order_id' => $order_id,
 			'user_id' => $user_id,
-			'price' => $price,
+//			'price' => $price,
 //			'pay_type' => $pay_type,
 			'source_type' => $source_type,
 			'source_id' => $source_id,
@@ -46,9 +46,11 @@ class OrderController extends BaseController {
 			//充值会员
 			$source_type_arr = C('source_type_arr');
 
-			if($source_type_arr[$vip_aging_type]['price'] != $price){
-				$this->result_return(null, 500, '创建订单失败,金额非法');
-			}
+//			if($source_type_arr[$vip_aging_type]['price'] != $price){
+//				$this->result_return(null, 500, '创建订单失败,金额非法');
+//			}
+
+			$insert_data['price'] = $source_type_arr[$vip_aging_type]['price'];
 
 			// 如果是充会员,则需要写入会员套餐信息
 			$insert_data['extra_info'] = json_encode(['vip_aging_type' => $vip_aging_type]);
@@ -77,6 +79,8 @@ class OrderController extends BaseController {
 			if(!in_array($price, $earnest_money_list)){
 				$this->result_return(null, 500, '诚意金不在可选范围');
 			}
+
+			$insert_data['price'] = $price;
 		}
 
 
