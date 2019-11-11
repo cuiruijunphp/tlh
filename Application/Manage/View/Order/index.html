@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="/Public/static/assets/images/favicon.ico" type="image/ico" />
+
+    <title>后台管理系统</title>
+
+       <!-- Bootstrap -->
+       <link href="/Public/static/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+       <!-- Font Awesome -->
+       <link href="/Public/static/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+       <!-- NProgress加载进度条 -->
+       <link href="/Public/static/vendors/nprogress/nprogress.css" rel="stylesheet">
+       <!-- 样式 -->
+       <link href="/Public/static/build/css/custom.css" rel="stylesheet">
+  </head>
+
+  <body class="nav-md">
+  <div class="container body">
+      <div class="main_container">
+          <div class="col-md-3 left_col">
+              <div class="left_col scroll-view">
+                  <div class="navbar nav_title" style="border: 0;">
+                      <a href="{:U()}" class="site_title"><i class="fa fa-paw"></i> <span>首页</span></a>
+                  </div>
+
+                  <div class="clearfix"></div>
+                  <include file="Common/header" />
+              </div>
+          </div>
+
+          <!-- 顶部导航栏 -->
+          <div class="top_nav">
+              <div class="nav_menu">
+                  <nav>
+                      <div class="nav toggle">
+                          <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                      </div>
+                      <!-- 用户名文件在template文件夹下的top_nav.html -->
+                      <div class="top_nav">
+                          <include file="Common/top_nav" />
+                      </div>
+                  </nav>
+              </div>
+          </div>
+          <!-- /顶部导航栏 -->
+
+        <!-- 页面内容 -->
+        <div class="right_col" role="main">
+          <div id="course_list">
+            <!--<a href="{:U('Manage/skill/edit')}"><button class="btn btn-success btn-sm fr" id="add_course">新增技能类型</button></a>-->
+              <table class="full_width_table">
+                 <thead>
+                   <tr>
+                     <th>提现id</th>
+                     <!--<th>用户名</th>-->
+                     <th>提现金额</th>
+                     <th>提现支付宝账户/真实姓名</th>
+                     <th>提现状态</th>
+                     <th>申请提现时间</th>
+                     <th>打款时间</th>
+                     <th>支付宝流水号</th>
+                     <th>操作</th>
+                   </tr>
+                 </thead>
+                 <foreach name="list" key="k" item="v">
+                 <tr>
+                   <td>{$v["order_id"]}</td>
+                   <td>{$v["price"]}</td>
+                   <td>{$v["extra_info"]}</td>
+                   <td>{$v["status"]}</td>
+                   <td>{$v["add_time"]|date='Y年m月d日 H时i分',###}</td>
+                   <td>{$v["pay_time"]|date='Y年m月d日 H时i分',###}</td>
+                   <td>{$v["payment_id"]}</td>
+                     <td>
+                         <a href="{:U('Manage/order/edit?id='.$v['id'])}"><button class="btn btn-success btn-sm">查看详情</button></a>
+                 </tr>
+                 </foreach>
+               </table>
+              {$page}
+          </div>
+        </div>
+        <!-- /页面内容 -->
+
+        <!-- 底部 -->
+        <footer>
+          <div class="pull-right" style="text-align:center;width: 100%;">
+            后台管理系统
+          </div>
+          <div class="clearfix"></div>
+        </footer>
+        <!-- /底部 -->
+      </div>
+    </div>
+
+           <!-- jQuery -->
+ <script src="/Public/static/vendors/jquery/dist/jquery.min.js"></script>
+ <!-- Bootstrap -->
+ <script src="/Public/static/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+ <!-- FastClick -->
+ <script src="/Public/static/vendors/fastclick/lib/fastclick.js"></script>
+ <!-- NProgress -->
+ <script src="/Public/static/vendors/nprogress/nprogress.js"></script>
+ <!-- Custom Theme Scripts -->
+ <script src="/Public/static/build/js/custom.js"></script>
+    <script>
+      $(".del").click(function () {
+        if(confirm("确认删除?") == true){
+          id = $(this).attr('idvalue');
+
+          $.ajax({
+            url: '<?php echo U("Manage/skill_type/del")?>',
+            type: 'POST',
+            dataType: 'JSON',
+            data: {"id":id},
+            success: function (e) {
+              if (e.code != 200) {
+                alert(e.message)
+              } else {
+                window.location.href = '<?php echo U("Manage/skill_type/index")?>';
+              }
+            }
+          })
+        }
+        return false
+      })
+
+      $(".change_status").click(function () {
+          status = $(this).attr('value');
+          id = $(this).attr('idvalue');
+
+          $.ajax({
+              url: '<?php echo U("Manage/skill/change_status")?>',
+              type: 'POST',
+              dataType: 'JSON',
+              data: {"status":status, "id":id},
+              success: function (e) {
+                  if (e.code != 200) {
+                      alert(e.message)
+                  } else {
+                      window.location.href = '<?php echo U("Manage/skill/index")?>';
+                  }
+              }
+          })
+          return false
+      })
+    </script>
+  </body>
+</html>

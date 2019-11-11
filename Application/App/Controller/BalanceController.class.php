@@ -22,17 +22,5 @@ class BalanceController extends BaseController
 
 	}
 
-	/**
-	 * 用户提现
-	 * @date   2019/11/11 上午11:20
-	 * @url    app/balance/withdraw
-	 * @method get
-	 *
-	 * @param  int param
-	 * @return  array
-	 */
-	public function withdraw(){
-		//先判断是否已经绑定了支付宝账号
 
-	}
 }

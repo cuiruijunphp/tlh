@@ -142,4 +142,11 @@ class OrderModel extends CommonModel{
 
 		return $update_res;
 	}
+
+	/*
+	 * 获取该条件下,消费记录总数
+	 */
+	public function get_sum_demand_skill_price($where){
+		return $this->where($where)->sum('price');
+	}
 }
