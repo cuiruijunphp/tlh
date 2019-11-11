@@ -66,8 +66,6 @@ class UserController extends BaseController {
 			'area' => $params['area'],
 			'address' => $params['address'],
 			'user_id' => $users_insert_result,
-			'add_time' => time(),
-			'update_time' => time(),
 			'user_type' => 3,
 		];
 
