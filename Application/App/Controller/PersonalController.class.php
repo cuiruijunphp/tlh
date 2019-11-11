@@ -584,6 +584,8 @@ class PersonalController extends BaseController {
 				$data_tmp['is_vip'] = 0;
 			}
 
+			$data_tmp['user_name'] = $v['user_name'];
+
 			$data[] = $data_tmp;
 		}
 
