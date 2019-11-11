@@ -68,6 +68,7 @@ class UserController extends BaseController {
 			'user_id' => $users_insert_result,
 			'add_time' => time(),
 			'update_time' => time(),
+			'user_type' => 3,
 		];
 
 		$address_result = $user_address_model->insert_one($address_data);
