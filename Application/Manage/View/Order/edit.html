@@ -18,6 +18,10 @@
    <link href="/Public/static/vendors/nprogress/nprogress.css" rel="stylesheet">
    <!-- Custom Theme Style -->
    <link href="/Public/static/build/css/custom.css" rel="stylesheet">
+
+    <!-- 时间控件css -->
+    <link rel="stylesheet" type="text/css" href="/Public/static/vendors/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css"/>
+
   </head>
 
   <body class="nav-md">
@@ -81,7 +85,7 @@
               <div class="form-group">
                 <label for="pay_time" class="control-label col-md-3 col-sm-3 col-xs-12">支付时间</label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                  <input type="text" id="pay_time" name="pay_time" class="form-control col-md-7 col-xs-12 parsley-success" value="{$list['pay_time']}" placeholder="">
+                  <input type="text" id="pay_time" name="pay_time" class="form-control col-md-7 col-xs-12 parsley-success form_datetime" value="{$list['pay_time']|date='Y-m-d H:i:s',###}" placeholder="" size="12" >
                 </div>
               </div>
 
@@ -128,10 +132,14 @@
 
   <!-- jQuery -->
  <script src="/Public/static/vendors/jquery/dist/jquery.min.js"></script>
+
  <!-- Bootstrap -->
  <script src="/Public/static/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
  <!-- FastClick -->
  <script src="/Public/static/vendors/fastclick/lib/fastclick.js"></script>
+
+  <script src="/Public/static/vendors/moment/moment.js"></script>
+
  <!-- NProgress -->
  <script src="/Public/static/vendors/nprogress/nprogress.js"></script>
  <!-- Custom Theme Scripts -->
@@ -139,17 +147,10 @@
     <!-- 新增、编辑课程js -->
     <script src="/Public/static/build/js/course_add_edit.js"></script>
 
-    <script>
-
-      //如果是专业课程,则不选择岗位
-      $('#type').change(function(){
-        type = $(this).val();
-        if(type == 0){
-          $('#job_show_display').show();
-        }else{
-          $('#job_show_display').hide();
-        }
-      })
+  <!-- 时间控件 -->
+  <script src="/Public/static/vendors/moment/min/moment-with-locales.min.js"></script>
+  <script src="/Public/static/vendors/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+  <script>
 
         $("#form").submit(function () {
 
@@ -168,6 +169,23 @@
             })
             return false
         })
+
+      $(".form_datetime").datetimepicker({
+//        autoclose: true,   //选择后自动关闭当前时间控件
+//        isRTL: Metronic.isRTL(), //RTL：right to left（从右向左显示），默认为false，即：从左向右显示
+//        format: "yyyy-mm-dd hh:ii:ss", //时间格式
+//        pickerPosition: (Metronic.isRTL() ? "bottom-right" : "bottom-left")//控件显示位置
+//        minView : "day", //  选择时间时，最小可以选择到那层；默认是‘hour’也可用0表示
+////        language : 'zh-CN', // 语言
+//        autoclose : true, //  true:选择时间后窗口自动关闭
+//        format : 'yyyy-mm-dd hh:ii:ss', // 文本框时间格式，设置为0,最后时间格式为2017-03-23 17:00:00
+//        todayBtn : true, // 如果此值为true 或 "linked"，则在日期时间选择器组件的底部显示一个 "Today" 按钮用以选择当前日期。
+//        startDate : new Date() ,  // 窗口可选时间从今天开始
+//        endDate : new Date()   // 窗口最大时间直至今天
+        format: 'YYYY-MM-DD hh:mm:ss',
+        locale: moment.locale('zh-cn')
+
+      });
     </script>
   </body>
 </html>

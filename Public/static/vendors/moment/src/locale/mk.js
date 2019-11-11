@@ -1,7 +1,7 @@
 //! moment.js locale configuration
-//! locale : macedonian (mk)
+//! locale : Macedonian [mk]
 //! author : Borislav Mickov : https://github.com/B0k0
-
+//! author : Sashko Todorov : https://github.com/bkyceh
 import moment from '../moment';
 
 export default moment.defineLocale('mk', {
@@ -25,35 +25,36 @@ export default moment.defineLocale('mk', {
         lastDay : '[Вчера во] LT',
         lastWeek : function () {
             switch (this.day()) {
-            case 0:
-            case 3:
-            case 6:
-                return '[Изминатата] dddd [во] LT';
-            case 1:
-            case 2:
-            case 4:
-            case 5:
-                return '[Изминатиот] dddd [во] LT';
+                case 0:
+                case 3:
+                case 6:
+                    return '[Изминатата] dddd [во] LT';
+                case 1:
+                case 2:
+                case 4:
+                case 5:
+                    return '[Изминатиот] dddd [во] LT';
             }
         },
         sameElse : 'L'
     },
     relativeTime : {
-        future : 'после %s',
+        future : 'за %s',
         past : 'пред %s',
         s : 'неколку секунди',
-        m : 'минута',
+        ss : '%d секунди',
+        m : 'една минута',
         mm : '%d минути',
-        h : 'час',
+        h : 'еден час',
         hh : '%d часа',
-        d : 'ден',
+        d : 'еден ден',
         dd : '%d дена',
-        M : 'месец',
+        M : 'еден месец',
         MM : '%d месеци',
-        y : 'година',
+        y : 'една година',
         yy : '%d години'
     },
-    ordinalParse: /\d{1,2}-(ев|ен|ти|ви|ри|ми)/,
+    dayOfMonthOrdinalParse: /\d{1,2}-(ев|ен|ти|ви|ри|ми)/,
     ordinal : function (number) {
         var lastDigit = number % 10,
             last2Digits = number % 100;
@@ -75,7 +76,7 @@ export default moment.defineLocale('mk', {
     },
     week : {
         dow : 1, // Monday is the first day of the week.
-        doy : 7  // The week that contains Jan 1st is the first week of the year.
+        doy : 7  // The week that contains Jan 7th is the first week of the year.
     }
 });
 

@@ -162,7 +162,6 @@ class WalletController extends BaseController {
 
 		}else{
 			//消费记录
-
 			$order_list = $order_model->get_list($order_where, $limit. ',' . $page_size, 'add_time desc');
 
 			foreach($order_list as $o_k => $o_v){
