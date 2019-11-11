@@ -21,11 +21,6 @@ class OrderModel extends CommonModel{
 			return '订单不存在';
 		}
 
-		// 查看是否存在
-//				if(!$order_info['payment_id']){
-//					return '未找到该付款信息';
-//				}
-
 		//先判断是成功还是失败
 		if(!in_array($result, ['success', 'fail'])){
 			return '参数非法';
@@ -78,6 +73,58 @@ class OrderModel extends CommonModel{
 					'vip_expire_time' => $vip_expire_time,
 				];
 				$update_result = $user_model->update_data(['id' => $user_id], $user_update_data);
+
+				$account_log_model = D('AccountBalanceLog');
+
+				//判断是否有邀请人,如果有邀请人,则更新邀请人账户余额,写入账户流水
+				if($user_info['invite_user_id']){
+					//更新账户余额
+					$user_model->update_data(['id' => $user_info['invite_user_id']], ['account_balance' => $user_info['account_balance'] + $souce_type_arr[$vip_aging_type['vip_aging_type']['invite_income']]]);
+
+					//写入账户流水
+					$invite_user_balace_log_data = [
+						'user_id' => $user_info['invite_user_id'],
+						'action' => 'INVITE_RECHARGE_VIP',
+						'note' => '邀请人充值会员',
+						'balance' => $souce_type_arr[$vip_aging_type['vip_aging_type']]['invite_income'],
+						'item_id' => $user_id,
+						'order_id' => $order_id,
+					];
+
+					$invite_balace_res = $account_log_model->insert_one($invite_user_balace_log_data);
+				}
+
+				//查看当前县级代理,写入账户流水表中-暂时用这种方式来取
+				//地址信息
+				$user_address_model = D('UserAddress');
+
+				$address_info = $user_address_model->get_one(['user_id' => $user_id]);
+				if($address_info){
+					$province = $address_info['province'];
+					$city = $address_info['city'];
+					$area = $address_info['area'];
+
+					if($province && $city && $area){
+						// 查找代理的user_id
+						$proxy_user_info = $user_address_model->get_one(['province' => $province, 'city' => $city, 'area' => $area, 'user_type' => 3]);
+
+						if($proxy_user_info){
+							// 如果当前有代理,则写入流水表中
+							//写入账户流水
+							$proxy_user_balace_log_data = [
+								'user_id' => $proxy_user_info['user_id'],
+								'action' => 'PROXY_RECHARGE_VIP',
+								'note' => '代理城市用户充值会员',
+								'balance' => $souce_type_arr[$vip_aging_type['vip_aging_type']]['proxy_income'],
+								'item_id' => $user_id,
+								'order_id' => $order_id,
+							];
+
+							$proxy_balace_res = $account_log_model->insert_one($proxy_user_balace_log_data);
+						}
+					}
+				}
+
 			}elseif($order_info['source_type'] == 2){
 
 				// 需求发布成功

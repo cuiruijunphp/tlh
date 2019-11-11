@@ -12,9 +12,11 @@ return array(
 	//会员套餐列表
 	'source_type_arr' => [
 		1 => [
-			'price' => '0.01',
-			'time' => 365,
-			'note' => '一年'
+			'price' => '0.01',//套餐价格
+			'time' => 365,//套餐时间
+			'note' => '一年',//套餐描述
+			'invite_income' => '0.01',//邀请收益
+			'proxy_income' => '0.01',//代理收益
 		]
 	],
 
