@@ -40,6 +40,7 @@ class OrderModel extends CommonModel{
 			'note' => $note,
 			'balance' => number_format($order_info['price'], 2),
 			'item_id' => $source_id,
+			'order_id' => $order_info['order_id'],
 		];
 
 		$balace_res = $balance_log_model->insert_one($insert_balance_log_data);
