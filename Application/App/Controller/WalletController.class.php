@@ -92,7 +92,7 @@ class WalletController extends BaseController {
 		$start_time = $params['start_time'];
 		$end_time = $params['end_time'];
 		$page = $params['page'] ? $params['page'] : 1;
-		$page_size = $params['page_size'] ? $params['page'] : 5;
+		$page_size = $params['page_size'] ? $params['page_size'] : 5;
 
 		$limit = ($page - 1) * $page_size;
 
