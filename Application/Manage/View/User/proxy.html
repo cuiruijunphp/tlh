@@ -80,6 +80,7 @@
                 <!--</div>-->
 
                 <button id="search-btn" type="button" class="btn btn-primary">查询</button>
+                <button id="import-btn" type="button" class="btn btn-primary">导出</button>
             </form>
             <!--END search form-->
 
@@ -163,6 +164,19 @@
           window.location.href = '<?php echo U("Manage/user/proxy");?>' + '&begin_date='+begin_date+'&end_date='+end_date+'&id='+id;
           return false
       })
+
+      $('#import-btn').click(function () {
+
+          begin_date = $('#begin-date').val();
+          end_date = $('#end-date').val();
+          keyword = $('#keyword').val();
+
+          id = '<?php echo $id;?>';
+
+          window.location.href = '<?php echo U("Manage/user/import_proxy_data");?>' + '&begin_date='+begin_date+'&end_date='+end_date+'&id='+id;
+          return false
+      })
+
     </script>
   </body>
 </html>

@@ -94,6 +94,7 @@ class UserController extends BaseController {
 			'password' => compile_password($params['password']),
 			'type' => 3,
 			'mobile_number' => $params['mobile_number'],
+			'sex' => $params['sex'],
 		];
 
 
@@ -199,5 +200,172 @@ class UserController extends BaseController {
 
 		$this->assign($data);
 		$this->display();
+	}
+
+	/**
+	 * 导出数据
+	 * @author cuirj
+	 * @date   2019/5/10 下午3:43
+	 * @method get
+	 *
+	 * @param  int param
+	 */
+	public function import_data(){
+		$user_model = D('Users');
+
+		$params = I('get.');
+
+		$page = I('get.p');
+
+		// 查询条件
+		$province = $params['province'];
+		$city = $params['city'];
+		$area = $params['area'];
+
+		$begin_date = strtotime($params['begin_date']);
+		$end_date = strtotime($params['end_date']);
+
+		$type = $params['type'];
+
+		if($begin_date && $end_date){
+			$where['u.add_time']= [
+				['gt', $begin_date],
+				['lt', $end_date],
+			];
+		}
+
+		if($type){
+			$where['u.type']= $type;
+		}
+
+		if($province){
+			$where['s.province'] = $province;
+		}
+
+		if($city){
+			$where['s.city'] = $city;
+		}
+
+		if($area){
+			$where['s.area'] = $area;
+		}
+
+		$user_list = $user_model->get_user_info_by_where($where, null, null);
+		$user_count = $user_model->get_user_count_by_where($where);
+
+		$company_export = [];
+		foreach($user_list as $k => $v){
+			$company_export[] = [
+				'id' => $v['id'],
+				'user_name' => $v['user_name'],
+				'type' => $v['type']== 1 ? '普通会员' : '代理',
+				'mobile_number' => $v['mobile_number'],
+				'is_vip' => $v['is_vip'] ? '是' : '否',
+				'vip_expire_time' => $v['vip_expire_time'] ? date('Y-m-d H:i:s', $v['vip_expire_time']) : '',
+				'is_vefify' => $v['is_vefify'] ? '是' : '否',
+				'sex' => $v['sex'] == 1 ? '男' : '女',
+				'add_time' => date('Y-m-d H:i:s', $v['add_time']),
+				'address' => $v['province'] . $v['city'] . $v['address'],
+			];
+		}
+
+		$xlsCell = array(
+			array('id', 'ID'),
+			array('user_name', '用户名'),
+			array('type', '账户类型'),
+			array('mobile_number', '手机号'),
+			array('is_vip', '是否vip'),
+			array('vip_expire_time', 'vip过期时间'),
+			array('is_vefify', '是否认证'),
+			array('sex', '性别'),
+			array('add_time', '注册时间'),
+			array('address', '地址'),
+		);
+
+		$this->exportExcel('注册用户',$xlsCell,$company_export);
+	}
+
+	/**
+	 * 导出代理数据
+	 * @author cuirj
+	 * @date   2019/5/10 下午3:43
+	 * @method get
+	 *
+	 * @param  int param
+	 */
+	public function import_proxy_data(){
+		$user_model = D('Users');
+
+		$params = I('get.');
+
+		$id = $params['id'];
+
+		$user_address_model = D('UserAddress');
+		$user_address_info = $user_address_model->get_one(['user_id' => $id]);
+
+		// 查询条件
+		$province = $user_address_info['province'];
+		$city = $user_address_info['city'];
+		$area = $user_address_info['area'];
+
+		$begin_date = strtotime($params['begin_date']);
+		$end_date = strtotime($params['end_date']);
+
+		$type = $params['type'];
+
+		if($begin_date && $end_date){
+			$where['u.add_time']= [
+				['gt', $begin_date],
+				['lt', $end_date],
+			];
+		}
+
+		$where['u.type']= 1;
+
+		if($province){
+			$where['s.province'] = $province;
+		}
+
+		if($city){
+			$where['s.city'] = $city;
+		}
+
+		if($area){
+			$where['s.area'] = $area;
+		}
+
+		$user_list = $user_model->get_user_info_by_where($where, null, null);
+		$user_count = $user_model->get_user_count_by_where($where);
+
+		$company_export = [];
+		foreach($user_list as $k => $v){
+			$company_export[] = [
+				'id' => $v['id'],
+				'user_name' => $v['user_name'],
+				'type' => $v['type']== 1 ? '普通会员' : '代理',
+				'mobile_number' => $v['mobile_number'],
+				'is_vip' => $v['is_vip'] ? '是' : '否',
+				'vip_expire_time' => $v['vip_expire_time'] ? date('Y-m-d H:i:s', $v['vip_expire_time']) : '',
+				'is_vefify' => $v['is_vefify'] ? '是' : '否',
+				'sex' => $v['sex'] == 1 ? '男' : '女',
+				'add_time' => date('Y-m-d H:i:s', $v['add_time']),
+				'address' => $v['province'] . $v['city'] . $v['address'],
+			];
+		}
+
+		$xlsCell = array(
+			array('id', 'ID'),
+			array('user_name', '用户名'),
+			array('type', '账户类型'),
+			array('mobile_number', '手机号'),
+			array('is_vip', '是否vip'),
+			array('vip_expire_time', 'vip过期时间'),
+			array('is_vefify', '是否认证'),
+			array('sex', '性别'),
+			array('add_time', '注册时间'),
+			array('address', '地址'),
+		);
+
+		$this->exportExcel('代理用户',$xlsCell,$company_export);
 	}
 }

@@ -121,4 +121,42 @@ class BaseController extends CommonController {
 			return false;
 		}
 	}
+
+	/**
+	 * 数据导出为.xls格式
+	 * @param string $fileName 导出的文件名
+	 * @param $expCellName     array -> 数据库字段以及字段的注释
+	 * @param $expTableData    Model -> 要传入的数据
+	 */
+	public function exportExcel($fileName='table',$expCellName,$expTableData){
+		$xlsTitle = iconv('utf-8', 'gb2312', $fileName);//文件名称
+		$xlsName = $fileName.date("_Y.m.d_H.i.s"); //or $xlsTitle 文件名称可根据自己情况设定
+		$cellNum = count($expCellName);
+		$dataNum = count($expTableData);
+
+		Vendor('PHPExcel.Classes.PHPExcel');
+		Vendor('PHPExcel.Classes.PHPExcel.IOFactory');
+		Vendor('PHPExcel.Classes.PHPExcel.Reader.Excel5');
+		Vendor('PHPExcel.Classes.PHPExcel.Writer.Excel5');
+
+		$objPHPExcel = new \PHPExcel();
+		$cellName = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ','AK','AL','AM','AN','AO','AP','AQ','AR','AS','AT','AU','AV','AW','AX','AY','AZ');
+
+		for($i=0;$i<$cellNum;$i++){
+			$objPHPExcel->setActiveSheetIndex(0)->setCellValue($cellName[$i].'1', $expCellName[$i][1]);
+		}
+		// Miscellaneous glyphs, UTF-8
+		for($i=0;$i<$dataNum;$i++){
+			for($j=0;$j<$cellNum;$j++){
+				$objPHPExcel->getActiveSheet(0)->setCellValue($cellName[$j].($i+2), $expTableData[$i][$expCellName[$j][0]]);
+			}
+		}
+
+		header('pragma:public');
+		header('Content-type:application/vnd.ms-excel;charset=utf-8;name="'.$xlsTitle.'.xls"');
+		header("Content-Disposition:attachment;filename=$xlsName.xls");//attachment新窗口打印inline本窗口打印
+		$objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+		$objWriter->save('php://output');
+		exit;
+	}
 }

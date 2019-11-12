@@ -80,6 +80,7 @@
                 </div>
 
                 <button id="search-btn" type="button" class="btn btn-primary">查询</button>
+                <button id="import-btn" type="button" class="btn btn-primary">导出</button>
             </form>
             <!--END search form-->
 
@@ -175,6 +176,22 @@
           type = $('#type').val();
 
           window.location.href = '<?php echo U("Manage/user/index");?>' + '&begin_date='+begin_date+'&end_date='+end_date+'&province='+province+'&city='+city+'&area='+district+'&keyword='+keyword+'&type='+type;
+          return false
+      })
+
+      $('#import-btn').click(function () {
+
+          province = $('#province').val();
+          city = $('#city').val();
+          district = $('#district').val();
+
+          begin_date = $('#begin-date').val();
+          end_date = $('#end-date').val();
+          keyword = $('#keyword').val();
+
+          type = $('#type').val();
+
+          window.location.href = '<?php echo U("Manage/user/import_data");?>' + '&begin_date='+begin_date+'&end_date='+end_date+'&province='+province+'&city='+city+'&area='+district+'&keyword='+keyword+'&type='+type;
           return false
       })
     </script>
