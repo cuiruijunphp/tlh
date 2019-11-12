@@ -265,7 +265,7 @@ class UserController extends BaseController {
 				'is_vefify' => $v['is_vefify'] ? '是' : '否',
 				'sex' => $v['sex'] == 1 ? '男' : '女',
 				'add_time' => date('Y-m-d H:i:s', $v['add_time']),
-				'address' => $v['province'] . $v['city'] . $v['address'],
+				'address' => $v['province'] . $v['city'] . $v['area'] . $v['address'],
 			];
 		}
 
@@ -349,7 +349,7 @@ class UserController extends BaseController {
 				'is_vefify' => $v['is_vefify'] ? '是' : '否',
 				'sex' => $v['sex'] == 1 ? '男' : '女',
 				'add_time' => date('Y-m-d H:i:s', $v['add_time']),
-				'address' => $v['province'] . $v['city'] . $v['address'],
+				'address' => $v['province'] . $v['city'] . $v['area'] . $v['address'],
 			];
 		}
 
