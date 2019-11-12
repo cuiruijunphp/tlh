@@ -19,12 +19,60 @@ class UserController extends BaseController {
 
 		$user_model = D('Users');
 
+		$params = I('get.');
+
 		$page = I('get.p');
-		$user_list = $user_model->get_page_list(null, $page);
-		$user_count = $user_model->get_count();
+
+		// 查询条件
+		$province = $params['province'];
+		$city = $params['city'];
+		$area = $params['area'];
+
+		$begin_date = strtotime($params['begin_date']);
+		$end_date = strtotime($params['end_date']);
+
+		$keyword = $params['keyword'];
+
+		$type = $params['type'];
+
+		if($begin_date && $end_date){
+			$where['u.add_time']= [
+				['gt', $begin_date],
+				['lt', $end_date],
+			];
+		}
+
+		if($type){
+			$where['u.type']= $type;
+		}
+
+		if($province){
+			$where['s.province'] = $province;
+		}
+
+		if($city){
+			$where['s.city'] = $city;
+		}
+
+		if($area){
+			$where['s.area'] = $area;
+		}
+
+		$user_list = $user_model->get_user_info_by_where($where, $page);
+		$user_count = $user_model->get_user_count_by_where($where);
 		$data['list'] = $user_list;
 		// 加上分页
 		$data['page'] = $this->page_new($user_count);
+
+		// 加上查询参数
+		$data['province'] = $province;
+		$data['city'] = $city;
+		$data['area'] = $area;
+		$data['begin_date'] = $params['begin_date'];
+		$data['end_date'] = $params['end_date'];
+		$data['keyword'] = $keyword;
+		$data['type'] = $type;
+
 		$this->assign($data);
 		$this->display();
     }
@@ -89,5 +137,67 @@ class UserController extends BaseController {
 		cookie('user_id', null);
 
 		$this->redirect(U(('Manage/login/login')));
+	}
+
+	/*
+	 * 查看代理注册的会员
+	 */
+	public function proxy(){
+
+		$user_model = D('Users');
+
+		$params = I('get.');
+
+		$page = I('get.p');
+
+		$id = $params['id'];
+
+		$user_address_model = D('UserAddress');
+		$user_address_info = $user_address_model->get_one(['user_id' => $id]);
+
+		// 查询条件
+		$province = $user_address_info['province'];
+		$city = $user_address_info['city'];
+		$area = $user_address_info['area'];
+
+		$begin_date = strtotime($params['begin_date']);
+		$end_date = strtotime($params['end_date']);
+
+		$type = $params['type'];
+
+		if($begin_date && $end_date){
+			$where['u.add_time']= [
+				['gt', $begin_date],
+				['lt', $end_date],
+			];
+		}
+
+		$where['u.type']= 1;
+
+		if($province){
+			$where['s.province'] = $province;
+		}
+
+		if($city){
+			$where['s.city'] = $city;
+		}
+
+		if($area){
+			$where['s.area'] = $area;
+		}
+
+		$user_list = $user_model->get_user_info_by_where($where, $page);
+		$user_count = $user_model->get_user_count_by_where($where);
+		$data['list'] = $user_list;
+		// 加上分页
+		$data['page'] = $this->page_new($user_count);
+
+		// 加上查询参数
+		$data['begin_date'] = $params['begin_date'];
+		$data['end_date'] = $params['end_date'];
+		$data['id'] = $params['id'];
+
+		$this->assign($data);
+		$this->display();
 	}
 }

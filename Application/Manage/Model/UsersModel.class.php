@@ -31,4 +31,26 @@ class UsersModel extends CommonModel{
 			->join('user_skill as l on u.id=l.user_id', 'left')
 			->select();
 	}
+
+	/*
+	 * 根据传入的where条件来取用户信息
+	 */
+	public function get_user_info_by_where($where, $page = 1, $page_size = 10){
+		return $this->field('u.*,s.province,s.city,s.address,s.area')
+			->alias('u')
+			->where($where)
+			->join('user_address as s on u.id=s.user_id', 'left')
+			->page($page, $page_size)
+			->select();
+	}
+
+	/*
+	 * 根据传入的where条件来取用户总数
+	 */
+	public function get_user_count_by_where($where){
+		return $this->alias('u')
+			->where($where)
+			->join('user_address as s on u.id=s.user_id', 'left')
+			->count();
+	}
 }

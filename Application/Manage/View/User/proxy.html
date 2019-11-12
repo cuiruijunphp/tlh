@@ -65,26 +65,26 @@
                     <!--<input id="keyword" class="form-control" type="text" name="keyword" value="{$keyword}" placeholder="请输入关键词">-->
                 <!--</div>-->
 
-                <div class="form-group" data-toggle="distpicker">
-                    <select id="province" name="province" class="form-control" data-province="{$province}"></select>
-                    <select id="city"  name="city" class="form-control" data-city="{$city}"></select>
-                    <select id="district"  name="district" class="form-control" data-district="{$area}"></select>
-                </div>
+                <!--<div class="form-group" data-toggle="distpicker">-->
+                    <!--<select id="province" name="province" class="form-control" data-province="{$province}"></select>-->
+                    <!--<select id="city"  name="city" class="form-control" data-city="{$city}"></select>-->
+                    <!--<select id="district"  name="district" class="form-control" data-district="{$area}"></select>-->
+                <!--</div>-->
 
-                <div class="form-group">
-                    <select id="type" name="type" class="form-control">
-                        <option value=""></option>
-                        <option value="1" <if condition="$type eq 1 ">selected</if>>普通会员</option>
-                        <option value="3" <if condition="$type eq 3 ">selected</if>>代理会员</option>
-                    </select>
-                </div>
+                <!--<div class="form-group">-->
+                    <!--<select id="type" name="type" class="form-control">-->
+                        <!--<option value=""></option>-->
+                        <!--<option value="1" <if condition="$type eq 1 ">selected</if>>普通会员</option>-->
+                        <!--<option value="3" <if condition="$type eq 3 ">selected</if>>代理会员</option>-->
+                    <!--</select>-->
+                <!--</div>-->
 
                 <button id="search-btn" type="button" class="btn btn-primary">查询</button>
             </form>
             <!--END search form-->
 
           <div id="course_list">
-            <a href="{:U('Manage/user/add')}"><button class="btn btn-success btn-sm fr" id="add_user">新增代理商</button></a>
+            <!--<a href="{:U('Manage/user/add')}"><button class="btn btn-success btn-sm fr" id="add_user">新增代理商</button></a>-->
               <table class="full_width_table">
                  <thead>
                    <tr>
@@ -96,7 +96,7 @@
                      <th>认证</th>
                      <th>性别</th>
                      <th>注册时间</th>
-                     <th>操作</th>
+                     <!--<th>操作</th>-->
                    </tr>
                  </thead>
                  <foreach name="list" key="k" item="v">
@@ -109,13 +109,10 @@
                    <td>{$v["is_vefify"] ? '是' : '否'}</td>
                    <td>{$v["sex"] == 1 ? '男' : '女'}</td>
                    <td>{$v["add_time"]|date='Y年m月d日 H时i分',###}</td>
-                   <td>
-                       <if condition="$v['type'] eq 3 ">
-                           <a href="{:U('Manage/user/proxy?id='.$v['id'])}"><button class="btn btn-success btn-sm">查看代理的会员</button></a>
-                       </if>
+                   <!--<td>-->
                       <!--<a href="{:U('Manage/user/edit?id='.$v['id'])}"><button class="btn btn-success btn-sm">编辑</button></a>-->
                      <!--<button class="btn btn-danger btn-sm del" idvalue="{$v['id']}">删除</button>-->
-                   </td>
+                   <!--</td>-->
                  </tr>
                  </foreach>
                </table>
@@ -146,12 +143,6 @@
  <!-- Custom Theme Scripts -->
  <script src="/Public/static/build/js/custom.js"></script>
 
-  <!-- 省市区联动 -->
-  <script src="/Public/static/build/js/distpicker.data.min.js"></script>
-  <script src="/Public/static/build/js/distpicker.min.js"></script>
-  <script src="/Public/static/build/js/main.js"></script>
-  <script src="/Public/static/build/js/jquery.form.js"></script>
-
   <!-- 时间控件 -->
   <script src="/Public/static/vendors/moment/min/moment-with-locales.min.js"></script>
   <script src="/Public/static/vendors/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
@@ -163,18 +154,13 @@
       });
 
       $('#search-btn').click(function () {
-
-          province = $('#province').val();
-          city = $('#city').val();
-          district = $('#district').val();
-
           begin_date = $('#begin-date').val();
           end_date = $('#end-date').val();
           keyword = $('#keyword').val();
 
-          type = $('#type').val();
+          id = '<?php echo $id;?>';
 
-          window.location.href = '<?php echo U("Manage/user/index");?>' + '&begin_date='+begin_date+'&end_date='+end_date+'&province='+province+'&city='+city+'&area='+district+'&keyword='+keyword+'&type='+type;
+          window.location.href = '<?php echo U("Manage/user/proxy");?>' + '&begin_date='+begin_date+'&end_date='+end_date+'&id='+id;
           return false
       })
     </script>
