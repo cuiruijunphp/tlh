@@ -150,14 +150,38 @@ class WalletController extends BaseController {
 				['lt', $end_time],
 			];
 
-			$balance_tmp_list = $account_log_model->get_list($where, $limit. ',' . $page_size, 'add_time desc');
 
-			foreach($balance_tmp_list as $k => $v){
-				$balance_list[$k] = [
-					'note' => $v['note'],
-					'add_time' => $v['add_time'],
-					'balance' => $v['balance'],
+			if(in_array($type, [1,2,3])){
+				// 非代理类型返回的数据格式
+				$balance_tmp_list = $account_log_model->get_list($where, $limit. ',' . $page_size, 'add_time desc');
+
+				foreach($balance_tmp_list as $k => $v){
+					$balance_list[$k] = [
+						'note' => $v['note'],
+						'add_time' => $v['add_time'],
+						'balance' => $v['balance'],
+					];
+				}
+			}else{
+
+				$proxy_user_list = $account_log_model->get_proxy_user_info($where, $page, $page_size);
+				//代理模式返回数据格式
+				$proxy_where_user_count = $account_log_model->get_condition_count($where);
+
+				unset($where['add_time']);
+				$proxy_user_count = $account_log_model->get_condition_count($where);
+
+				foreach($proxy_user_list as $p_k => $p_v){
+					$proxy_user_list[$p_k]['head_img'] = $p_v['head_img'] ? UPLOAD_URL . $p_v['head_img'] : '';
+				}
+
+				$proxy_res_data = [
+					'proxy_user_list' => $proxy_user_list,
+					'proxy_user_list_count' => $proxy_user_count,
+					'proxy_user_list_date_count' => $proxy_where_user_count,
 				];
+
+				$this->result_return($proxy_res_data);
 			}
 
 		}else{
