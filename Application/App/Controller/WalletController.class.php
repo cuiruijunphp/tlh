@@ -180,7 +180,7 @@ class WalletController extends BaseController {
 		$withdraw_sum = $account_log_model->get_sum_withdraw_price($withdraw_where);
 
 		$res_data = [
-			'balance_list' => $balance_list ? $balance_list : '0.00',
+			'balance_list' => $balance_list ? $balance_list : [],
 			'withdraw_sum' => $withdraw_sum ? $withdraw_sum : '0.00',
 			'pay_sum' => $pay_sum ? $pay_sum : '0.00',
 			'account_balance' => $this->user_info['account_balance']
