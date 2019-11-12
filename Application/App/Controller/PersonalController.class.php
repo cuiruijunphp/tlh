@@ -198,7 +198,22 @@ class PersonalController extends BaseController {
 		}
 		$user_model = D('Users');
 
-		$update_result = $user_model->update_data(['id' => $this->user_id], ['weixin_account' => $weixin_account, 'weibo_account' => $weibo_account, 'alipay_account' => $alipay_account, 'is_vefify' => 1, 'alipay_real_name' => $alipay_real_name]);
+		$data['is_vefify'] = 1;
+
+		if($alipay_account){
+			$data['alipay_account'] = $alipay_account;
+			$data['alipay_real_name'] = $alipay_real_name;
+		}
+
+		if($weixin_account){
+			$data['weixin_account'] = $weixin_account;
+		}
+
+		if($weibo_account){
+			$data['weibo_account'] = $weibo_account;
+		}
+
+		$update_result = $user_model->update_data(['id' => $this->user_id], $data);
 
 		if($update_result === false){
 			$this->result_return(null, 500, '绑定账号失败');
@@ -254,6 +269,7 @@ class PersonalController extends BaseController {
 			'weixin_account' => $user_info['weixin_account'],
 			'weibo_account' => $user_info['weibo_account'],
 			'alipay_account' => $user_info['alipay_account'],
+			'alipay_real_name' => $user_info['alipay_real_name'],
 			'view' => $user_info['view'],
 		];
 

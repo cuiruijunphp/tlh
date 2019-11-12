@@ -196,6 +196,7 @@ class LoginController extends CommonController {
 			'id' => $user_info['id'],
 			'weibo_account' => $user_info['weibo_account'],
 			'alipay_account' => $user_info['alipay_account'],
+			'alipay_real_name' => $user_info['alipay_real_name'],
 			'account_balance' => $user_info['account_balance'],
 		];
 
