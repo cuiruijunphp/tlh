@@ -271,6 +271,7 @@ class PersonalController extends BaseController {
 			'alipay_account' => $user_info['alipay_account'],
 			'alipay_real_name' => $user_info['alipay_real_name'],
 			'view' => $user_info['view'],
+			'type' => $user_info['type'],
 		];
 
 		// 如果是主态,则返回多余信息
