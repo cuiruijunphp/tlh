@@ -240,7 +240,7 @@ class OrderController extends BaseController {
 				'price' => $v['price'],
 				'status' => $this->status_arr[$v['status']],
 				'source_type' => $this->souce_type[$v['source_type']],
-				'pay_type' => $v['pay_type'] == 'wx_app' ? '微信' : '支付宝',
+				'pay_type' => $v['pay_type'] == 'wx_app' ? '微信' : ($v['pay_type'] == 'alipay_app' ? '支付宝': ''),
 				'add_time' => date('Y-m-d H:i:s', $v['add_time']),
 				'pay_time' => $v['pay_time'] ? date('Y-m-d H:i:s', $v['pay_time']) : '',
 				'refund_time' => $v['refund_time'] ? date('Y-m-d H:i:s', $v['refund_time']) : '',

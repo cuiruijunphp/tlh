@@ -115,7 +115,7 @@
                    <td>{$v["price"]}</td>
                    <td>{$status_arr[$v["status"]]}</td>
                    <td>{$source_type[$v["source_type"]]}</td>
-                   <td>{$v["pay_type"] == 'alipay_app' ? '支付宝' : '微信支付'}</td>
+                   <td>{$v["pay_type"] == 'alipay_app' ? '支付宝' : (($v["pay_type"] == 'wx_app') ? '微信支付' : '')}</td>
                    <td>{$v["add_time"]|date='Y年m月d日 H时i分',###}</td>
                    <td>{$v["pay_time"] ? $v["pay_time"]|date='Y年m月d日 H时i分',### : ''}</td>
                    <td>{$v["refund_time"] ? $v["refund_time"]|date='Y年m月d日 H时i分',### : ''}</td>
