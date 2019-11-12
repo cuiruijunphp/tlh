@@ -65,36 +65,91 @@
               </div>
 
               <div class="form-group">
-                <label for="amount" class="control-label col-md-3 col-sm-3 col-xs-12">密码</label>
+                <label for="password" class="control-label col-md-3 col-sm-3 col-xs-12">密码</label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                   <input type="text" name="password" id="password" class="form-control col-md-7 col-xs-12 parsley-success" value="{$list['password']}" placeholder="请填写登录密码">
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="amount" class="control-label col-md-3 col-sm-3 col-xs-12">手机号</label>
+                <label for="mobile_number" class="control-label col-md-3 col-sm-3 col-xs-12">手机号</label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                  <input type="text" name="mobile_number" id="amount" class="form-control col-md-7 col-xs-12 parsley-success" value="{$list.amount}" placeholder="请填写登录密码">
+                  <input type="text" name="mobile_number" id="mobile_number" class="form-control col-md-7 col-xs-12 parsley-success" value="{$list.mobile_number}" placeholder="请填写代理手机号">
+                </div>
+              </div>
+
+              <!--<div class="form-group">-->
+                <!--<label for="amount" class="control-label col-md-3 col-sm-3 col-xs-12">省份</label>-->
+                <!--<div class="col-md-6 col-sm-6 col-xs-12">-->
+                  <!--<input type="text" name="province" id="province" class="form-control col-md-7 col-xs-12 parsley-success" value="{$list.amount}" placeholder="">-->
+                <!--</div>-->
+              <!--</div>-->
+
+              <!--<div class="form-group">-->
+                <!--<label for="amount" class="control-label col-md-3 col-sm-3 col-xs-12">市区</label>-->
+                <!--<div class="col-md-6 col-sm-6 col-xs-12">-->
+                  <!--<input type="text" name="city" id="city" class="form-control col-md-7 col-xs-12 parsley-success" value="{$list.amount}" placeholder="">-->
+                <!--</div>-->
+              <!--</div>-->
+
+
+              <div class="form-group" data-toggle="distpicker">
+                <label for="province" class="control-label col-md-3 col-sm-3 col-xs-12">代理县城</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <select id="province" name="province"></select>
+                  <select id="city" name="city"></select>
+                  <select id="district" name="area"></select>
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="amount" class="control-label col-md-3 col-sm-3 col-xs-12">省份</label>
+                <label for="address" class="control-label col-md-3 col-sm-3 col-xs-12">具体地址</label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                  <input type="text" name="province" id="province" class="form-control col-md-7 col-xs-12 parsley-success" value="{$list.amount}" placeholder="">
+                  <input type="text" name="address" id="address" class="form-control col-md-7 col-xs-12 parsley-success" value="{$list.address}" placeholder="请填写代理具体地址">
                 </div>
               </div>
 
-              <div class="form-group">
-                <label for="amount" class="control-label col-md-3 col-sm-3 col-xs-12">市区</label>
-                <div class="col-md-6 col-sm-6 col-xs-12">
-                  <input type="text" name="city" id="city" class="form-control col-md-7 col-xs-12 parsley-success" value="{$list.amount}" placeholder="">
+              <!--<div class="form-group" data-toggle="distpicker">-->
+                <!--<label for="city" class="control-label col-md-3 col-sm-3 col-xs-12">市区</label>-->
+                <!--<div class="col-md-6 col-sm-6 col-xs-12">-->
+                  <!--<select  id="city"></select>-->
+                <!--</div>-->
+              <!--</div>-->
+
+              <!--<div class="form-group" data-toggle="distpicker">-->
+                <!--<label for="district" class="control-label col-md-3 col-sm-3 col-xs-12">市区</label>-->
+                <!--<div class="col-md-6 col-sm-6 col-xs-12">-->
+                  <!--<select  id="district"></select>-->
+                <!--</div>-->
+              <!--</div>-->
+
+              <!--<form class="form-inline">-->
+                <!--<div data-toggle="distpicker">-->
+                  <!--<div class="form-group">-->
+                    <!--<label  for="province1">Province</label>-->
+                    <!--<select  id="province1"></select>-->
+
+                    <!--<label  for="city1">City</label>-->
+                    <!--<select  id="city1"></select>-->
+
+                    <!--<label  for="district1">District</label>-->
+                    <!--<select  id="district1"></select>-->
+                  <!--</div>-->
+                  <!--<div class="form-group">-->
+                    <!--<label class="sr-only" for="city1">City</label>-->
+                    <!--<select class="form-control" id="city1"></select>-->
+                  <!--</div>-->
+                  <!--<div class="form-group">-->
+                    <!--<label class="sr-only" for="district1">District</label>-->
+                    <!--<select class="form-control" id="district1"></select>-->
+                  <!--</div>-->
                 </div>
-              </div>
+              </form>
+
 
               <div class="btns col-xs-12" style="text-align: center;margin-top: 20px;">
                 <button class="btn btn-default btn-sm" type="button">取消</button>
-                <button class="btn btn-success btn-sm" type="submit">保存</button>
+                <button class="btn btn-success btn-sm" id="save" type="submit">保存</button>
               </div>
             </form>
           </div>
@@ -123,25 +178,31 @@
  <!-- Custom Theme Scripts -->
  <script src="/Public/static/build/js/custom.js"></script>
     <!-- 新增、编辑课程js -->
-    <script src="/Public/static/build/js/course_add_edit.js"></script>
+  <script src="/Public/static/build/js/course_add_edit.js"></script>
 
-    <script>
-        $("#form").submit(function () {
-            $.ajax({
-                url: $(this).attr('action'),
-                type: 'POST',
-                dataType: 'JSON',
-                data: $(this).serialize(),
-                success: function (e) {
-                    if (e.code != 200) {
-                        alert(e.message)
-                    } else {
-                        window.location.href = '<?php echo U("Manage/user/index");?>';
-                    }
-                }
-            })
-            return false
+  <!-- 省市联动 -->
+  <script src="/Public/static/build/js/distpicker.data.min.js"></script>
+  <script src="/Public/static/build/js/distpicker.min.js"></script>
+  <script src="/Public/static/build/js/main.js"></script>
+  <script src="/Public/static/build/js/jquery.form.js"></script>
+  <script type="text/javascript">
+
+        $('#save').click(function () {
+          $('#form').ajaxSubmit({
+            url: $(this).attr('action'),
+            type: 'POST',
+            dataType: 'JSON',
+            data: $(this).serialize(),
+            success: function (e) {
+              if (e.code != 200) {
+                alert(e.message)
+              } else {
+                window.location.href = '<?php echo U("Manage/user/index");?>';
+              }
+            }
+          });
+          return false
         })
-    </script>
+  </script>
   </body>
 </html>
