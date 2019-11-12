@@ -63,7 +63,14 @@ class CommonModel extends Model{
 	 * 查询分页数据
 	 */
 	public function get_page_list($where = null, $page = 1, $page_size = 10){
-		return $this->where($where)->limit($page_size)->page($page)->select();
+
+		if($page){
+			$data = $this->where($where)->limit($page_size)->page($page)->select();
+		}else{
+			$data = $this->where($where)->select();
+		}
+
+		return $data;
 	}
 
 	/*

@@ -275,7 +275,7 @@ class OrderController extends BaseController {
 	public function import_withdraw_data(){
 		$order_model = D('Order');
 
-		$where = ['source_type' => 4];
+		$where['source_type'] = 4;
 
 		$params = I('get.');
 
