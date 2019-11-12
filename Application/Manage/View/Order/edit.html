@@ -153,10 +153,9 @@
   <script>
 
         $("#form").submit(function () {
-
             $.ajax({
                 url: $(this).attr('action'),
-                type: 'get',
+                type: 'post',
                 dataType: 'JSON',
                 data: $(this).serialize(),
                 success: function (e) {

@@ -3,33 +3,133 @@ namespace Manage\Controller;
 use Think\Controller;
 class OrderController extends BaseController {
 
+	protected $souce_type;
+	protected $status_arr;
+	protected $withdraw_status_arr;
+
 	public function __construct(){
 		parent::__construct();
-		$skill_status_arr = [
-			0 => '待审核',
-			1 => '审核通过',
-			2 => '审核不通过',
+		$status_arr = [
+			0 => '待支付',
+			1 => '支付成功',
+			2 => '支付失败',
+			3 => '已退款',
 		];
 
-		$data['skill_status_arr'] = $skill_status_arr;
+		$withdraw_status_arr = [
+			0 => '待提现',
+			1 => '提现成功',
+			2 => '提现失败',
+		];
+
+		$source_type = [
+			1 => '充值会员',
+			2 => '发布需求',
+			3 => '预约技能',
+		];
+
+		$this->souce_type = $source_type;
+		$this->status_arr = $status_arr;
+		$this->withdraw_status_arr = $withdraw_status_arr;
+
+		$data['withdraw_status_arr'] = $withdraw_status_arr;
+		$data['status_arr'] = $status_arr;
+		$data['source_type'] = $source_type;
 		$this->assign($data);
 	}
 
-	public function withdraw(){
+	/**
+	 * 订单管理
+	 * @date   2019/11/12 下午9:34
+	 */
+	public function index(){
 
 		$order_model = D('Order');
 
-		$where = ['source_type' => 4];
+		$where['source_type'] = ['in', '1,2,3'];
+
+		$params = I('get.');
 
 		$page = I('get.p');
+
+		$begin_date = strtotime($params['begin_date']);
+		$end_date = strtotime($params['end_date']);
+
+		if($params['begin_date'] && $params['end_date']){
+			$where['add_time'] = [
+				['gt', $begin_date],
+				['lt', $end_date],
+			];
+		}
+
+		if($params['status'] != '-1'){
+			$where['status'] = $params['status'];
+		}
+
+		if($params['order_id']){
+			$where['order_id'] = $params['order_id'];
+		}
+
+		if($params['pay_type']){
+			$where['pay_type'] = $params['pay_type'];
+		}
+
 		$order_list = $order_model->get_page_list($where, $page, 10);
 		$order_count = $order_model->get_count($where);
 		$data['list'] = $order_list;
 		// 加上分页
 		$data['page'] = $this->page_new($order_count);
 
+		$data['begin_date'] = $params['begin_date'];
+		$data['end_date'] = $params['end_date'];
+		$data['order_id'] = $params['order_id'];
+		$data['pay_type'] = $params['pay_type'];
+		$data['status'] = $params['status'];
+
 		$this->assign($data);
-		$this->display('index');
+		$this->display();
+	}
+
+	/**
+	 * 提现管理
+	 * @date   2019/11/12 下午9:34
+	 */
+	public function withdraw(){
+
+		$order_model = D('Order');
+
+		$where = ['source_type' => 4];
+
+		$params = I('get.');
+
+		$page = I('get.p');
+
+		$begin_date = strtotime($params['begin_date']);
+		$end_date = strtotime($params['end_date']);
+
+		if($params['begin_date'] && $params['end_date']){
+			$where['add_time'] = [
+				['gt', $begin_date],
+				['lt', $end_date],
+			];
+		}
+
+		if($params['status'] != '-1'){
+			$where['status'] = $params['status'];
+		}
+
+		$order_list = $order_model->get_page_list($where, $page, 10);
+		$order_count = $order_model->get_count($where);
+		$data['list'] = $order_list;
+		// 加上分页
+		$data['page'] = $this->page_new($order_count);
+
+		$data['begin_date'] = $params['begin_date'];
+		$data['end_date'] = $params['end_date'];
+		$data['status'] = $params['status'];
+
+		$this->assign($data);
+		$this->display();
 	}
 
 	public function edit(){
@@ -88,5 +188,142 @@ class OrderController extends BaseController {
 		$data['list'] = $order_info;
 		$this->assign($data);
 		$this->display();
+	}
+
+
+	/**
+	 * 导出订单数据
+	 * @author cuirj
+	 * @date   2019/5/10 下午3:43
+	 * @method get
+	 *
+	 * @param  int param
+	 */
+	public function import_order_data(){
+		$order_model = D('Order');
+
+		$where['source_type'] = ['in', '1,2,3'];
+
+		$params = I('get.');
+
+		$page = I('get.p');
+
+		$begin_date = strtotime($params['begin_date']);
+		$end_date = strtotime($params['end_date']);
+
+		if($params['begin_date'] && $params['end_date']){
+			$where['add_time'] = [
+				['gt', $begin_date],
+				['lt', $end_date],
+			];
+		}
+
+		if($params['status'] != '-1'){
+			$where['status'] = $params['status'];
+		}
+
+		if($params['order_id']){
+			$where['order_id'] = $params['order_id'];
+		}
+
+		if($params['pay_type']){
+			$where['pay_type'] = $params['pay_type'];
+		}
+
+		$order_list = $order_model->get_page_list($where, null, null);
+
+		$company_export = [];
+		foreach($order_list as $k => $v){
+			$company_export[] = [
+				'order_id' => $v['order_id'],
+				'user_id' => $v['user_id'],
+				'price' => $v['price'],
+				'status' => $this->status_arr[$v['status']],
+				'source_type' => $this->souce_type[$v['source_type']],
+				'pay_type' => $v['pay_type'] == 'wx_app' ? '微信' : '支付宝',
+				'add_time' => date('Y-m-d H:i:s', $v['add_time']),
+				'pay_time' => $v['pay_time'] ? date('Y-m-d H:i:s', $v['pay_time']) : '',
+				'refund_time' => $v['refund_time'] ? date('Y-m-d H:i:s', $v['refund_time']) : '',
+				'payment_id' => $v['payment_id'],
+			];
+		}
+
+		$xlsCell = array(
+			array('order_id', '订单ID'),
+			array('user_id', '用户id'),
+			array('price', '订单金额'),
+			array('status', '状态'),
+			array('source_type', '订单类型'),
+			array('pay_type', '支付方式'),
+			array('add_time', '下单时间'),
+			array('pay_time', '支付时间'),
+			array('refund_time', '退款时间'),
+			array('payment_id', '支付流水号'),
+		);
+
+		$this->exportExcel('订单',$xlsCell,$company_export);
+	}
+
+	/**
+	 * 导出代理数据
+	 * @author cuirj
+	 * @date   2019/5/10 下午3:43
+	 * @method get
+	 *
+	 * @param  int param
+	 */
+	public function import_withdraw_data(){
+		$order_model = D('Order');
+
+		$where = ['source_type' => 4];
+
+		$params = I('get.');
+
+		$begin_date = strtotime($params['begin_date']);
+		$end_date = strtotime($params['end_date']);
+
+		if($params['begin_date'] && $params['end_date']){
+			$where['add_time'] = [
+				['gt', $begin_date],
+				['lt', $end_date],
+			];
+		}
+
+		if($params['status'] != '-1'){
+			$where['status'] = $params['status'];
+		}
+
+		$order_list = $order_model->get_page_list($where, null, null);
+
+		$company_export = [];
+		foreach($order_list as $k => $v){
+			$company_export[] = [
+				'order_id' => $v['order_id'],
+				'user_id' => $v['user_id'],
+				'price' => $v['price'],
+				'alipay_account' => json_decode($v['extra_info'], true)['alipay_account'],
+				'alipay_real_name' => json_decode($v['extra_info'], true)['alipay_real_name'],
+				'status' => $this->withdraw_status_arr[$v['status']],
+				'add_time' => date('Y-m-d H:i:s', $v['add_time']),
+				'pay_time' => $v['pay_time'] ? date('Y-m-d H:i:s', $v['pay_time']) : '',
+				'payment_id' => $v['payment_id'],
+				'remark' => $v['remark'],
+			];
+		}
+
+		$xlsCell = array(
+			array('order_id', '提现ID'),
+			array('user_id', '用户id'),
+			array('price', '提现金额'),
+			array('alipay_account', '支付宝账户'),
+			array('alipay_real_name', '真实姓名'),
+			array('status', '提现状态'),
+			array('add_time', '申请提现时间'),
+			array('pay_time', '打款时间'),
+			array('payment_id', '支付流水号'),
+			array('remark', '备注'),
+		);
+
+		$this->exportExcel('提现管理',$xlsCell,$company_export);
 	}
 }

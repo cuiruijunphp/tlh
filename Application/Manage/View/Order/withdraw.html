@@ -53,7 +53,6 @@
         <!-- 页面内容 -->
         <div class="right_col" role="main">
 
-
             <!--START search form-->
             <form class="m-b-sm form-inline" id="form" method="get" action="{:U('Manage/order/index')}">
                 <div class="form-group input-daterange input-group" id="datepicker">
@@ -62,24 +61,16 @@
                     <input type="text" name="end_date" class="form-control form_datetime" value="{$end_date}" id="end-date" placeholder="下单截止日期">
                 </div>
 
-                <div class="form-group m-l-md">
-                <input id="order_id" class="form-control" type="text" name="order_id" value="{$order_id}" placeholder="请输入订单号">
-                </div>
-
-                <div class="form-group">
-                    <select id="pay_type" name="pay_type" class="form-control">
-                        <option value="">支付方式</option>
-                        <option value="alipay_app" <if condition="$type eq 'alipay_app' ">selected</if>>支付宝</option>
-                        <option value="wx_app" <if condition="$type eq 'wx_app' ">selected</if>>微信</option>
-                    </select>
-                </div>
+                <!--<div class="form-group m-l-md">-->
+                    <!--<input id="order_id" class="form-control" type="text" name="order_id" value="{$order_id}" placeholder="请输入订单号">-->
+                <!--</div>-->
 
                 <div class="form-group">
                     <select id="status" name="status" class="form-control">
                         <option value="-1">全部</option>
-                        <foreach name="status_arr" key="s_k" item="s_v">
-                            <option value="{$s_k}" <if condition="$s_k eq $status">selected</if>>{$s_v}</option>
-                        </foreach>
+                        <option value="0" <if condition="0 eq $status">selected</if>>待提现</option>
+                        <option value="1" <if condition="1 eq $status">selected</if>>提现成功</option>
+                        <option value="2" <if condition="2 eq $status">selected</if>>提现失败</option>
                     </select>
                 </div>
 
@@ -94,35 +85,35 @@
               <table class="full_width_table">
                  <thead>
                    <tr>
-                     <th>订单id</th>
+                     <th>提现id</th>
                      <!--<th>用户名</th>-->
-                     <th>用户id</th>
-                     <th>订单金额</th>
-                     <th>状态</th>
-                     <th>订单类型</th>
-                     <th>付款方式</th>
-                     <th>下单时间</th>
-                     <th>付款时间</th>
-                     <th>退款时间</th>
-                     <th>支付流水号</th>
-                     <!--<th>操作</th>-->
+                     <th>提现金额</th>
+                     <th>支付宝账户</th>
+                     <th>真实姓名</th>
+                     <th>提现状态</th>
+                     <th>申请提现时间</th>
+                     <th>打款时间</th>
+                     <th>支付宝流水号</th>
+                     <th>备注</th>
+                     <th>操作</th>
                    </tr>
                  </thead>
                  <foreach name="list" key="k" item="v">
                  <tr>
                    <td>{$v["order_id"]}</td>
-                   <td>{$v["user_id"]}</td>
                    <td>{$v["price"]}</td>
-                   <td>{$status_arr[$v["status"]]}</td>
-                   <td>{$source_type[$v["source_type"]]}</td>
-                   <td>{$v["pay_type"] == 'alipay_app' ? '支付宝' : '微信支付'}</td>
+                   <!--<td>{$v["extra_info"]|json_decode=true['alipay_account']}</td>-->
+                   <td><?php echo json_decode($v['extra_info'],true)['alipay_account']?></td>
+                   <td><?php echo json_decode($v['extra_info'],true)['alipay_real_name']?></td>
+                   <td>{$withdraw_status_arr[$v["status"]]}</td>
                    <td>{$v["add_time"]|date='Y年m月d日 H时i分',###}</td>
-                   <td>{$v["pay_time"] ? $v["pay_time"]|date='Y年m月d日 H时i分',### : ''}</td>
-                   <td>{$v["refund_time"] ? $v["refund_time"]|date='Y年m月d日 H时i分',### : ''}</td>
+                   <td>{$v["pay_time"]|date='Y年m月d日 H时i分',###}</td>
                    <td>{$v["payment_id"]}</td>
-                     <!--<td>-->
-                         <!--<a href="{:U('Manage/order/edit?id='.$v['id'])}"><button class="btn btn-success btn-sm">查看详情</button></a>-->
-                     <!--</td>-->
+                   <td>{$v["remark"]}</td>
+                     <td>
+                         <if condition="$v['status'] eq 0">
+                            <a href="{:U('Manage/order/edit?id='.$v['id'])}"><button class="btn btn-success btn-sm">查看详情</button></a>
+                         </if>
                  </tr>
                  </foreach>
                </table>
@@ -152,7 +143,6 @@
  <script src="/Public/static/vendors/nprogress/nprogress.js"></script>
  <!-- Custom Theme Scripts -->
  <script src="/Public/static/build/js/custom.js"></script>
-
   <!-- 时间控件 -->
   <script src="/Public/static/vendors/moment/min/moment-with-locales.min.js"></script>
   <script src="/Public/static/vendors/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
@@ -164,30 +154,25 @@
 
       $('#search-btn').click(function () {
 
-          pay_type = $('#pay_type').val();
           status = $('#status').val();
 
           begin_date = $('#begin-date').val();
           end_date = $('#end-date').val();
-          order_id = $('#order_id').val();
 
-          window.location.href = '<?php echo U("Manage/order/index");?>' + '&begin_date='+begin_date+'&end_date='+end_date+'&status='+status+'&order_id='+order_id+'&pay_type='+pay_type;
+          window.location.href = '<?php echo U("Manage/order/withdraw");?>' + '&begin_date='+begin_date+'&end_date='+end_date+'&status='+status;
           return false
       })
 
       $('#import-btn').click(function () {
 
-          pay_type = $('#pay_type').val();
           status = $('#status').val();
 
           begin_date = $('#begin-date').val();
           end_date = $('#end-date').val();
-          order_id = $('#order_id').val();
 
-          window.location.href = '<?php echo U("Manage/order/import_order_data");?>' + '&begin_date='+begin_date+'&end_date='+end_date+'&status='+status+'&order_id='+order_id+'&pay_type='+pay_type;
+          window.location.href = '<?php echo U("Manage/order/import_withdraw_data");?>' + '&begin_date='+begin_date+'&end_date='+end_date+'&status='+status;
           return false
       })
   </script>
-
   </body>
 </html>

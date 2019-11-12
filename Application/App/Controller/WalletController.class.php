@@ -64,7 +64,7 @@ class WalletController extends BaseController {
 			'source_type' => 4,
 			'source_id' => 0,
 			//把本次转账的支付宝账号记录下来
-			'extra_info' => json_encode(['alipay_account' => $this->user_info['alipay_account']]),
+			'extra_info' => json_encode(['alipay_account' => $this->user_info['alipay_account'], 'alipay_real_name' => $this->user_info['alipay_real_name']]),
 		];
 
 		$insert_result = $order_model->insert_one($insert_data);
