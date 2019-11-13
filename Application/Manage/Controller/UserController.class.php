@@ -335,7 +335,6 @@ class UserController extends BaseController {
 		}
 
 		$user_list = $user_model->get_user_info_by_where($where, null, null);
-		$user_count = $user_model->get_user_count_by_where($where);
 
 		$company_export = [];
 		foreach($user_list as $k => $v){

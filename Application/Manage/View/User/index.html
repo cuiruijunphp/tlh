@@ -89,6 +89,7 @@
               <table class="full_width_table">
                  <thead>
                    <tr>
+                     <th>用户id</th>
                      <th>账户名</th>
                      <th>账户类型</th>
                      <th>手机号</th>
@@ -102,6 +103,7 @@
                  </thead>
                  <foreach name="list" key="k" item="v">
                  <tr>
+                   <td>{$v.id}</td>
                    <td>{$v.user_name}</td>
                    <td>{$user_type_arr[$v["type"]]}</td>
                    <td>{$v["mobile_number"]}</td>
@@ -149,7 +151,7 @@
 
   <!-- 省市区联动 -->
   <script src="/Public/static/build/js/distpicker.data.min.js"></script>
-  <script src="/Public/static/build/js/distpicker.min.js"></script>
+  <script src="/Public/static/build/js/distpicker.js"></script>
   <script src="/Public/static/build/js/main.js"></script>
   <script src="/Public/static/build/js/jquery.form.js"></script>
 
@@ -175,7 +177,7 @@
 
           type = $('#type').val();
 
-          window.location.href = '<?php echo U("Manage/user/index");?>' + '&begin_date='+begin_date+'&end_date='+end_date+'&province='+province+'&city='+city+'&area='+district+'&keyword='+keyword+'&type='+type;
+          window.location.href = '<?php echo U("Manage/user/index");?>' + '&begin_date='+begin_date+'&end_date='+end_date+'&province='+province+'&city='+city+'&area='+district+'&type='+type;
           return false
       })
 
@@ -191,7 +193,7 @@
 
           type = $('#type').val();
 
-          window.location.href = '<?php echo U("Manage/user/import_data");?>' + '&begin_date='+begin_date+'&end_date='+end_date+'&province='+province+'&city='+city+'&area='+district+'&keyword='+keyword+'&type='+type;
+          window.location.href = '<?php echo U("Manage/user/import_data");?>' + '&begin_date='+begin_date+'&end_date='+end_date+'&province='+province+'&city='+city+'&area='+district+'&type='+type;
           return false
       })
     </script>
