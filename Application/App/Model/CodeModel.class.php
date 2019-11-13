@@ -11,7 +11,7 @@ class CodeModel extends CommonModel{
 	/*
 	 * 获取验证码
 	 */
-	public function get_sms_code($phone_number, $template_id){
+	public function get_sms_code($phone_number, $template_id, $code){
 
 		AlibabaCloud::accessKeyClient(C('AccessKey'), C('AccessSecket'))
 			->regionId('cn-hangzhou')
@@ -31,14 +31,15 @@ class CodeModel extends CommonModel{
 						'PhoneNumbers' => $phone_number,
 						'SignName' => C('SignName'),
 						'TemplateCode' => $template_id,
+						'TemplateParam' => json_encode(['code' => $code]),
 					],
 				])
 				->request();
-			print_r($result->toArray());
+			return $result->toArray();
 		} catch (ClientException $e) {
-			echo $e->getErrorMessage() . PHP_EOL;
+			return $e->getErrorMessage() . PHP_EOL;
 		} catch (ServerException $e) {
-			echo $e->getErrorMessage() . PHP_EOL;
+			return $e->getErrorMessage() . PHP_EOL;
 		}
 	}
 }

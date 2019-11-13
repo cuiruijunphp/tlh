@@ -91,14 +91,14 @@ class LoginController extends CommonController {
 			're_password' => C('PasswordTemplateCode'),
 		];
 
-//		$code = rand(100000, 999999);
-		$code = 123456;
+		$code = rand(100000, 999999);
+//		$code = 123456;
 
 		$code_model = D('Code');
-//		$send_result = $code_model->get_sms_code($phone_number, $template_arr[$type]);
-		$send_result = 1;
+		$send_result = $code_model->get_sms_code($phone_number, $template_arr[$type], $code);
+//		$send_result = 1;
 
-		if($send_result){
+		if($send_result['Code'] == 'OK'){
 			//发送成功,往数据库里写入数据
 			$insert_data = [
 				'mobile_number' => $phone_number,
@@ -107,6 +107,8 @@ class LoginController extends CommonController {
 				'add_time' => time(),
 			];
 			$insert_result = $code_model->insert_one($insert_data);
+		}else{
+			$this->result_return(null, 1, $send_result['Message']);
 		}
 
 		$this->result_return(['result' => 1]);
