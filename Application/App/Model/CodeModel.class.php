@@ -37,9 +37,9 @@ class CodeModel extends CommonModel{
 				->request();
 			return $result->toArray();
 		} catch (ClientException $e) {
-			return $e->getErrorMessage() . PHP_EOL;
+			echo $e->getErrorMessage() . PHP_EOL;
 		} catch (ServerException $e) {
-			return $e->getErrorMessage() . PHP_EOL;
+			echo $e->getErrorMessage() . PHP_EOL;
 		}
 	}
 }
