@@ -65,9 +65,9 @@ class UserController extends BaseController {
 		$data['page'] = $this->page_new($user_count);
 
 		// 加上查询参数
-		$data['province'] = $province;
-		$data['city'] = $city;
-		$data['area'] = $area;
+		$data['province'] = $province ? $province : '';
+		$data['city'] = $city ? $city : '';
+		$data['area'] = $area ? $area : '';
 		$data['begin_date'] = $params['begin_date'];
 		$data['end_date'] = $params['end_date'];
 		$data['keyword'] = $keyword;
