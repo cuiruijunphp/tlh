@@ -23,7 +23,7 @@ class PayController extends BaseController {
 		$pay_type = $params['pay_type'];
 
 		if(!in_array($pay_type, ['wx_app', 'alipay_app'])){
-			$this->result_return(null, 500, '请选择正确的支付方式');
+			$this->result_return(null, 1, '请选择正确的支付方式');
 		}
 
 		$user_id = $this->user_id;
@@ -32,11 +32,11 @@ class PayController extends BaseController {
 		$order_info = $order_model->get_one(['order_id' => $order_id]);
 
 		if(!$order_info){
-			$this->result_return(null, 500, '未查询到订单信息');
+			$this->result_return(null, 1, '未查询到订单信息');
 		}
 
 		if($order_info['user_id'] != $user_id){
-			$this->result_return(null, 500, '不能给别人付款哦~');
+			$this->result_return(null, 1, '不能给别人付款哦~');
 		}
 
 		//更新付款方式
@@ -60,10 +60,10 @@ class PayController extends BaseController {
 					// 说明调用成功,则返回给app端正确的order_string
 					$order_string = $wx_res['data'];
 				}else{
-					$this->result_return(null, 500, $wx_res['msg']);
+					$this->result_return(null, 1, $wx_res['msg']);
 				}
 			}else{
-				$this->result_return(null, 500, '调用微信支付失败');
+				$this->result_return(null, 1, '调用微信支付失败');
 			}
 		}
 
@@ -91,13 +91,13 @@ class PayController extends BaseController {
 		$res = $order_model->update_result($order_id, $result);
 
 		if(is_string($res)){
-			$this->result_return(null, 500, $res);
+			$this->result_return(null, 1, $res);
 		}
 
 		if($res !==false){
 			$this->result_return(['result' => 1]);
 		}else{
-			$this->result_return(null, 500, '更新状态失败');
+			$this->result_return(null, 1, '更新状态失败');
 		}
 	}
 }

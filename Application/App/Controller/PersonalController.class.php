@@ -25,7 +25,7 @@ class PersonalController extends BaseController {
 		$update_result = $user_model->update_data(['id' => $this->user_id], ['user_name' => $user_name]);
 
 		if($update_result === false){
-			$this->result_return(null, 500, '更新用户名失败,请换一个用户名试试');
+			$this->result_return(null, 1, '更新用户名失败,请换一个用户名试试');
 		}
 
 		$this->result_return(['result' => 1]);
@@ -69,7 +69,7 @@ class PersonalController extends BaseController {
 		$users_update_result = $user_model->update_data(['id' => $this->user_id], $user_data);
 
 		if($users_update_result === false){
-			$this->result_return(null, 500, '更新用户资料失败');
+			$this->result_return(null, 1, '更新用户资料失败');
 		}
 
 		//更新地址信息
@@ -95,7 +95,7 @@ class PersonalController extends BaseController {
 			}
 
 			if($address_result === false){
-				$this->result_return(null, 500, '更新地址信息失败');
+				$this->result_return(null, 1, '更新地址信息失败');
 			}
 		}
 
@@ -115,7 +115,7 @@ class PersonalController extends BaseController {
 	 */
 	public function set_head_img(){
 		if(!$_FILES){
-			$this->result_return(null, 500, '请上传文件');
+			$this->result_return(null, 1, '请上传文件');
 		}
 
 		$upload = new \Think\Upload();// 实例化上传类
@@ -137,7 +137,7 @@ class PersonalController extends BaseController {
 				$update_result = $user_model->update_data(['id' => $this->user_id], ['head_img' => $file_path]);
 
 				if($update_result === false){
-					$this->result_return(null, 500, '更新头像失败');
+					$this->result_return(null, 1, '更新头像失败');
 				}
 
 				$this->result_return(['result' => 1]);
@@ -167,7 +167,7 @@ class PersonalController extends BaseController {
 		$update_result = $user_model->update_data(['id' => $this->user_id], ['is_online' => $is_online]);
 
 		if($update_result === false){
-			$this->result_return(null, 500, '设置在线状态失败');
+			$this->result_return(null, 1, '设置在线状态失败');
 		}
 
 		$this->result_return(['result' => 1]);
@@ -194,7 +194,7 @@ class PersonalController extends BaseController {
 		$alipay_real_name = $params['alipay_real_name'];
 
 		if(!$weixin_account || !$weibo_account || !$alipay_account){
-			$this->result_return(null, 500, '请绑定认证账户哦');
+			$this->result_return(null, 1, '请绑定认证账户哦');
 		}
 		$user_model = D('Users');
 
@@ -216,7 +216,7 @@ class PersonalController extends BaseController {
 		$update_result = $user_model->update_data(['id' => $this->user_id], $data);
 
 		if($update_result === false){
-			$this->result_return(null, 500, '绑定账号失败');
+			$this->result_return(null, 1, '绑定账号失败');
 		}
 
 		$this->result_return(['result' => 1]);
@@ -246,7 +246,7 @@ class PersonalController extends BaseController {
 
 		if(!$user_info)
 		{
-			$this->result_return(null, 500, '未查询到个人信息');
+			$this->result_return(null, 1, '未查询到个人信息');
 		}
 
 		//如果不是自己访问的主页,则需要将view+1
@@ -323,7 +323,7 @@ class PersonalController extends BaseController {
 	public function pulish_trends(){
 
 		if(!$_FILES){
-			$this->result_return(null, 500, '请上传文件');
+			$this->result_return(null, 1, '请上传文件');
 		}
 
 //		$get_param = file_get_contents('php://input');
@@ -357,12 +357,12 @@ class PersonalController extends BaseController {
 				];
 				$insert_result = $user_trends_model->insert_one($insert_data);
 				if($insert_result === false){
-					$this->result_return(null, 500, '发布动态失败');
+					$this->result_return(null, 1, '发布动态失败');
 				}
 
 				$this->result_return(['result' => 1]);
 			}else{
-				$this->result_return(null, 500, '上传失败');
+				$this->result_return(null, 1, '上传失败');
 			}
 		}
 	}
@@ -429,7 +429,7 @@ class PersonalController extends BaseController {
 			$this->result_return($user_trends_result);
 		}else{
 
-			$this->result_return(null, 500, '这条动态不存在');
+			$this->result_return(null, 1, '这条动态不存在');
 		}
 	}
 
@@ -445,7 +445,7 @@ class PersonalController extends BaseController {
 	{
 		if (!$this->user_id)
 		{
-			$this->result_return(null, 500, '获取登录状态失败');
+			$this->result_return(null, 1, '获取登录状态失败');
 		}
 
 		$session_app_model = D('UsersSessionApp');
@@ -457,7 +457,7 @@ class PersonalController extends BaseController {
 			// 更新登录以后的剩余时间
 			if ($token_info['user_id'] != $this->user_id)
 			{
-				$this->result_return(null, 500, '退出登录失败');
+				$this->result_return(null, 1, '退出登录失败');
 			}
 
 			$session_app_model->update_data(['id' => $token_info['id']], ['lifetime' => -1]);
@@ -466,7 +466,7 @@ class PersonalController extends BaseController {
 		}
 		else
 		{
-			$this->result_return(null, 500, '退出登录失败');
+			$this->result_return(null, 1, '退出登录失败');
 		}
 	}
 

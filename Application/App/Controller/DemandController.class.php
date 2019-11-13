@@ -186,22 +186,22 @@ class DemandController extends BaseController
 		$user_demand_result = $user_demand_model->get_one(['id' => $demand_id]);
 		if (!$user_demand_result)
 		{
-			$this->result_return(null, 500, '该条需求不存在');
+			$this->result_return(null, 1, '该条需求不存在');
 		}
 
 		if ($user_demand_result['status'] == 3 && $user_demand_result['selected_uid'])
 		{
-			$this->result_return(null, 500, '该条需求已经完成');
+			$this->result_return(null, 1, '该条需求已经完成');
 		}
 
 		if (!in_array($user_id, explode(',', $user_demand_result['applicants'])))
 		{
-			$this->result_return(null, 500, '请在应征者列表中确认应征者');
+			$this->result_return(null, 1, '请在应征者列表中确认应征者');
 		}
 
 		if ($user_demand_result['end_time'] < time())
 		{
-			$this->result_return(null, 500, '该条需求已经过期');
+			$this->result_return(null, 1, '该条需求已经过期');
 		}
 
 		$update_result = $user_demand_model->update_data(['id' => $demand_id], [
@@ -211,7 +211,7 @@ class DemandController extends BaseController
 
 		if ($update_result === false)
 		{
-			$this->result_return(null, 500, '确认应征者失败');
+			$this->result_return(null, 1, '确认应征者失败');
 		}
 
 		$this->result_return(['result' => 1]);
@@ -246,7 +246,7 @@ class DemandController extends BaseController
 		$skill_type_info = $skill_type_model->get_one(['id' => $type_id, 'is_show' => 1]);
 
 		if(!$skill_type_info){
-			$this->result_return(null, 500, '请选择有效的服务类型');
+			$this->result_return(null, 1, '请选择有效的服务类型');
 		}
 
 		$user_demand_model = D('UserDemand');
@@ -273,7 +273,7 @@ class DemandController extends BaseController
 
 		$demand_count = $user_demand_model->get_pulish_count($demand_where);
 		if($demand_count > 4){
-			$this->result_return(null, 500, '你今天已经发布了5条,请明天再来吧');
+			$this->result_return(null, 1, '你今天已经发布了5条,请明天再来吧');
 		}
 
 		// 如果是免费类型的需求,则不需要付款,直接将状态更改
@@ -298,7 +298,7 @@ class DemandController extends BaseController
 		$insert_result = $user_demand_model->insert_one($insert_data);
 
 		if($insert_result === false){
-			$this->result_return(null, 500, '发布需求失败');
+			$this->result_return(null, 1, '发布需求失败');
 		}
 
 		$this->result_return(['demand_id' => $insert_result]);
@@ -326,19 +326,19 @@ class DemandController extends BaseController
 		$user_demand_model = D('UserDemand');
 		$user_demand_result = $user_demand_model->get_one(['id' => $demand_id]);
 		if(!$user_demand_result){
-			$this->result_return(null, 500, '该条需求不存在');
+			$this->result_return(null, 1, '该条需求不存在');
 		}
 
 		if($user_demand_result['status'] != 1){
-			$this->result_return(null, 500, '该条需求不在应征状态');
+			$this->result_return(null, 1, '该条需求不在应征状态');
 		}
 
 		if($user_demand_result['status'] == 3 && $user_demand_result['selected_uid']){
-			$this->result_return(null, 500, '该条需求已经完成');
+			$this->result_return(null, 1, '该条需求已经完成');
 		}
 
 		if($user_id == $user_demand_result['user_id']){
-			$this->result_return(null, 500, '你不能应征自己的需求哦');
+			$this->result_return(null, 1, '你不能应征自己的需求哦');
 		}
 
 		//查看自己是否有相应的技能,如果没有,则不能应征
@@ -346,13 +346,13 @@ class DemandController extends BaseController
 		$user_skill_result = $user_skill_model->get_one(['type_id' => $user_demand_result['type_id'], 'user_id' => $user_id, 'status' => 1]);
 
 		if(!$user_skill_result){
-			$this->result_return(null, 500, '需要先发布相应的技能才能应征哦');
+			$this->result_return(null, 1, '需要先发布相应的技能才能应征哦');
 		}
 
 		if($user_demand_result['applicants']){
 			// 不能重复应征
 			if(in_array($user_id, explode(',', $user_demand_result['applicants']))){
-				$this->result_return(null, 500, '你已经应征过这个需求了哦');
+				$this->result_return(null, 1, '你已经应征过这个需求了哦');
 			}
 
 			$applicants = $user_demand_result['applicants'] . ',' . $user_id;
@@ -363,7 +363,7 @@ class DemandController extends BaseController
 		$update_result = $user_demand_model->update_data(['id' => $demand_id], ['applicants' => $applicants]);
 
 		if($update_result === false){
-			$this->result_return(null, 500, '应征失败');
+			$this->result_return(null, 1, '应征失败');
 		}
 
 		// 应征完成以后要写到对话框里

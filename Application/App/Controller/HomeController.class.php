@@ -66,7 +66,7 @@ class HomeController extends BaseController
 			//如果是一级分类,则把下面所有的二级分类都取出来
 			$skill_type_info =$skill_type_model->get_one(['id' => $type_id]);
 			if(!$skill_type_info){
-				$this->result_return(null, 500, '请传入正确的类型');
+				$this->result_return(null, 1, '请传入正确的类型');
 			}
 
 			if($skill_type_info['parent_id'] == 0){

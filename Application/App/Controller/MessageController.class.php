@@ -46,7 +46,7 @@ class MessageController extends BaseController {
 			$insert_dialog_result = $dialog_model->insert_one($insert_data);
 
 			if($insert_dialog_result === false){
-				$this->result_return(null, 500, '发送失败');
+				$this->result_return(null, 1, '发送失败');
 			}
 
 			$dialog_id = $insert_dialog_result;
@@ -62,7 +62,7 @@ class MessageController extends BaseController {
 		$message_insert_result = $message_model->insert_one($message_insert_data);
 
 		if($message_insert_result === false){
-			$this->result_return(null, 500, '发送消息失败');
+			$this->result_return(null, 1, '发送消息失败');
 		}
 
 		//更新对话框为启用状态
@@ -155,7 +155,7 @@ class MessageController extends BaseController {
 		$sender_uid = $this->user_id;
 
 		if($sender_uid == $received_uid){
-			$this->result_return(null, 500, '不能给自己发消息');
+			$this->result_return(null, 1, '不能给自己发消息');
 		}
 
 		$page =  I('get.page') ? I('get.page') : 1;
@@ -280,7 +280,7 @@ class MessageController extends BaseController {
 
 		$dialog_info = $dialog_model->get_one(['id' => $dialog_id]);
 		if($this->user_id != $dialog_info['sender_uid'] && $this->user_id != $dialog_info['recived_uid']){
-			$this->result_return(null, 500, '不能删除别人的对话哦');
+			$this->result_return(null, 1, '不能删除别人的对话哦');
 		}
 
 		if($this->user_id == $dialog_info['sender_uid']){
@@ -297,7 +297,7 @@ class MessageController extends BaseController {
 		}
 
 		if($update_result === false){
-			$this->result_return(null, 500, '删除对话失败');
+			$this->result_return(null, 1, '删除对话失败');
 		}
 
 		$this->result_return(['result' => 1]);

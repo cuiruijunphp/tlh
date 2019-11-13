@@ -27,15 +27,15 @@ class LoginController extends CommonController {
 		$send_result = $code_model->get_one(['mobile_number' => $phone_number, 'type' => 'register'], 'add_time desc');
 
 		if(!$send_result){
-			$this->result_return(null, 500, '验证码错误');
+			$this->result_return(null, 1, '验证码错误');
 		}
 
 		if($send_result['code'] != $code){
-			$this->result_return(null, 500, '验证码错误');
+			$this->result_return(null, 1, '验证码错误');
 		}
 
 		if($send_result['add_time'] + 30 * 60 < time()){
-			$this->result_return(null, 500, '验证码已经过期,请重新发送');
+			$this->result_return(null, 1, '验证码已经过期,请重新发送');
 		}
 
 		$user_model = D('Users');
@@ -43,14 +43,14 @@ class LoginController extends CommonController {
 		// 查询邀请者是否存在
 		$invite_info = $user_model->get_one(['mobile_number' => $invite_mobile_number]);
 		if($invite_mobile_number && !$invite_info){
-			$this->result_return(null, 500, '请填入正确的邀请人手机号');
+			$this->result_return(null, 1, '请填入正确的邀请人手机号');
 		}
 
 		// 插入数据库中
 		//先查看手机号是否被注册
 		$is_exist_phone = $user_model->get_one(['mobile_number' => $phone_number]);
 		if($is_exist_phone){
-			$this->result_return(null, 500, '手机号已经被注册了');
+			$this->result_return(null, 1, '手机号已经被注册了');
 		}
 
 		$insert_user_data = [
@@ -61,7 +61,7 @@ class LoginController extends CommonController {
 		$insert_result = $user_model->insert_one($insert_user_data);
 
 		if($insert_result === false){
-			$this->result_return(null, 500, '注册失败');
+			$this->result_return(null, 1, '注册失败');
 		}
 
 		$this->result_return(['result' => 1]);
@@ -134,15 +134,15 @@ class LoginController extends CommonController {
 		$send_result = $code_model->get_one(['mobile_number' => $phone_number, 'type' => $type], 'add_time desc');
 
 		if(!$send_result){
-			$this->result_return(null, 500, '验证码错误');
+			$this->result_return(null, 1, '验证码错误');
 		}
 
 		if($send_result['code'] != $code){
-			$this->result_return(null, 500, '验证码错误');
+			$this->result_return(null, 1, '验证码错误');
 		}
 
 		if($send_result['add_time'] + 30 * 60 < time()){
-			$this->result_return(null, 500, '验证码已经过期,请重新发送');
+			$this->result_return(null, 1, '验证码已经过期,请重新发送');
 		}
 
 		//是否判断过期时间
@@ -178,7 +178,7 @@ class LoginController extends CommonController {
 
 		if(!$user_info)
 		{
-			$this->result_return(null, 500, '用户名或者密码错误');
+			$this->result_return(null, 1, '用户名或者密码错误');
 		}
 
 		//返回个人信息和token信息
@@ -253,7 +253,7 @@ class LoginController extends CommonController {
 		//先查看手机号是否被注册
 		$is_exist_phone = $user_model->get_one(['mobile_number' => $phone_number]);
 		if(!$is_exist_phone){
-			$this->result_return(null, 500, '请您先注册成为会员');
+			$this->result_return(null, 1, '请您先注册成为会员');
 		}
 
 		$code_model = D('Code');
@@ -261,21 +261,21 @@ class LoginController extends CommonController {
 
 		//先验证验证码
 		if(!$send_result){
-			$this->result_return(null, 500, '验证码错误');
+			$this->result_return(null, 1, '验证码错误');
 		}
 
 		if($send_result['code'] != $code){
-			$this->result_return(null, 500, '验证码错误');
+			$this->result_return(null, 1, '验证码错误');
 		}
 
 		if($send_result['add_time'] + 30 * 60 < time()){
-			$this->result_return(null, 500, '验证码已经过期,请重新发送');
+			$this->result_return(null, 1, '验证码已经过期,请重新发送');
 		}
 
 		$update_result = $user_model->update_data(['id' => $is_exist_phone['id']], ['password' => compile_password($password)]);
 
 		if($update_result === false){
-			$this->result_return(null, 500, '找回密码失败');
+			$this->result_return(null, 1, '找回密码失败');
 		}
 
 		// 这个时候要更新session表中的密码

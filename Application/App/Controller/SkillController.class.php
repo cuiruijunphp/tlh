@@ -53,12 +53,12 @@ class SkillController extends BaseController {
 		$skill_type_model = D('SkillType');
 		$skill_type_info = $skill_type_model->get_one(['id' => $type_id]);
 		if(!$skill_type_info || !$skill_type_info['is_show']){
-			$this->result_return(null, 500, '技能类型有误');
+			$this->result_return(null, 1, '技能类型有误');
 		}
 
 		//上传技能图片
 		if(!$_FILES){
-			$this->result_return(null, 500, '请上传技能图片');
+			$this->result_return(null, 1, '请上传技能图片');
 		}
 
 		$upload = new \Think\Upload();// 实例化上传类
@@ -70,7 +70,7 @@ class SkillController extends BaseController {
 		// 上传文件
 		$info  =  $upload->upload();
 		if(!$info) {// 上传错误提示错误信息
-			$this->result_return(null, 500, $upload->getError());
+			$this->result_return(null, 1, $upload->getError());
 		}else{// 上传成功 获取上传文件信息
 			foreach($info as $file){
 				$file_path = $file['savepath'] . $file['savename'];
@@ -104,13 +104,13 @@ class SkillController extends BaseController {
 		$skill_count = $skill_mode->get_pulish_count($skill_where);
 
 		if($skill_count > 4){
-			$this->result_return(null, 500, '你今天已经发布了5条,请明天再来吧');
+			$this->result_return(null, 1, '你今天已经发布了5条,请明天再来吧');
 		}
 
 		$insert_result = $skill_mode->insert_one($skill_insert_data);
 
 		if($insert_result === false){
-			$this->result_return(null, 500, '发布技能失败');
+			$this->result_return(null, 1, '发布技能失败');
 		}
 
 		$this->result_return(['result' => 1]);
@@ -195,11 +195,11 @@ class SkillController extends BaseController {
 		$skill_info = $skill_mode->get_one(['id' => $skill_id]);
 
 		if(!$skill_info){
-			$this->result_return(null, 500, '没有找到该项技能');
+			$this->result_return(null, 1, '没有找到该项技能');
 		}
 
 		if($is_other && $skill_info['status'] != 1){
-			$this->result_return(null, 500, '该项技能未审核通过或者待审核');
+			$this->result_return(null, 1, '该项技能未审核通过或者待审核');
 		}
 
 		if(!$is_other){
@@ -267,7 +267,7 @@ class SkillController extends BaseController {
 		//判断是否存在
 		$skill_info = $skill_model->get_one(['id' => $skill_id]);
 		if(!$skill_info || $skill_info['status'] != 1){
-			$this->result_return(null, 500, '该技能不存在或者未通过审核');
+			$this->result_return(null, 1, '该技能不存在或者未通过审核');
 		}
 
 		$skill_type_model = D('SkillType');
@@ -305,7 +305,7 @@ class SkillController extends BaseController {
 		$reserve_id = $skill_reserve_model->insert_one($insert_data);
 
 		if($reserve_id === false){
-			$this->result_return(null, 500, '预约失败');
+			$this->result_return(null, 1, '预约失败');
 		}
 
 		//预约成功以后增加预约人数
@@ -360,15 +360,15 @@ class SkillController extends BaseController {
 		$skill_reserve_info = $skill_reserve_model->get_skill_info_by_reserve_id($reserve_id);
 
 		if($skill_reserve_info['pulish_status'] != 1){
-			$this->result_return(null, 500, '该技能未通过审核,不能进行此操作');
+			$this->result_return(null, 1, '该技能未通过审核,不能进行此操作');
 		}
 
 		if($skill_reserve_info['publish_user_id'] != $this->user_id){
-			$this->result_return(null, 500, '不能操作别人的技能');
+			$this->result_return(null, 1, '不能操作别人的技能');
 		}
 
 		if($skill_reserve_info['status'] != 2){
-			$this->result_return(null, 500, '该条预约不符合审核规范');
+			$this->result_return(null, 1, '该条预约不符合审核规范');
 		}
 
 		$update_result = $skill_reserve_model->update_data(['id' => $reserve_id], ['status' => $status]);
@@ -425,7 +425,7 @@ class SkillController extends BaseController {
 		}
 
 		if($update_result === false){
-			$this->result_return(null, 500, '审核失败');
+			$this->result_return(null, 1, '审核失败');
 		}
 
 		$this->result_return(['result' => 1]);
@@ -459,14 +459,14 @@ class SkillController extends BaseController {
 		// 该技能如果已经审核通过,则不能再次编辑
 		$skill_info = $skill_mode->get_one(['id' => $skill_id]);
 		if(!$skill_info || $skill_info['status'] != 2){
-			$this->result_return(null, 500, '该条技能不能重新编辑');
+			$this->result_return(null, 1, '该条技能不能重新编辑');
 		}
 
 		// 不存在的技能则不插入数据库中
 		$skill_type_model = D('SkillType');
 		$skill_type_info = $skill_type_model->get_one(['id' => $type_id]);
 		if(!$skill_type_info || !$skill_type_info['is_show']){
-			$this->result_return(null, 500, '技能类型有误');
+			$this->result_return(null, 1, '技能类型有误');
 		}
 
 		$skill_insert_data = [
@@ -492,7 +492,7 @@ class SkillController extends BaseController {
 			// 上传文件
 			$info  =  $upload->upload();
 			if(!$info) {// 上传错误提示错误信息
-				$this->result_return(null, 500, $upload->getError());
+				$this->result_return(null, 1, $upload->getError());
 			}else{// 上传成功 获取上传文件信息
 				foreach($info as $file){
 					$file_path = $file['savepath'] . $file['savename'];
@@ -505,7 +505,7 @@ class SkillController extends BaseController {
 		$insert_result = $skill_mode->update_data(['id' => $skill_id], $skill_insert_data);
 
 		if($insert_result === false){
-			$this->result_return(null, 500, '编辑技能失败');
+			$this->result_return(null, 1, '编辑技能失败');
 		}
 
 		$this->result_return(['result' => 1]);

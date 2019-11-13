@@ -37,11 +37,11 @@ class WalletController extends BaseController {
 		$user_id = $this->user_id;
 
 		if(!$this->user_info['alipay_account']){
-			$this->result_return(null, 500, '未绑定支付宝');
+			$this->result_return(null, 1, '未绑定支付宝');
 		}
 
 		if($this->user_info['account_balance'] < $money){
-			$this->result_return(null, 500, '账户可提现金额小于申请提现金额');
+			$this->result_return(null, 1, '账户可提现金额小于申请提现金额');
 		}
 
 		//提现时候只能一笔笔提现,上笔提现申请通过了才能进行下一笔的提现
@@ -49,7 +49,7 @@ class WalletController extends BaseController {
 		$withdraw_info = $order_model->get_one(['status' => 0, 'user_id' => $user_id, 'source_type' => 4]);
 
 //		if($withdraw_info){
-//			$this->result_return(null, 500, '你还有未完成的提现申请');
+//			$this->result_return(null, 1, '你还有未完成的提现申请');
 //		}
 
 		//创建订单
@@ -70,7 +70,7 @@ class WalletController extends BaseController {
 		$insert_result = $order_model->insert_one($insert_data);
 
 		if($insert_result === false){
-			$this->result_return(null, 500, '提现申请失败');
+			$this->result_return(null, 1, '提现申请失败');
 		}
 
 		$this->result_return(['order_id' => $order_id]);
@@ -197,7 +197,7 @@ class WalletController extends BaseController {
 		//代理
 		if($this->user_info['type'] != 3){
 			// 如果不是代理,则不能传这个参数,
-			$this->result_return(null, 500, '非法参数');
+			$this->result_return(null, 1, '非法参数');
 		}
 
 		$where['user_id'] = $this->user_id;
