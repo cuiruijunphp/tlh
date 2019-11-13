@@ -122,7 +122,7 @@ class WalletController extends BaseController {
 		$order_model = D('Order');
 		$account_log_model = D('AccountBalanceLog');
 
-		if(in_array($type, [1,2,3,4])){
+		if(in_array($type, [1,2,3])){
 			$where = [];
 			if($type == 1){
 				// 提现
@@ -133,14 +133,6 @@ class WalletController extends BaseController {
 			}elseif($type == 3){
 				// 需求或者技能被拒绝退钱
 				$where['action'] = ['in', 'DEMAND_REJECT_REFUND,SKILL_REJECT_REFUND'];
-			}else{
-				//代理
-				if($this->user_info['type'] != 3){
-					// 如果不是代理,则不能传这个参数,
-					$this->result_return(null, 500, '非法参数');
-				}
-
-				$where['action'] = 'PROXY_RECHARGE_VIP';
 			}
 
 			$where['user_id'] = $this->user_id;
@@ -150,38 +142,15 @@ class WalletController extends BaseController {
 				['lt', $end_time],
 			];
 
+			// 非代理类型返回的数据格式
+			$balance_tmp_list = $account_log_model->get_list($where, $limit. ',' . $page_size, 'add_time desc');
 
-			if(in_array($type, [1,2,3])){
-				// 非代理类型返回的数据格式
-				$balance_tmp_list = $account_log_model->get_list($where, $limit. ',' . $page_size, 'add_time desc');
-
-				foreach($balance_tmp_list as $k => $v){
-					$balance_list[$k] = [
-						'note' => $v['note'],
-						'add_time' => $v['add_time'],
-						'balance' => $v['balance'],
-					];
-				}
-			}else{
-
-				$proxy_user_list = $account_log_model->get_proxy_user_info($where, $page, $page_size);
-				//代理模式返回数据格式
-				$proxy_where_user_count = $account_log_model->get_condition_count($where);
-
-				unset($where['add_time']);
-				$proxy_user_count = $account_log_model->get_condition_count($where);
-
-				foreach($proxy_user_list as $p_k => $p_v){
-					$proxy_user_list[$p_k]['head_img'] = $p_v['head_img'] ? UPLOAD_URL . $p_v['head_img'] : '';
-				}
-
-				$proxy_res_data = [
-					'proxy_user_list' => $proxy_user_list,
-					'proxy_user_list_count' => $proxy_user_count,
-					'proxy_user_list_date_count' => $proxy_where_user_count,
+			foreach($balance_tmp_list as $k => $v){
+				$balance_list[$k] = [
+					'note' => $v['note'],
+					'add_time' => $v['add_time'],
+					'balance' => $v['balance'],
 				];
-
-				$this->result_return($proxy_res_data);
 			}
 
 		}else{
@@ -210,5 +179,54 @@ class WalletController extends BaseController {
 			'account_balance' => $this->user_info['account_balance']
 		];
 		$this->result_return($res_data);
+	}
+
+	/**
+	 * 获取代理记录
+	 */
+	public function get_proxy_log(){
+		$params = I('get.');
+
+		$start_time = $params['start_time'];
+		$end_time = $params['end_time'];
+		$page = $params['page'] ? $params['page'] : 1;
+		$page_size = $params['page_size'] ? $params['page_size'] : 5;
+
+		$account_log_model = D('AccountBalanceLog');
+
+		//代理
+		if($this->user_info['type'] != 3){
+			// 如果不是代理,则不能传这个参数,
+			$this->result_return(null, 500, '非法参数');
+		}
+
+		$where['user_id'] = $this->user_id;
+		$where['action'] = 'PROXY_RECHARGE_VIP';
+
+		$where['add_time'] = [
+			['gt', $start_time],
+			['lt', $end_time],
+		];
+
+		$proxy_user_list = $account_log_model->get_proxy_user_info($where, $page, $page_size);
+		//代理模式返回数据格式
+		$proxy_where_user_count = $account_log_model->get_condition_count($where);
+
+		unset($where['add_time']);
+		$proxy_user_count = $account_log_model->get_condition_count($where);
+
+		if($proxy_user_list){
+			foreach($proxy_user_list as $p_k => $p_v){
+				$proxy_user_list[$p_k]['head_img'] = $p_v['head_img'] ? UPLOAD_URL . $p_v['head_img'] : '';
+			}
+		}
+
+		$proxy_res_data = [
+			'proxy_user_list' => $proxy_user_list ? $proxy_user_list : [],
+			'proxy_user_list_count' => $proxy_user_count,
+			'proxy_user_list_date_count' => $proxy_where_user_count,
+		];
+
+		$this->result_return($proxy_res_data);
 	}
 }
