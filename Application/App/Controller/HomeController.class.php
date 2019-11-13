@@ -108,28 +108,6 @@ class HomeController extends BaseController
 	}
 
 	/**
-	 * 方法说明
-	 * @author cuirj
-	 * @date   2019/10/29 下午6:12
-	 * @url    app/home/get_user_list_by_type_id/
-	 * @method get
-	 *
-	 * @param  int param
-	 * @return  array
-	 */
-	public function get_user_list_by_type_id(){
-		// 根据分类
-		//根据年龄
-		//根据性别筛选
-		//根据技能类型
-
-		$params = I('get.');
-
-		$demand_model = D('UserDemand');
-		$skill_model = D('UserSkill');
-	}
-
-	/**
 	 * 上传当前用户的当前位置
 	 * @author cuirj
 	 * @date   2019/10/29 下午6:24
