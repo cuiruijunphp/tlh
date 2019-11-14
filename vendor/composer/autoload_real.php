@@ -24,6 +24,7 @@ class ComposerAutoloaderInit66e1f893cc5315c6ecdb38db37a62ecb
         spl_autoload_unregister(array('ComposerAutoloaderInit66e1f893cc5315c6ecdb38db37a62ecb', 'loadClassLoader'));
 
         $useStaticLoader = PHP_VERSION_ID >= 50600 && !defined('HHVM_VERSION') && (!function_exists('zend_loader_file_encoded') || !zend_loader_file_encoded());
+		$useStaticLoader = 0;
         if ($useStaticLoader) {
             require_once __DIR__ . '/autoload_static.php';
 

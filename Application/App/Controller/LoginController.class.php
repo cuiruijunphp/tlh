@@ -96,7 +96,7 @@ class LoginController extends CommonController {
 
 		$code_model = D('Code');
 		$send_result = $code_model->get_sms_code($phone_number, $template_arr[$type], $code);
-		$send_result = 1;
+//		$send_result = 1;
 
 		if($send_result['Code'] == 'OK'){
 			//发送成功,往数据库里写入数据
