@@ -57,12 +57,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/aliyun/openapi-sdk-php-client.git",
-            "reference": "57a3ff69ae5e5bc4d3688ad0a40fbea2d5b77118"
+            "reference": "5dcf7b8fdfa64abdae7a5ca867289baf95e8e12a"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/aliyun/openapi-sdk-php-client/zipball/57a3ff69ae5e5bc4d3688ad0a40fbea2d5b77118",
-            "reference": "57a3ff69ae5e5bc4d3688ad0a40fbea2d5b77118",
+            "url": "https://api.github.com/repos/aliyun/openapi-sdk-php-client/zipball/5dcf7b8fdfa64abdae7a5ca867289baf95e8e12a",
+            "reference": "5dcf7b8fdfa64abdae7a5ca867289baf95e8e12a",
             "shasum": ""
         },
         "require": {
@@ -98,7 +98,7 @@
         "suggest": {
             "ext-sockets": "To use client-side monitoring"
         },
-        "time": "2019-09-17T01:13:39+00:00",
+        "time": "2019-10-11T11:09:47+00:00",
         "type": "library",
         "installation-source": "source",
         "autoload": {
@@ -248,18 +248,18 @@
         "source": {
             "type": "git",
             "url": "https://github.com/guzzle/guzzle.git",
-            "reference": "a7010cc9b52ecfa00051bb26e4ae025958fe9851"
+            "reference": "df36d8dae3979cf927d5bbbed6f0427f39aadfec"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/guzzle/guzzle/zipball/a7010cc9b52ecfa00051bb26e4ae025958fe9851",
-            "reference": "a7010cc9b52ecfa00051bb26e4ae025958fe9851",
+            "url": "https://api.github.com/repos/guzzle/guzzle/zipball/df36d8dae3979cf927d5bbbed6f0427f39aadfec",
+            "reference": "df36d8dae3979cf927d5bbbed6f0427f39aadfec",
             "shasum": ""
         },
         "require": {
             "ext-json": "*",
             "guzzlehttp/promises": "^1.0",
-            "guzzlehttp/psr7": "^1.4",
+            "guzzlehttp/psr7": "^1.6.1",
             "php": ">=5.5"
         },
         "require-dev": {
@@ -270,11 +270,11 @@
         "suggest": {
             "psr/log": "Required for using the Log middleware"
         },
-        "time": "2019-08-23T22:16:30+00:00",
+        "time": "2019-10-30T11:22:04+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "6.3-dev"
+                "dev-master": "6.5-dev"
             }
         },
         "installation-source": "source",
