@@ -210,6 +210,10 @@ class PersonalController extends BaseController {
 		$data['is_vefify'] = 1;
 
 		if($alipay_account){
+			if(!$alipay_real_name){
+				$this->result_return(null, 1, '请填写支付宝绑定的真实姓名');
+			}
+
 			$data['alipay_account'] = $alipay_account;
 			$data['alipay_real_name'] = $alipay_real_name;
 		}
