@@ -475,7 +475,7 @@ class SkillController extends BaseController {
 		if(!$this->user_info['is_vefify']){
 			$this->result_return(null, 1, '仅限认证用户发布');
 		}
-		
+
 		// 该技能如果已经审核通过,则不能再次编辑
 		$skill_info = $skill_mode->get_one(['id' => $skill_id]);
 		if(!$skill_info || $skill_info['status'] != 2){

@@ -202,7 +202,7 @@ class PersonalController extends BaseController {
 		$alipay_account = $params['alipay_account'];
 		$alipay_real_name = $params['alipay_real_name'];
 
-		if(!$weixin_account || !$weibo_account || !$alipay_account){
+		if(!$weixin_account && !$weibo_account && !$alipay_account){
 			$this->result_return(null, 1, '请绑定认证账户哦');
 		}
 		$user_model = D('Users');
