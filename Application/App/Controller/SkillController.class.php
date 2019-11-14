@@ -232,10 +232,15 @@ class SkillController extends BaseController {
 		$reserve_id = I('get.reserve_id');
 
 		$skill_reserve_model = D('SkillReserve');
+		$order_model = D('Order');
+
 		$skill_info = $skill_reserve_model->get_reserve_info_by_id($reserve_id);
 
 		$skill_info['head_img'] = UPLOAD_URL . $skill_info['head_img'];
-		$skill_info['earnest_money'] = 50;
+
+		$order_info = $order_model->get_one(['source_id' => $reserve_id, 'soure_type' => 3, 'user_id' => $this->user_id]);
+
+		$skill_info['earnest_money'] = $order_info ? $order_info['price'] : '0';
 
 		$this->result_return($skill_info);
 	}
@@ -425,7 +430,7 @@ class SkillController extends BaseController {
 		}
 
 		if($update_result === false){
-			$this->result_return(null, 1, '审核失败');
+			$this->result_return(null, 1, '操作失败');
 		}
 
 		$this->result_return(['result' => 1]);
