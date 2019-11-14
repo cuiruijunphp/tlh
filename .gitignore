@@ -3,3 +3,5 @@
 /Application/Runtime/
 /Application/Common/Conf/config.php
 /log
+/vendor
+/composer.lock
