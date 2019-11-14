@@ -81,7 +81,7 @@ class SkillReserveModel extends CommonModel{
 		// 更新账户余额
 		$user_info = $users_model->get_one(['id' => $user_id]);
 
-		$user_res = $users_model->update_data(['id' => $user_id], ['account_balance' => number_format(($user_info['account_balance'] - $order_info['price']), 2)]);
+		$user_res = $users_model->update_data(['id' => $user_id], ['account_balance' => number_format(($user_info['account_balance'] + $order_info['price']), 2)]);
 
 		if($source_type == 2){
 			$action = 'DEMAND_REJECT_REFUND';
