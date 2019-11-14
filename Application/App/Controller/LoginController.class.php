@@ -92,7 +92,7 @@ class LoginController extends CommonController {
 		];
 
 		$code = rand(100000, 999999);
-		$code = 123456;
+//		$code = 123456;
 
 		$code_model = D('Code');
 		$send_result = $code_model->get_sms_code($phone_number, $template_arr[$type], $code);
