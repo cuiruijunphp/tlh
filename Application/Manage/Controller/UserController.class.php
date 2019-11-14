@@ -101,6 +101,15 @@ class UserController extends BaseController {
 		//插入user表
 		$user_model = D('Users');
 
+		//用户名不能重复
+		if($params['user_name']){
+			$is_exist_user_name = $user_model->get_one(['user_name' => $params['user_name']]);
+
+			if($is_exist_user_name){
+				$this->result_return(null, 500, '该用户名已经存在');
+			}
+		}
+
 		$users_insert_result = $user_model->insert_one($insert_user_data);
 		if($users_insert_result === false){
 			$this->result_return(null, 500, '添加代理商失败');

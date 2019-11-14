@@ -59,6 +59,15 @@ class PersonalController extends BaseController {
 
 		$user_model = D('Users');
 
+		//用户名不能重复
+		if($user_name){
+			$is_exist_user_name = $user_model->get_one(['user_name' => $user_name, 'id' => ['neq', $this->user_id]]);
+
+			if($is_exist_user_name){
+				$this->result_return(null, 1, '该用户名已经存在');
+			}
+		}
+
 		$user_data = [
 			'sex' => $sex,
 			'birthday' => $birthday,
