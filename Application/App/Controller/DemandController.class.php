@@ -139,6 +139,7 @@ class DemandController extends BaseController
 			foreach ($user_info_list as $u_k => $u_v)
 			{
 				$user_info_list[$u_k]['head_img'] = $u_v['head_img'] ? UPLOAD_URL . $u_v['head_img'] : '';
+				$user_info_list[$u_k]['add_time'] = $u_v['add_time'];
 
 				// 应征成功者信息
 				if ($user_demand_result['selected_uid'] && $user_demand_result['selected_uid'] == $u_v['id'])
