@@ -61,6 +61,14 @@ class SkillController extends BaseController {
 			$this->result_return(null, 1, '请上传技能图片');
 		}
 
+		//同一种技能类型的只能发布一个
+		$skill_mode = D('UserSkill');
+		$is_exist_type_skill = $skill_mode->get_one(['user_id' => $this->user_id, 'type_id' => $type_id]);
+
+		if($is_exist_type_skill){
+			$this->result_return(null, 1, '同一种技能类型只能发布一个技能');
+		}
+
 		$upload = new \Think\Upload();// 实例化上传类
 		$upload->maxSize   =     2048000 ;// 设置附件上传大小
 		$upload->exts      =     array('jpg', 'gif', 'png', 'jpeg');// 设置附件上传类型
@@ -77,7 +85,6 @@ class SkillController extends BaseController {
 			}
 		}
 
-		$skill_mode = D('UserSkill');
 		$skill_insert_data = [
 			'skill_name' => $skill_name,
 			'type_id' => $type_id,
