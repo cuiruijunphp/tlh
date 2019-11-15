@@ -13,7 +13,6 @@ class MessageController extends BaseController {
 	 * @return  array
 	 */
     public function send_message(){
-//		$params = I('post.');
 
 		$get_param = file_get_contents('php://input');
 		$params = json_decode($get_param, true);
@@ -23,17 +22,16 @@ class MessageController extends BaseController {
 		$content = $params['content'];
 		$type = $params['type'] ? $params['type'] : 1;
 
-		//如果$type=2,则取判断当前需求是否存在
-		if($type == 2){
-
+		if(!$received_uid){
+			$this->result_return(null, 1, '参数错误');
 		}
 
 		$dialog_model = D('Dialog');
 		$message_model = D('Message');
 
-		$where = '(sender_uid = ' . $sender_uid . ' and recived_uid = ' . $received_uid . ') or (sender_uid = ' . $received_uid . ' and recived_uid = ' . $sender_uid . ')';
+//		$where = '(sender_uid = ' . $sender_uid . ' and recived_uid = ' . $received_uid . ') or (sender_uid = ' . $received_uid . ' and recived_uid = ' . $sender_uid . ')';
 
-		$dialog_query_result = $dialog_model->where($where)->find();
+		$dialog_query_result = $dialog_model->get_dialog_by_uids($sender_uid, $received_uid);
 
 		$dialog_id = $dialog_query_result['id'];
 
@@ -66,14 +64,7 @@ class MessageController extends BaseController {
 		}
 
 		//更新对话框为启用状态
-		$result = $dialog_model->get_one(['id' => $dialog_id]);
-		if($result['sender_uid'] == $sender_uid){
-			$update_data['sender_remove'] = 0;
-		}else{
-			$update_data['recived_remove'] = 0;
-		}
-
-		$dialog_model->update_data(['id' => $dialog_id], $update_data);
+		$result = $dialog_model->update_dialog_active($dialog_id, $sender_uid);
 
 		$this->result_return(['result' => 1]);
     }
@@ -255,7 +246,6 @@ class MessageController extends BaseController {
 		$data = [
 			'message_list' => $message_list ? array_reverse($message_list) : [],
 			'user_info' => $part_user_info,
-//			'message_type' => $type_result ? $type_result : [],
 		];
 
 		$this->result_return($data);

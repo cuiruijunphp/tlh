@@ -33,6 +33,11 @@ class DialogModel extends CommonModel{
 	 * 创建对话框
 	 */
 	public function create_dialog($sender_uid, $received_uid){
+
+		if($sender_uid == $received_uid){
+			return false;
+		}
+
 		$insert_data = [
 			'sender_uid' => $sender_uid,
 			'recived_uid' => $received_uid,
