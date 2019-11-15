@@ -22,7 +22,7 @@ class DemandController extends BaseController {
 
 		$demand_model = D('UserDemand');
 
-		$page = I('get.p');
+		$page = I('get.p') ? I('get.p') : 1;
 		$demand_list = $demand_model->get_demand_list(null, $page);
 		$demand_count = $demand_model->get_count();
 		$data['list'] = $demand_list;

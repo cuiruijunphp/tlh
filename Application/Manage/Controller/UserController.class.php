@@ -21,7 +21,7 @@ class UserController extends BaseController {
 
 		$params = I('get.');
 
-		$page = I('get.p');
+		$page = I('get.p') ? I('get.p') : 1;
 
 		// 查询条件
 		$province = $params['province'];

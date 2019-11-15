@@ -19,7 +19,7 @@ class SkillController extends BaseController {
 
 		$skill_model = D('UserSkill');
 
-		$page = I('get.p');
+		$page = I('get.p') ? I('get.p') : 1;
 		$skill_list = $skill_model->get_skill_list(null, $page);
 		$skill_count = $skill_model->get_count();
 		$data['list'] = $skill_list;
