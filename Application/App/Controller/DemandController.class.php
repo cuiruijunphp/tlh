@@ -273,9 +273,9 @@ class DemandController extends BaseController
 		];
 
 		$demand_count = $user_demand_model->get_pulish_count($demand_where);
-		if($demand_count > 4){
-			$this->result_return(null, 1, '你今天已经发布了5条,请明天再来吧');
-		}
+//		if($demand_count > 4){
+//			$this->result_return(null, 1, '你今天已经发布了5条,请明天再来吧');
+//		}
 
 		// 如果是免费类型的需求,则不需要付款,直接将状态更改
 		if($skill_type_info['free_type'] == 2){
