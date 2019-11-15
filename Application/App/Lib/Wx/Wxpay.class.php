@@ -58,7 +58,7 @@ class Wxpay
 				];
 				//第二次生成签名
 				$sign = $this->get_sign($result);
-				$result['sign'] = substr($sign, 0, 30);
+				$result['sign'] = $sign;
 				return out_json(1,'微信预支付订单创建成功',$result);
 			}
 		} else {
