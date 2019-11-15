@@ -251,7 +251,7 @@ class SkillController extends BaseController {
 
 		$skill_info['head_img'] = UPLOAD_URL . $skill_info['head_img'];
 
-		$order_info = $order_model->get_one(['source_id' => $reserve_id, 'soure_type' => 3, 'user_id' => $this->user_id]);
+		$order_info = $order_model->get_one(['source_id' => $reserve_id, 'source_type' => 3, 'user_id' => $this->user_id]);
 
 		$skill_info['earnest_money'] = $order_info ? $order_info['price'] : '0';
 
