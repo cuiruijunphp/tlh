@@ -27,7 +27,13 @@ class DemandController extends BaseController
 		$limit = ($page - 1) * $page_size;
 
 		$user_demand_model = D('UserDemand');
-		$user_demand_result = $user_demand_model->get_list(['user_id' => $user_id], $limit . ',' . $page_size);
+
+		//待付款的,直接不显示,其实就是无效需求
+		$where = [
+			'user_id' => $user_id,
+			'status' => ['neq', 4],
+		];
+		$user_demand_result = $user_demand_model->get_list($where], $limit . ',' . $page_size);
 
 		if ($user_demand_result)
 		{
