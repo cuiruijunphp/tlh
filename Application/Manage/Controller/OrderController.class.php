@@ -50,7 +50,7 @@ class OrderController extends BaseController {
 
 		$params = I('get.');
 
-		$page = I('get.p');
+		$page = I('get.p') ? I('get.p') : 1;
 
 		$begin_date = strtotime($params['begin_date']);
 		$end_date = strtotime($params['end_date']);
