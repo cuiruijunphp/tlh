@@ -158,6 +158,10 @@ class MessageController extends BaseController {
 			$this->result_return(null, 1, '不能给自己发消息');
 		}
 
+		if(!$received_uid){
+			$this->result_return(null, 1, '缺少参数');
+		}
+
 		$page =  I('get.page') ? I('get.page') : 1;
 		$page_size =  I('get.page_size') ? I('get.page_size') : 6;
 
@@ -186,7 +190,7 @@ class MessageController extends BaseController {
 			$is_del = $dialog_info['sender_remove'];
 			$message_where['sender_remove'] = 0;
 		}else{
-			$is_del = $dialog_info['recived_uid'];
+			$is_del = $dialog_info['recived_remove'];
 			$message_where['recived_remove'] = 0;
 		}
 
