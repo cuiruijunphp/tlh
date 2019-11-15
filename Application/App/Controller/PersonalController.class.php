@@ -542,11 +542,11 @@ class PersonalController extends BaseController {
 		$demand_count = $demand_model->get_pulish_count($demand_where);
 
 		// 发布需求或者技能 1天限制5次
-		if($skill_count < 5){
+		if($skill_count < 100){
 			$is_skill_pulish = 1;
 		}
 
-		if($demand_count < 5){
+		if($demand_count < 100){
 			$is_demand_pulish = 1;
 
 			//如果是会员,则每天能免费发1条需求
