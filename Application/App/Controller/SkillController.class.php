@@ -114,8 +114,10 @@ class SkillController extends BaseController {
 
 		$skill_count = $skill_mode->get_pulish_count($skill_where);
 
-		if($skill_count > 4){
-			$this->result_return(null, 1, '你今天已经发布了5条,请明天再来吧');
+		$max_limit = C('max_publish_limit');
+
+		if($skill_count > ($max_limit['skill'] - 1)){
+			$this->result_return(null, 1, '你今天已经发布了' . $max_limit['skill'] . '条,请明天再来吧');
 		}
 
 		$insert_result = $skill_mode->insert_one($skill_insert_data);
@@ -314,7 +316,9 @@ class SkillController extends BaseController {
 
 		$reserve_count = $skill_reserve_model->get_reserve_count($reserve_where);
 
-		if($reserve_count < 3 && $is_vip){
+		$max_limit = C('max_publish_limit');
+
+		if($reserve_count < $max_limit['vip_free_reserve'] && $is_vip){
 			$insert_data['status'] = 2;
 		}
 

@@ -541,12 +541,13 @@ class PersonalController extends BaseController {
 		$skill_count = $skill_model->get_pulish_count($skill_where);
 		$demand_count = $demand_model->get_pulish_count($demand_where);
 
+		$max_limit = C('max_publish_limit');
 		// 发布需求或者技能 1天限制5次
-		if($skill_count < 100){
+		if($skill_count < $max_limit['skill']){
 			$is_skill_pulish = 1;
 		}
 
-		if($demand_count < 100){
+		if($demand_count < $max_limit['demand']){
 			$is_demand_pulish = 1;
 
 			//如果是会员,则每天能免费发1条需求
@@ -566,7 +567,7 @@ class PersonalController extends BaseController {
 
 			$reserve_count = $reserve_model->get_reserve_count($reserve_where);
 
-			if($reserve_count < 3 && $is_vip){
+			if($reserve_count < $max_limit['vip_free_reserve'] && $is_vip){
 				$is_vip_reserve_free = 1;
 			}
 		}
