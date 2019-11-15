@@ -179,7 +179,7 @@ class MessageController extends BaseController {
 		];
 
 		if(!$dialog_info){
-			$this->result_return(['message_list' => [], 'user_info' => $part_user_info, 'message_type' => []]);
+			$this->result_return(['message_list' => [], 'user_info' => $part_user_info]);
 		}
 
 		$dialog_id = $dialog_info['id'];
@@ -193,7 +193,7 @@ class MessageController extends BaseController {
 		}
 
 		if($is_del == 1){
-			$this->result_return([]);
+			$this->result_return(['message_list' => [], 'user_info' => $part_user_info]);
 		}
 
 		$message_where['dialog_id'] = $dialog_id;
