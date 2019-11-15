@@ -33,7 +33,7 @@ class DemandController extends BaseController
 			'user_id' => $user_id,
 			'status' => ['neq', 4],
 		];
-		$user_demand_result = $user_demand_model->get_list($where], $limit . ',' . $page_size);
+		$user_demand_result = $user_demand_model->get_list($where, $limit . ',' . $page_size);
 
 		if ($user_demand_result)
 		{
