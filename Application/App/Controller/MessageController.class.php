@@ -163,12 +163,10 @@ class MessageController extends BaseController {
 
 		$limit = ($page - 1) * $page_size;
 
-		$where = '(sender_uid = ' . $sender_uid . ' and recived_uid = ' . $received_uid . ') or (sender_uid = ' . $received_uid . ' and recived_uid = ' . $sender_uid . ')';
-
 		$dialog_model = D('Dialog');
 		$user_model = D('Users');
 
-		$dialog_info = $dialog_model->where($where)->find();
+		$dialog_info = $dialog_model->get_dialog_by_uids($sender_uid, $received_uid);
 
 		$user_info = $user_model->get_one(['id' => $received_uid]);
 		$part_user_info = [
@@ -197,6 +195,7 @@ class MessageController extends BaseController {
 		}
 
 		$message_where['dialog_id'] = $dialog_id;
+
 		$common_message_where = $message_where;
 		$special_message_where = $message_where;
 
