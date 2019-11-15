@@ -202,7 +202,7 @@ class MessageController extends BaseController {
 
 		// 取最近的一条有效的需求/技能
 		if($page == 1){
-			$skill_demand = $message_model->get_list($special_message_where);
+			$skill_demand = $message_model->get_list($special_message_where, null, 'add_time desc');
 			$demand_model = D('UserDemand');
 			$skill_model = D('UserSkill');
 
