@@ -288,6 +288,10 @@ class SkillController extends BaseController {
 			$this->result_return(null, 1, '该技能不存在或者未通过审核');
 		}
 
+		if($this->user_id == $skill_info['user_id']){
+			$this->result_return(null, 1, '不能预约自己发布的技能');
+		}
+
 		$skill_type_model = D('SkillType');
 		$skill_type_info = $skill_type_model->get_one(['id' => $skill_info['type_id']]);
 
@@ -339,19 +343,19 @@ class SkillController extends BaseController {
 
 		if($dialog_result){
 			//更新对话框为启用状态
-			$dialog_model->update_dialog_active($dialog_result['id'], $skill_info['user_id']);
+			$dialog_model->update_dialog_active($dialog_result['id'], $this->user_id);
 			$dialog_id = $dialog_result['id'];
 		}else{
 			// 创建对话框
-			$dialog_id = $dialog_model->create_dialog($skill_info['user_id'], $this->user_id);
+			$dialog_id = $dialog_model->create_dialog($this->user_id, $skill_info['user_id']);
 		}
 
 		//插入一条数据
 		$insert_message = [
-			'type' => 2,
+			'type' => 3,
 			'dialog_id' => $dialog_id,
 			'type_id' => $skill_id,
-			'uid' => $skill_info['user_id'],
+			'uid' => $this->user_id,
 			'content' => '技能类型',
 		];
 		$message_model->insert_one($insert_message);

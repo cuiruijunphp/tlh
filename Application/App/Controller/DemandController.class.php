@@ -377,7 +377,7 @@ class DemandController extends BaseController
 
 		if($dialog_result){
 			//更新对话框为启用状态
-			$dialog_model->update_dialog_active($dialog_result['id'], $user_demand_result['user_id']);
+			$dialog_model->update_dialog_active($user_id, $dialog_result['id']);
 			$dialog_id = $dialog_result['id'];
 		}else{
 			// 创建对话框
@@ -389,7 +389,7 @@ class DemandController extends BaseController
 			'type' => 2,
 			'dialog_id' => $dialog_id,
 			'type_id' => $demand_id,
-			'uid' => $user_demand_result['user_id'],
+			'uid' => $user_id,//我应征需求,应该是我给需求发布者发消息
 			'content' => '需求类型',
 		];
 		$message_model->insert_one($insert_message);
