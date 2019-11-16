@@ -200,6 +200,10 @@ class SkillController extends BaseController {
 		$skill_id = I('get.skill_id');
 		$user_id = I('get.user_id');
 
+		if(!$user_id){
+			$user_id = $this->user_id;
+		}
+
 		if($user_id && $user_id != $this->user_id){
 			$is_other = 1;
 		}
