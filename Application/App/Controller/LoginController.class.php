@@ -94,6 +94,12 @@ class LoginController extends CommonController {
 		$code = rand(100000, 999999);
 //		$code = 123456;
 
+		$user_model = D('Users');
+		$is_exist_phone = $user_model->get_one(['mobile_number' => $phone_number]);
+		if($is_exist_phone){
+			$this->result_return(null, 2, '手机号已经注册过了');
+		}
+
 		$code_model = D('Code');
 		$send_result = $code_model->get_sms_code($phone_number, $template_arr[$type], $code);
 //		$send_result = 1;
@@ -167,7 +173,7 @@ class LoginController extends CommonController {
 		$params = json_decode($get_param, true);
 
 		$phone_number = $params['mobile_number'];
-		$user_model = D('User');
+		$user_model = D('Users');
 
 		$is_exist_phone = $user_model->get_one(['mobile_number' => $phone_number]);
 		if($is_exist_phone){
