@@ -153,6 +153,31 @@ class LoginController extends CommonController {
 	}
 
 	/**
+	 * 手机号是否已经注册
+	 * @author cuirj
+	 * @date   2019/11/17 上午10:27
+	 * @url    app/login/phone_is_register/
+	 * @method get
+	 *
+	 * @param  int param
+	 *             return  array
+	 */
+	public function phone_is_register(){
+		$get_param = file_get_contents('php://input');
+		$params = json_decode($get_param, true);
+
+		$phone_number = $params['mobile_number'];
+		$user_model = D('User');
+
+		$is_exist_phone = $user_model->get_one(['mobile_number' => $phone_number]);
+		if($is_exist_phone){
+			$result = 1;
+		}
+
+		$this->result_return(['is_register' => (int)$result]);
+	}
+
+	/**
 	 * 登录
 	 * @author cuirj
 	 * @date   2019/9/27 下午12:22
