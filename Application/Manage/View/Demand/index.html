@@ -83,7 +83,8 @@
                          </if>
                    </td>
                    <td>{$v["selected_uid"]}</td>
-                   <!--<td>{$v["start_time"]|date='Y年m月d日 H时i分',###}</td>-->                  <td>{$v["add_time"]|date='Y年m月d日 H时i分',###}</td>                          <td>{$v["end_time"]|date='Y年m月d日 H时i分',###}</td>
+                   <!--<td>{$v["start_time"]|date='Y年m月d日 H时i分',###}</td>-->
+                     <td>{$v["add_time"]|date='Y年m月d日 H时i分',###}</td>                      <td>{$v["end_time"]|date='Y年m月d日 H时i分',###}</td>
                    <td>{$demand_status_arr[$v["status"]]}</td>
                    <td>
                        <button class="btn btn-success btn-sm change_status" value="1" idvalue="{$v.id}">通过</button>

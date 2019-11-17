@@ -4,13 +4,14 @@ use Think\Model;
 
 class UserDemandModel extends CommonModel{
 
-	public function get_demand_list($where = null, $page = 1, $page_size = 10){
+	public function get_demand_list($where = null, $page = 1, $page_size = 10, $order = 'add_time desc'){
 
 		return $this->field('d.id,d.title,d.type_id,d.status,d.add_time,d.earnest_money,d.user_id,d.applicants,d.selected_uid,d.start_time,d.end_time,u.user_name,t.type_name')
 			->alias('d')
 			->where($where)
 			->join('skill_type as t on d.type_id = t.id', 'left')
 			->join('users as u on d.user_id = u.id', 'left')
+			->order($order)
 			->limit($page_size)
 			->page($page)
 			->select();
