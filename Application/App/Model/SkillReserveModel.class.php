@@ -7,10 +7,10 @@ class SkillReserveModel extends CommonModel{
 	/*
 	 * 取某个技能下预约成功,预约中和预约被拒绝的预约信息
 	 */
-	public function get_skill_reserve_by_skill_id($skill_id, $page = 1, $page_size = 3){
+	public function get_skill_reserve_by_skill_id($skill_id, $page = 1, $page_size = 3, $status = '2,3,4'){
 		$where = [
 			'r.skill_id' => $skill_id,
-			'r.status' => ['in', '2,3,4'],
+			'r.status' => ['in', $status],
 		];
 
 		if(!$page && !$page_size){

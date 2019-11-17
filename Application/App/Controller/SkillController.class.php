@@ -222,7 +222,7 @@ class SkillController extends BaseController {
 		if(!$is_other){
 			//如果是自己的,则把预约信息放出来
 			$skill_reserve_model = D('SkillReserve');
-			$skill_reserve_list = $skill_reserve_model->get_skill_reserve_by_skill_id($skill_id, null, null);
+			$skill_reserve_list = $skill_reserve_model->get_skill_reserve_by_skill_id($skill_id, null, null, '0,2,3,4');
 
 			foreach($skill_reserve_list as $s_k => $s_v){
 				$skill_reserve_list[$s_k]['head_img'] = UPLOAD_URL . $s_v['head_img'];
