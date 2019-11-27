@@ -69,14 +69,18 @@
                  <foreach name="list" key="k" item="v">
                  <tr>
                    <td>{$v["id"]}</td>
-                   <td><img src="{$Think.const.UPLOAD_URL}{$v['img']}" height="50px" width="50px" /></td>
+                   <td>
+                       <if condition="$v['img']">
+                           <img src="{$Think.const.UPLOAD_URL}{$v['img']}" height="50px" width="50px" />
+                       </if>
+                   </td>
                    <td>{$v["type_name"]}</td>
                    <td>{$v["add_time"]|date='Y年m月d日 H时i分',###}</td>
                      <td>
                          {$v["is_show"] ? '显示' : '不显示'}
                      </td>
                      <td>
-                         {$v["parent_id"] ? $v["parent_id"] : '一级分类'}
+                         {$v["parent_id"] ? $v["parent_name"] : '一级分类'}
                      </td>
                    <td>
                        <if condition="$v['is_show'] eq 1">

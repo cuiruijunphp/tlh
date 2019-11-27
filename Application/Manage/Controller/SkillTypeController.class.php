@@ -8,7 +8,7 @@ class SkillTypeController extends BaseController {
 		$skill_type_model = D('SkillType');
 
 		$page = I('get.p');
-		$skill_type_list = $skill_type_model->get_page_list(null, $page);
+		$skill_type_list = $skill_type_model->get_skill_type_list($page);
 		$skill_type_count = $skill_type_model->get_count();
 		$data['list'] = $skill_type_list;
 		// 加上分页
