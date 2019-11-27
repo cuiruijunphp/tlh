@@ -68,8 +68,13 @@
                 <label for="is_show" class="control-label col-md-3 col-sm-3 col-xs-12">是否显示</label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                   <select id="is_show" class="form-control" name="is_show">
-                    <option value="1" <if condition="1 eq $list['is_show']">selected</if>>显示</option>
-                    <option value="0" <if condition="0 eq $list['is_show']">selected</if>>不显示</option>
+                    <if condition="$list.id != ''">
+                      <option value="1" <if condition="1 eq $list['is_show']">selected</if>>显示</option>
+                      <option value="0" <if condition="0 eq $list['is_show']">selected</if>>不显示</option>
+                      <else />
+                      <option value="1" selected>显示</option>
+                      <option value="0" >不显示</option>
+                      </if>
                   </select>
                 </div>
                 </div>
@@ -78,8 +83,8 @@
                 <label for="free_type" class="control-label col-md-3 col-sm-3 col-xs-12">是否农林板块</label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                   <select id="free_type" class="form-control" name="free_type">
-                    <option value="2" <if condition="2 eq $list['free_type']">selected</if>>是</option>
                     <option value="1" <if condition="1 eq $list['free_type']">selected</if>>否</option>
+                    <option value="2" <if condition="2 eq $list['free_type']">selected</if>>是</option>
                   </select>
                 </div>
               </div>
