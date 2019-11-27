@@ -96,7 +96,7 @@ class LoginController extends CommonController {
 
 		$user_model = D('Users');
 		$is_exist_phone = $user_model->get_one(['mobile_number' => $phone_number]);
-		if($is_exist_phone){
+		if($is_exist_phone && ($type == 'register')){
 			$this->result_return(null, 1, '手机号已经注册过了');
 		}
 
