@@ -87,9 +87,11 @@
                      <td>{$v["add_time"]|date='Y年m月d日 H时i分',###}</td>                      <td>{$v["end_time"]|date='Y年m月d日 H时i分',###}</td>
                    <td>{$demand_status_arr[$v["status"]]}</td>
                    <td>
-                       <button class="btn btn-success btn-sm change_status" value="1" idvalue="{$v.id}">通过</button>
+                       <if condition="$v['status'] eq 0">
+                           <button class="btn btn-success btn-sm change_status" value="1" idvalue="{$v.id}">通过</button>
 
-                       <button class="btn  btn-danger btn-sm change_status" value="2" idvalue="{$v.id}">不通过</button>
+                           <button class="btn  btn-danger btn-sm change_status" value="2" idvalue="{$v.id}">不通过</button>
+                       </if>
 
                      <!--<button class="btn btn-danger btn-sm del" idvalue="{$v['id']}">删除</button>-->
                    </td>
