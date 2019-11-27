@@ -56,7 +56,7 @@ class SkillTypeController extends BaseController {
 
 			if(!$params['id']){
 				//新增
-				if(!$file_path){
+				if(!$file_path && ($params['parent_id'] == 0)){
 					$this->result_return(null, 500, '请上传技能照片');
 				}
 
