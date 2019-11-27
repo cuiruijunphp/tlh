@@ -292,6 +292,7 @@ class PersonalController extends BaseController {
 			// 返回账户余额
 			$data['account_balance'] = $user_info['account_balance'];
 			$data['vip_expire_time'] = $user_info['vip_expire_time'];
+			$data['mobile_number'] = $user_info['mobile_number'];
 		}
 
 		//地址信息

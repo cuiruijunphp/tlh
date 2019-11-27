@@ -233,6 +233,7 @@ class LoginController extends CommonController {
 			'alipay_account' => $user_info['alipay_account'],
 			'alipay_real_name' => $user_info['alipay_real_name'],
 			'account_balance' => $user_info['account_balance'],
+			'mobile_number' => $user_info['mobile_number'],
 		];
 
 		$token = '';
