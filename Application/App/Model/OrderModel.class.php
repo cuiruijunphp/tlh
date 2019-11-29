@@ -59,13 +59,13 @@ class OrderModel extends CommonModel{
 				}else{
 					// 未过期的会员,在此基础上增加时效
 					$vip_expire_time = $user_info['vip_expire_time'] + $vip_aging_time;
+				}
 
-					//首冲送一年
-					$is_first_vip_charge = $order_model->get_one(['status' => 1, 'user_id' => $user_id, 'source_type' => 1]);
+				//首冲送一年
+				$is_first_vip_charge = $order_model->get_one(['status' => 1, 'user_id' => $user_id, 'source_type' => 1]);
 
-					if(!$is_first_vip_charge){
-						$vip_expire_time += 365 * 24 * 3600;
-					}
+				if(!$is_first_vip_charge){
+					$vip_expire_time += 365 * 24 * 3600;
 				}
 
 				$user_update_data = [
@@ -78,15 +78,31 @@ class OrderModel extends CommonModel{
 
 				//判断是否有邀请人,如果有邀请人,则更新邀请人账户余额,写入账户流水
 				if($user_info['invite_user_id']){
+
+					//判断邀请人是否是vip,普通会员邀请其他用户，并成为VIP将获得5%收益，VIP用户邀请邀请其他用户，并成为VIP将获得10%收益
+					$invite_user_info = $user_model->get_one(['id' => $user_info['invite_user_id']]);
+					if($invite_user_info['vip_expire_time'] < time()){
+						// 被邀请人已经不是会员
+						$invite_balace = $souce_type_arr[$vip_aging_type['vip_aging_type']['invite_income']];
+
+						$action = 'INVITE_RECHARGE_VIP';
+						$note = '普通会员邀请充值会员';
+					}else{
+						$invite_balace = $souce_type_arr[$vip_aging_type['vip_aging_type']['vip_invite_income']];
+
+						$action = 'VIP_INVITE_RECHARGE_VIP';
+						$note = 'VIP会员邀请充值会员';
+					}
+
 					//更新账户余额
-					$user_model->update_data(['id' => $user_info['invite_user_id']], ['account_balance' => $user_info['account_balance'] + $souce_type_arr[$vip_aging_type['vip_aging_type']['invite_income']]]);
+					$user_model->update_data(['id' => $user_info['invite_user_id']], ['account_balance' => $user_info['account_balance'] + $invite_balace]);
 
 					//写入账户流水
 					$invite_user_balace_log_data = [
 						'user_id' => $user_info['invite_user_id'],
-						'action' => 'INVITE_RECHARGE_VIP',
-						'note' => '邀请人充值会员',
-						'balance' => $souce_type_arr[$vip_aging_type['vip_aging_type']]['invite_income'],
+						'action' => $action,
+						'note' => $note,
+						'balance' => $invite_balace,
 						'item_id' => $user_id,
 						'order_id' => $order_id,
 					];

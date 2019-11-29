@@ -129,7 +129,7 @@ class WalletController extends BaseController {
 				$where['action'] = 'USER_WITHDRAW';
 			}elseif ($type == 3){
 				// 邀请充值记录
-				$where['action'] = 'INVITE_RECHARGE_VIP';
+				$where['action'] = ['in', 'INVITE_RECHARGE_VIP,VIP_INVITE_RECHARGE_VIP'];
 			}elseif($type == 2){
 				// 需求或者技能被拒绝退钱
 				$where['action'] = ['in', 'DEMAND_REJECT_REFUND,SKILL_REJECT_REFUND'];
