@@ -118,12 +118,12 @@ class SkillReserveModel extends CommonModel{
 	 */
 	public function update_ear_money_info($order_id, $source_type, $source_id, $update_user_id){
 
-		$order_model = D('Order');
 		$users_model = D('Users');
 		$balance_log_model = D('AccountBalanceLog');
+		$order_model = D('Order');
 
 		//开启事务
-		$order_model->startTrans();
+		$users_model->startTrans();
 
 		// 查询订单
 		$order_info = $order_model->get_one(['order_id' => $order_id]);
@@ -152,12 +152,11 @@ class SkillReserveModel extends CommonModel{
 
 		$balace_res = $balance_log_model->insert_one($insert_balance_log_data);
 
-		if(!empty($order_res) && !empty($user_res) && !empty($balace_res) ){
-			$order_model->commit();
-
+		if(!empty($user_res) && !empty($balace_res) ){
+			$users_model->commit();
 			return true;
 		}else{
-			$order_model->rollback();
+			$users_model->rollback();
 			//加入日志
 			return false;
 		}
