@@ -85,6 +85,10 @@ class HomeController extends BaseController
 			$result = $skill_model->get_skill_demand_order_by_distance($latitude, $longitude, $offset, $page_size);
 		}elseif($type == 'hot'){
 			$result = $skill_model->get_skill_demand_by_view($offset, $page_size);
+		}elseif($type == 'demand'){
+			$result = $skill_model->get_demand_list_home($offset, $page_size);
+		}elseif($type == 'skill'){
+			$result = $skill_model->get_skill_list_home($offset, $page_size);
 		}else{
 			$type = 'all';
 			$result = $skill_model->get_skill_demand_all($offset, $page_size);

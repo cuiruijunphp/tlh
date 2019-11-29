@@ -21,7 +21,7 @@ class UserSkillModel extends CommonModel{
 
 		$sql .= '(select d.id,title,user_id,is_online,head_img,user_name,type_id,d.add_time,longitude,latitude,null as img,"demand" as type from user_demand as d left join users u on d.user_id = u.id  where status=1  and end_time > '.time().' and type_id ' . $type_id_where . ')';
 
-		$sql .= ' limit ' . $offset . ',' . $page_size;
+		$sql .= ' order by add_time desc limit ' . $offset . ',' . $page_size;
 
 		return $this->query($sql);
 	}
@@ -85,7 +85,31 @@ class UserSkillModel extends CommonModel{
 
 		$sql .= '(select d.id,title,user_id,is_online,head_img,user_name,type_id,d.add_time,longitude,latitude,null as img,"demand" as type from user_demand as d left join users u on d.user_id = u.id  where status=1  and end_time > ' . time(). ')';
 
-		$sql .= ' limit ' . $offset . ',' . $page_size;
+		$sql .= ' order by add_time desc limit ' . $offset . ',' . $page_size;
+
+		return $this->query($sql);
+	}
+
+	/*
+	 * 首页按技能获取结果
+	 */
+	public function get_skill_list_home($offset = 0, $page_size=10){
+
+		$sql = '(select s.id,skill_name as title,user_id,is_online,head_img,user_name,type_id,s.add_time,longitude,latitude,img,"skill" as type, reservation_count as r_count from user_skill s left join users u on s.user_id = u.id where s.status =1)';
+
+		$sql .= 'order by add_time desc limit ' . $offset . ',' . $page_size;
+
+		return $this->query($sql);
+	}
+
+	/*
+	 * 首页按需求获取结果
+	 */
+	public function get_demand_list_home($offset = 0, $page_size=10){
+
+		$sql = '(select d.id,title,user_id,is_online,head_img,user_name,type_id,d.add_time,longitude,latitude,null as img,"demand" as type from user_demand as d left join users u on d.user_id = u.id  where status=1  and end_time > ' . time(). ')';
+
+		$sql .= 'order by add_time desc limit ' . $offset . ',' . $page_size;
 
 		return $this->query($sql);
 	}
