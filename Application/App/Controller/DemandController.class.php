@@ -221,6 +221,17 @@ class DemandController extends BaseController
 			$this->result_return(null, 1, '确认应征者失败');
 		}
 
+		// 这个时候需要把诚意金打到应征者账户中
+		$order_model = D('Order');
+		$order_info = $order_model->get_one(['user_id' => $this->user_id, 'status' => 1, 'source_id' => $demand_id, 'source_type' => 2]);
+
+		if($order_info)
+		{
+			$skill_reserve_model = D('SkillReserve');
+			$skill_reserve_model->update_ear_money_info($order_info['order_id'], 2, $demand_id, $user_id);
+		}
+
+
 		$this->result_return(['result' => 1]);
 	}
 

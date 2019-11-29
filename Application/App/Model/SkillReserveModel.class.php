@@ -112,4 +112,54 @@ class SkillReserveModel extends CommonModel{
 			return false;
 		}
 	}
+
+	/*
+	 * 更新诚意金转到对方账户相关信息
+	 */
+	public function update_ear_money_info($order_id, $source_type, $source_id, $update_user_id){
+
+		$order_model = D('Order');
+		$users_model = D('Users');
+		$balance_log_model = D('AccountBalanceLog');
+
+		//开启事务
+		$order_model->startTrans();
+
+		// 查询订单
+		$order_info = $order_model->get_one(['order_id' => $order_id]);
+
+		// 更新账户余额
+		$user_info = $users_model->get_one(['id' => $update_user_id]);
+
+		$user_res = $users_model->update_data(['id' => $update_user_id], ['account_balance' => number_format(($user_info['account_balance'] + $order_info['price']), 2)]);
+
+		if($source_type == 2){
+			$action = 'DEMAND_RECRUIT_SUCCESS';
+			$note = '需求应征成功';
+		}else{
+			$action = 'SKILL_RESERVE_SUCCESS';
+			$note = '技能预约成功';
+		}
+		//更新流水
+		$insert_balance_log_data = [
+			'user_id' => $update_user_id,
+			'action' => $action,
+			'note' => $note,
+			'balance' => number_format($order_info['price'], 2),
+			'item_id' => $source_id,
+			'order_id' => $order_info['order_id'],
+		];
+
+		$balace_res = $balance_log_model->insert_one($insert_balance_log_data);
+
+		if(!empty($order_res) && !empty($user_res) && !empty($balace_res) ){
+			$order_model->commit();
+
+			return true;
+		}else{
+			$order_model->rollback();
+			//加入日志
+			return false;
+		}
+	}
 }

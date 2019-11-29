@@ -97,7 +97,7 @@ class HomeController extends BaseController
 		// 对结果进行处理
 		if($result){
 			foreach($result as $k => $v){
-				if($type_id || $type == 'hot' || $type == 'all'){
+				if($type_id || in_array($type,['hot', 'all', 'demand' ,'skill'])){
 					// 如果是技能类型查到的结果,则用php计算距离
 					$result[$k]['distance'] = get_distance($v['longitude'], $v['latitude'], $longitude, $latitude);
 				}

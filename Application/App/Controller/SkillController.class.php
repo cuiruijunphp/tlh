@@ -403,54 +403,22 @@ class SkillController extends BaseController {
 
 		//更新order表中的状态
 		//如果拒绝了预约,则需要将钱退给预约者
-		if($status == 4){
-			// 收费模式下,更新order表中的状态,更新账户流水,更新账户余额
+		// 如果有订单信息,说明是付过款的
+		$order_model = D('Order');
+		$order_info = $order_model->get_one(['source_type' => 3, 'source_id' => $reserve_id, 'user_id' => $skill_reserve_info['user_id'], 'status' => 1], 'add_time desc');
 
-			// 如果有订单信息,说明是付过款的
-			$order_model = D('Order');
-			$order_info = $order_model->get_one(['source_type' => 3, 'source_id' => $reserve_id, 'user_id' => $skill_reserve_info['user_id'], 'status' => 1], 'add_time desc');
+		$skill_reserve_model = D('SkillReserve');
 
-			if($order_info){
+		if($order_info){
+			if($status == 4){
+				// 收费模式下,更新order表中的状态,更新账户流水,更新账户余额
 				$skill_reserve_model->update_refund_info(3, $reserve_id, $skill_reserve_info['user_id']);
+			}elseif($status == 3){
+				// 将钱打到技能发布者账号里
+				$skill_reserve_model->update_ear_money_info($order_info['order_id'], 3, $reserve_id, $skill_reserve_info['user_id']);
 			}
-
-//			if($skill_reserve_info['free_type'] == 1){
-//				$order_model = D('Order');
-//				$users_model = D('Users');
-//				$balance_log_model = D('AccountBalanceLog');
-//
-//				//开启事务
-//				$order_model->startTrans();
-//
-//				// 更新订单
-//				$order_info = $order_model->get_one(['source_type' => 3, 'source_id' => $reserve_id, 'user_id' => $skill_reserve_info['user_id']]);
-//
-//				$order_res = $order_model->update_data(['source_type' => 3, 'source_id' => $reserve_id, 'user_id' => $skill_reserve_info['user_id']], ['status' => 3, 'refund_time' => time()]);
-//
-//				// 更新账户余额
-//				$user_info = $users_model->get_one(['id' => $skill_reserve_info['user_id']]);
-//
-//				$user_res = $users_model->update_data(['id' => $skill_reserve_info['user_id']], ['account_balance' => $user_info['account_balance'] - $order_info['price']]);
-//
-//				//更新流水
-//				$insert_balance_log_data = [
-//					'user_id' => $skill_reserve_info['user_id'],
-//					'action' => 'SKILL_REJECT_REFUND',
-//					'note' => '技能预约被拒绝退款',
-//					'balance' => $order_info['price'],
-//					'item_id' => $reserve_id,
-//				];
-//
-//				$balace_res = $balance_log_model->insert_one($insert_balance_log_data);
-//
-//				if(!empty($order_res) && !empty($user_res) && !empty($balace_res) ){
-//					$order_model->commit();
-//				}else{
-//					$order_model->rollback();
-//					//加入日志
-//				}
-//			}
 		}
+
 
 		if($update_result === false){
 			$this->result_return(null, 1, '操作失败');
