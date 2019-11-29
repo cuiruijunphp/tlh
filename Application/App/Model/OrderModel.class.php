@@ -41,7 +41,7 @@ class OrderModel extends CommonModel{
 
 		$update_res = $order_model->update_data(['id' => $order_info['id']], $update_data);
 
-		if($update_res !== false){
+		if($update_res !== false && $result == 'success'){
 
 			//增加业务逻辑
 			if($order_info['source_type'] == 1){
@@ -62,11 +62,13 @@ class OrderModel extends CommonModel{
 				}
 
 				//首冲送一年
-				$is_first_vip_charge = $order_model->get_one(['status' => 1, 'user_id' => $user_id, 'source_type' => 1]);
+				$vip_charge_count = $order_model->get_condition_count(['status' => 1, 'user_id' => $user_id, 'source_type' => 1]);
 
-				if(!$is_first_vip_charge){
+				if($vip_charge_count == 1){
 					$vip_expire_time += 365 * 24 * 3600;
 				}
+
+				echo $vip_expire_time;
 
 				$user_update_data = [
 					'is_vip' => 1,
@@ -83,19 +85,19 @@ class OrderModel extends CommonModel{
 					$invite_user_info = $user_model->get_one(['id' => $user_info['invite_user_id']]);
 					if($invite_user_info['vip_expire_time'] < time()){
 						// 被邀请人已经不是会员
-						$invite_balace = $souce_type_arr[$vip_aging_type['vip_aging_type']['invite_income']];
+						$invite_balace = $souce_type_arr[$vip_aging_type['vip_aging_type']]['invite_income'];
 
 						$action = 'INVITE_RECHARGE_VIP';
 						$note = '普通会员邀请充值会员';
 					}else{
-						$invite_balace = $souce_type_arr[$vip_aging_type['vip_aging_type']['vip_invite_income']];
+						$invite_balace = $souce_type_arr[$vip_aging_type['vip_aging_type']]['vip_invite_income'];
 
 						$action = 'VIP_INVITE_RECHARGE_VIP';
 						$note = 'VIP会员邀请充值会员';
 					}
 
-					//更新账户余额
-					$user_model->update_data(['id' => $user_info['invite_user_id']], ['account_balance' => $user_info['account_balance'] + $invite_balace]);
+					//更新被邀请人账户余额
+					$user_model->update_data(['id' => $user_info['invite_user_id']], ['account_balance' => $invite_user_info['account_balance'] + $invite_balace]);
 
 					//写入账户流水
 					$invite_user_balace_log_data = [

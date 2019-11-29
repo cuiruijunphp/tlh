@@ -85,10 +85,14 @@ class PayController extends BaseController {
 
 		$order_id = $params['order_id'];
 		$result = $params['result'];
+		$payment_time = $params['payment_time'];
+		$payment_id = $params['payment_id'];
+		$total_amount = $params['total_amount'];
+
 		$user_id = $this->user_id;
 
 		$order_model = D('Order');
-		$res = $order_model->update_result($order_id, $result);
+		$res = $order_model->update_result($order_id, $result, $total_amount, $payment_time, $payment_id);
 
 		if(is_string($res)){
 			$this->result_return(null, 1, $res);
