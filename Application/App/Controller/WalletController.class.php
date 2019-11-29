@@ -40,7 +40,7 @@ class WalletController extends BaseController {
 			$this->result_return(null, 1, '未绑定支付宝');
 		}
 
-		if($money > 50){
+		if($money >= 50){
 			$this->result_return(null, 1, '提现金额');
 		}
 
