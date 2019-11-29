@@ -40,6 +40,10 @@ class WalletController extends BaseController {
 			$this->result_return(null, 1, '未绑定支付宝');
 		}
 
+		if($money > 50){
+			$this->result_return(null, 1, '提现金额');
+		}
+
 		if($this->user_info['account_balance'] < $money){
 			$this->result_return(null, 1, '账户可提现金额小于申请提现金额');
 		}
@@ -59,12 +63,12 @@ class WalletController extends BaseController {
 		$insert_data = [
 			'order_id' => $order_id,
 			'user_id' => $user_id,
-			'price' => $money,
+			'price' => number_format($money * 0.9, 2),
 			'pay_type' => 'alipay_app',
 			'source_type' => 4,
 			'source_id' => 0,
-			//把本次转账的支付宝账号记录下来
-			'extra_info' => json_encode(['alipay_account' => $this->user_info['alipay_account'], 'alipay_real_name' => $this->user_info['alipay_real_name']]),
+			//把本次转账的支付宝账号以及扣手续费之前的钱记录下来
+			'extra_info' => json_encode(['alipay_account' => $this->user_info['alipay_account'], 'alipay_real_name' => $this->user_info['alipay_real_name'], 'original_money' => $money]),
 		];
 
 		$insert_result = $order_model->insert_one($insert_data);
