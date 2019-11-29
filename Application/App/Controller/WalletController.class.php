@@ -52,9 +52,9 @@ class WalletController extends BaseController {
 		$order_model = D('Order');
 		$withdraw_info = $order_model->get_one(['status' => 0, 'user_id' => $user_id, 'source_type' => 4]);
 
-//		if($withdraw_info){
-//			$this->result_return(null, 1, '你还有未完成的提现申请');
-//		}
+		if($withdraw_info){
+			$this->result_return(null, 1, '你还有未完成的提现申请');
+		}
 
 		//创建订单
 		//创建订单号
