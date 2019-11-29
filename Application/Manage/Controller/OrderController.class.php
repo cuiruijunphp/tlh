@@ -171,7 +171,10 @@ class OrderController extends BaseController {
 					$user_model = D('Users');
 					$user_info  = $user_model->get_one(['id' => $order_info['user_id']]);
 
-					$update_result = $user_model->update_data(['id' => $order_info['user_id']], ['account_balance' => $user_info['account_balance'] - $order_info['price']]);
+					//减少用户余额要用真实扣除的钱
+					$original_money = json_decode($order_info['extra_info'], true);
+
+					$update_result = $user_model->update_data(['id' => $order_info['user_id']], ['account_balance' => number_format($user_info['account_balance'] - $original_money['original_money'], 2)]);
 
 					$this->result_return(['result' => 1]);
 				}else{
