@@ -221,6 +221,31 @@ class DemandController extends BaseController
 			$this->result_return(null, 1, '确认应征者失败');
 		}
 
+		// 确认应征者以后要写到对话框里
+		$dialog_model = D('Dialog');
+		$message_model = D('Message');
+
+		$dialog_result = $dialog_model->get_dialog_by_uids($user_id, $user_demand_result['user_id']);
+
+		if($dialog_result){
+			//更新对话框为启用状态
+			$dialog_model->update_dialog_active($user_id, $dialog_result['id']);
+			$dialog_id = $dialog_result['id'];
+		}else{
+			// 创建对话框
+			$dialog_id = $dialog_model->create_dialog($user_demand_result['user_id'], $user_id);
+		}
+
+		//插入一条数据
+		$insert_message = [
+			'type' => 2,
+			'dialog_id' => $dialog_id,
+			'type_id' => $demand_id,
+			'uid' => $user_id,//我应征需求,应该是我给需求发布者发消息
+			'content' => '需求类型',
+		];
+		$message_model->insert_one($insert_message);
+
 		// 这个时候需要把诚意金打到应征者账户中
 		$order_model = D('Order');
 		$order_info = $order_model->get_one(['user_id' => $this->user_id, 'status' => 1, 'source_id' => $demand_id, 'source_type' => 2]);
@@ -385,31 +410,6 @@ class DemandController extends BaseController
 		if($update_result === false){
 			$this->result_return(null, 1, '应征失败');
 		}
-
-		// 应征完成以后要写到对话框里
-		$dialog_model = D('Dialog');
-		$message_model = D('Message');
-
-		$dialog_result = $dialog_model->get_dialog_by_uids($user_id, $user_demand_result['user_id']);
-
-		if($dialog_result){
-			//更新对话框为启用状态
-			$dialog_model->update_dialog_active($user_id, $dialog_result['id']);
-			$dialog_id = $dialog_result['id'];
-		}else{
-			// 创建对话框
-			$dialog_id = $dialog_model->create_dialog($user_demand_result['user_id'], $user_id);
-		}
-
-		//插入一条数据
-		$insert_message = [
-			'type' => 2,
-			'dialog_id' => $dialog_id,
-			'type_id' => $demand_id,
-			'uid' => $user_id,//我应征需求,应该是我给需求发布者发消息
-			'content' => '需求类型',
-		];
-		$message_model->insert_one($insert_message);
 
 		$this->result_return(['result' => 1]);
 	}

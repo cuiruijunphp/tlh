@@ -68,8 +68,6 @@ class OrderModel extends CommonModel{
 					$vip_expire_time += 365 * 24 * 3600;
 				}
 
-				echo $vip_expire_time;
-
 				$user_update_data = [
 					'is_vip' => 1,
 					'vip_expire_time' => $vip_expire_time,

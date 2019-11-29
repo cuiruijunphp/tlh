@@ -213,7 +213,7 @@ class MessageController extends BaseController {
 					if($s_v['type'] == 2){
 						// 查看需求是否完成
 						$demand_info = $demand_model->get_one(['id' => $s_v['type_id']]);
-						if($demand_info['status'] == 1){
+						if($demand_info['status'] == 3){
 							$type_result = $s_v;
 
 							$type_result['title'] = $demand_info['title'];
@@ -223,13 +223,15 @@ class MessageController extends BaseController {
 						}
 					}else{
 						// 技能
-						$skill_info = $skill_model->get_one(['id' => $s_v['type_id']]);
-						if($skill_info['status'] == 1){
+						$skill_reserve_model = D('SkillReserve');
+						$skill_reserve_info = $skill_reserve_model->get_skill_info_by_reserve_id($s_v['type_id']);
+
+						if($skill_reserve_info['status'] == 3){
 							$type_result = $s_v;
 
-							$type_result['title'] = $skill_info['skill_name'];
-							$type_result['earnest_money'] = $skill_info['price'];
-							$type_result['desc'] = $skill_info['desc'];
+							$type_result['title'] = $skill_reserve_info['skill_name'];
+							$type_result['earnest_money'] = $skill_reserve_info['price'];
+							$type_result['desc'] = $skill_reserve_info['desc'];
 
 							break;
 						}

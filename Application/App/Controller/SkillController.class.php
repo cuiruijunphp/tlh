@@ -339,31 +339,6 @@ class SkillController extends BaseController {
 		//预约成功以后增加预约人数
 		$skill_model->update_data(['id' => $skill_id], ['reservation_count' => $skill_info['reservation_count'] + 1]);
 
-		// 预约完成以后要写到对话框里
-		$dialog_model = D('Dialog');
-		$message_model = D('Message');
-
-		$dialog_result = $dialog_model->get_dialog_by_uids($this->user_id, $skill_info['user_id']);
-
-		if($dialog_result){
-			//更新对话框为启用状态
-			$dialog_model->update_dialog_active($dialog_result['id'], $this->user_id);
-			$dialog_id = $dialog_result['id'];
-		}else{
-			// 创建对话框
-			$dialog_id = $dialog_model->create_dialog($this->user_id, $skill_info['user_id']);
-		}
-
-		//插入一条数据
-		$insert_message = [
-			'type' => 3,
-			'dialog_id' => $dialog_id,
-			'type_id' => $skill_id,
-			'uid' => $this->user_id,
-			'content' => '技能类型',
-		];
-		$message_model->insert_one($insert_message);
-
 		$this->result_return(['reserve_id' => $reserve_id]);
 	}
 
@@ -401,6 +376,10 @@ class SkillController extends BaseController {
 
 		$update_result = $skill_reserve_model->update_data(['id' => $reserve_id], ['status' => $status]);
 
+		if($update_result === false){
+			$this->result_return(null, 1, '操作失败');
+		}
+
 		//更新order表中的状态
 		//如果拒绝了预约,则需要将钱退给预约者
 		// 如果有订单信息,说明是付过款的
@@ -419,9 +398,31 @@ class SkillController extends BaseController {
 			}
 		}
 
+		// 审核同意以后要写到对话框里
+		if($status == 3){
+			$dialog_model = D('Dialog');
+			$message_model = D('Message');
 
-		if($update_result === false){
-			$this->result_return(null, 1, '操作失败');
+			$dialog_result = $dialog_model->get_dialog_by_uids($skill_reserve_info['user_id'], $this->user_id);
+
+			if($dialog_result){
+				//更新对话框为启用状态
+				$dialog_model->update_dialog_active($dialog_result['id'], $this->user_id);
+				$dialog_id = $dialog_result['id'];
+			}else{
+				// 创建对话框
+				$dialog_id = $dialog_model->create_dialog($this->user_id, $skill_reserve_info['user_id']);
+			}
+
+			//插入一条数据
+			$insert_message = [
+				'type' => 3,
+				'dialog_id' => $dialog_id,
+				'type_id' => $reserve_id,
+				'uid' => $this->user_id,
+				'content' => '技能类型',
+			];
+			$message_model->insert_one($insert_message);
 		}
 
 		$this->result_return(['result' => 1]);
