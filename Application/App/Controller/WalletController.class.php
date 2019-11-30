@@ -155,6 +155,11 @@ class WalletController extends BaseController {
 					'add_time' => $v['add_time'],
 					'balance' => $v['balance'],
 				];
+
+				if($type == 1){
+					// 如果是提现,则取真实金额
+					$balance_list[$k]['balance'] = number_format($balance_list[$k]['balance'] * 10/9, 2);
+				}
 			}
 
 		}else{
