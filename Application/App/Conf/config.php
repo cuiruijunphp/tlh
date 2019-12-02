@@ -31,9 +31,8 @@ return array(
 
 	//每天能发布技能和需求限制
 	'max_publish_limit' => [
-		'skill' => 10,
-		'demand' => 10,
-		//会员能每天免费预约3次
-		'vip_free_reserve' => 1,
+		'skill' => 10, //每天发布技能的次数限制
+		'demand' => 10,//每天发布需求的次数限制
+		'vip_free_reserve' => 1,//会员能每天免费预约次数、
 	],
 );
