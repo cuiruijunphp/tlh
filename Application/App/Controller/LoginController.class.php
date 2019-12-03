@@ -57,6 +57,7 @@ class LoginController extends CommonController {
 			'mobile_number' => $phone_number,
 			'password' => compile_password($password),
 			'invite_user_id' => (int)$invite_info['id'],
+			'source' => $params['source'] ? $params['source'] : 'app',
 		];
 		$insert_result = $user_model->insert_one($insert_user_data);
 
