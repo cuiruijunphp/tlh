@@ -133,4 +133,20 @@ class UserSkillModel extends CommonModel{
 	public function get_pulish_count($where){
 		return $this->where($where)->count();
 	}
+
+	/*
+	 * 根据关键词查询需求标题/技能名称,距离用php循环来算
+	 */
+	public function get_skill_demand_by_keyword($keyword, $offset = 0, $page_size=10){
+
+		$sql = '(select s.id,skill_name as title,user_id,is_online,head_img,user_name,type_id,s.add_time,longitude,latitude,img,"skill" as type from user_skill s left join users u on s.user_id = u.id where s.status =1 and s.skill_name like "%'. $keyword . '%")';
+
+		$sql .= ' union ';
+
+		$sql .= '(select d.id,title,user_id,is_online,head_img,user_name,type_id,d.add_time,longitude,latitude,null as img,"demand" as type from user_demand as d left join users u on d.user_id = u.id  where status=1  and end_time > '.time().' and d.title like "%' . $keyword . '%")';
+
+		$sql .= ' order by add_time desc limit ' . $offset . ',' . $page_size;
+
+		return $this->query($sql);
+	}
 }

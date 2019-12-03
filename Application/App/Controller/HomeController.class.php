@@ -53,6 +53,7 @@ class HomeController extends BaseController
 		$type = $params['type'];
 		$latitude = $params['latitude'];
 		$longitude = $params['longitude'];
+		$keyword = $params['keyword'];
 		$page = $params['page'] ? $params['page'] : 1;
 		$page_size = $params['page_size'] ? $params['page_size'] : 5;
 
@@ -60,6 +61,12 @@ class HomeController extends BaseController
 
 		$skill_model = D('UserSkill');
 		$skill_type_model = D('SkillType');
+
+		if($type == 'keyword'){
+			if(!$keyword){
+				$this->result_return(null, 1, '请传入要查询的内容');
+			}
+		}
 
 		if($type_id){
 			// 类型
@@ -89,6 +96,8 @@ class HomeController extends BaseController
 			$result = $skill_model->get_demand_list_home($offset, $page_size);
 		}elseif($type == 'skill'){
 			$result = $skill_model->get_skill_list_home($offset, $page_size);
+		}elseif($type == 'keyword'){
+			$result = $skill_model->get_skill_demand_by_keyword($keyword, $offset, $page_size);
 		}else{
 			$type = 'all';
 			$result = $skill_model->get_skill_demand_all($offset, $page_size);
