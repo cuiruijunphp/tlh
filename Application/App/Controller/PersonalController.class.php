@@ -449,6 +449,41 @@ class PersonalController extends BaseController {
 	}
 
 	/**
+	 * 删除某条动态
+	 * @author cuirj
+	 * @date   2019/10/3 下午8:44
+	 * @url    app/personal/del_trend/
+	 * @method get
+	 *
+	 * @param  int param
+	 * @return  array
+	 */
+	public function del_trend(){
+		$trend_id = I('post.trend_id');
+
+		$user_trends_model = D('UserTrends');
+
+		$user_trends_result = $user_trends_model->get_one(['id' => $trend_id]);
+
+		if($user_trends_result){
+			$img_list = explode(',', $user_trends_result['img_list']);
+
+			//删除该条动态以及相应图片
+			$user_trends_model->del_data(['id' => $trend_id]);
+
+			//删除图片
+			foreach($img_list as $i_k => $i_v){
+				unlink('Uploads/' . $i_v);
+			}
+
+			$this->result_return(['result' => 1]);
+		}else{
+
+			$this->result_return(null, 1, '这条动态不存在');
+		}
+	}
+
+	/**
 	 * @description 退出登录
 	 * @author      cuirj
 	 * @date        2018/9/25 下午4:45
