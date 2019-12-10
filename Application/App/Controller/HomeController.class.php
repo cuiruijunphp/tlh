@@ -156,4 +156,57 @@ class HomeController extends BaseController
 
 		$this->result_return(['result' => 1]);
 	}
+
+	/**
+	 * 公告
+	 * @date   2019/12/10 下午2:19
+	 * @url    /app/home/get_notice_list/
+	 *
+	 * @param  int page
+	 * @param  int page_size
+	 * @method get
+	 *
+	 * @return  array
+	 */
+	public function get_notice_list()
+	{
+		$page =  I('get.page') ? I('get.page') : 1;
+		$page_size =  I('get.page_size') ? I('get.page_size') : 6;
+
+		$limit = ($page - 1) * $page_size;
+
+		$notice_model = D('Notice');
+		$notice_list = $notice_model->get_list(null, $limit. ',' . $page_size, 'add_time desc');
+		if($notice_list){
+			foreach($notice_list as $k => $v){
+				unset($notice_list[$k]['content']);
+				unset($notice_list[$k]['update_time']);
+			}
+		}
+
+		$this->result_return($notice_list);
+	}
+
+	/**
+	 * 公告
+	 * @date   2019/12/10 下午2:19
+	 * @url    /app/home/get_notice_info/
+	 *
+	 * @method get
+	 * @param  int notice_id
+	 * @return  array
+	 */
+	public function get_notice_info()
+	{
+		$notice_id =  I('get.notice_id');
+
+		$notice_model = D('Notice');
+		$notice_info = $notice_model->get_one(['id' => $notice_id]);
+		if($notice_info){
+			$content = htmlspecialchars_decode($notice_info['content']);
+			$notice_info['content'] = str_replace('/Uploads/ueditor/notice/', $_SERVER['HTTP_HOST'] . '/Uploads/ueditor/notice/', $content);
+		}
+
+		$this->result_return($notice_info);
+	}
 }
