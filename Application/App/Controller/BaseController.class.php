@@ -14,7 +14,7 @@ class BaseController extends CommonController {
 	 * @return  array
 	 */
     public function __construct(){
-		$this->result_return(null, 401, '请先登录');
+//		$this->result_return(null, 401, '请先登录');
 		$token_id = $_SERVER['HTTP_TLHTOKEN'];
 
 		$session_app_model = D('UsersSessionApp');
