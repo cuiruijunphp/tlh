@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="/Public/static/assets/images/favicon.ico" type="image/ico" />
+
+    <title>后台管理系统</title>
+
+   <!-- Bootstrap -->
+   <link href="/Public/static/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+   <!-- Font Awesome -->
+   <link href="/Public/static/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+   <!-- NProgress -->
+   <link href="/Public/static/vendors/nprogress/nprogress.css" rel="stylesheet">
+   <!-- Custom Theme Style -->
+   <link href="/Public/static/build/css/custom.css" rel="stylesheet">
+  </head>
+
+  <body class="nav-md">
+  <div class="container body">
+    <div class="main_container">
+      <div class="col-md-3 left_col">
+        <div class="left_col scroll-view">
+          <div class="navbar nav_title" style="border: 0;">
+            <a href="{:U()}" class="site_title"><i class="fa fa-paw"></i> <span>首页</span></a>
+          </div>
+
+          <div class="clearfix"></div>
+          <include file="Common/header" />
+        </div>
+      </div>
+
+      <!-- 顶部导航栏 -->
+      <div class="top_nav">
+        <div class="nav_menu">
+          <nav>
+            <div class="nav toggle">
+              <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+            </div>
+            <!-- 用户名文件在template文件夹下的top_nav.html -->
+            <div class="top_nav">
+              <include file="Common/top_nav" />
+            </div>
+          </nav>
+        </div>
+      </div>
+      <!-- /顶部导航栏 -->
+
+        <!-- 页面内容 -->
+        <div class="right_col" role="main">
+          <a href="javascript:history.go(-1);"><button class="btn btn-success btn-sm fl" id="add_course"><< 返回列表</button></a>
+          <div id="add_edit_course" style="clear:both">
+             <h3 class="title"><if condition="$list.id != ''">修改<else />新增</if>公告</h3>
+            <form action="{:U('Manage/notice/edit')}" method="post" class="form-horizontal form-label-left" id="form" url="" enctype="multipart/form-data">
+              <div class="form-group">
+                <label for="title" class="control-label col-md-3 col-sm-3 col-xs-12">公告标题</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <input type="text" id="title" name="title" class="form-control col-md-7 col-xs-12 parsley-success" value="{$list['title']}" placeholder="请填写公告标题">
+                  <input type="hidden" name="id" value="{$list['id']}">
+                </div>
+              </div>
+
+              <div class="form-group toggleShow">
+              <label class="control-label col-md-3 col-sm-3 col-xs-12">公告内容</label>
+              <div class="col-md-6 col-sm-6 col-xs-12">
+                <textarea name="content" id="content">{$list['content']}</textarea>
+              </div>
+
+              <div class="btns col-xs-12" style="text-align: center;margin-top: 20px;">
+                <button class="btn btn-default btn-sm" type="button">取消</button>
+                <button class="btn btn-success btn-sm" id="save" type="submit">保存</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <!-- /页面内容 -->
+
+        <!-- 底部 -->
+        <footer>
+          <div class="pull-right" style="text-align:center;width: 100%;">
+            后台管理系统
+          </div>
+          <div class="clearfix"></div>
+        </footer>
+        <!-- /底部 -->
+      </div>
+    </div>
+
+  <!-- jQuery -->
+ <script src="/Public/static/vendors/jquery/dist/jquery.min.js"></script>
+ <!-- Bootstrap -->
+ <script src="/Public/static/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+ <!-- FastClick -->
+ <script src="/Public/static/vendors/fastclick/lib/fastclick.js"></script>
+ <!-- NProgress -->
+ <script src="/Public/static/vendors/nprogress/nprogress.js"></script>
+ <!-- Custom Theme Scripts -->
+ <script src="/Public/static/build/js/custom.js"></script>
+    <!-- 新增、编辑课程js -->
+  <script src="/Public/static/build/js/webuploader.min.js"></script>
+  <script src="/Public/static/build/js/jquery.form.js"></script>
+
+  <!-- uedit编辑器 -->
+  <script src="/Public/static/build/js/Ueditor/ueditor.config.js"></script>
+  <script src="/Public/static/build/js/Ueditor/ueditor.all.min.js"> </script>
+
+  <script src="/Public/static/build/js/Ueditor/lang/zh-cn/zh-cn.js"></script>
+  <script src="/Public/static/build/js/Ueditor/btn_config.js"> </script>
+
+    <script>
+
+      UE.getEditor('content',{
+        toolbars : btn_file,
+        initialFrameWidth: "100%",
+        initialFrameHeight: "260"
+      });
+
+      $('#save').click(function () {
+        $('#form').ajaxSubmit({
+          url: '<?php echo U("Manage/notice/edit"); ?>',
+          type: 'POST',
+          xhrFields: {
+            withCredentials: true
+          },
+          crossDomain: true,
+          success: function (e) {
+            e_info = JSON.parse(e);
+            if (e_info.code != 200) {
+              alert(e_info.message)
+            } else {
+              window.location.href = '<?php echo U("Manage/notice/index")?>';
+            }
+          }
+        });
+        return false
+      })
+    </script>
+  </body>
+</html>
