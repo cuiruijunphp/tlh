@@ -12,6 +12,7 @@ class SkillTypeModel extends CommonModel{
 			->alias('t')
 			->join('skill_type as p on t.parent_id=p.id', 'left')
 			->page($page, $page_size)
+			->order('t.add_time desc')
 			->select();
 	}
 }
