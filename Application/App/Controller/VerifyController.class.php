@@ -36,6 +36,11 @@ class VerifyController extends BaseController {
 		}
 
 		//查询是否已经认证过,如果已经认证过,就报错
+		$user_weixin_info = $user_weixin_model->get_one(['user_id' => $this->user_id]);
+
+		if($user_weixin_info){
+			$this->result_return(null, 1, '你已经认证过,无须再次认证');
+		}
 
 		//access_token请求用户信息
 		$user_info_response = $user_weixin_model->get_user_info_by_oauth_openid($response['access_token'], $response['openid']);
@@ -106,6 +111,11 @@ class VerifyController extends BaseController {
 		}
 
 		//查询是否已经认证过,如果已经认证过,就报错
+		$user_alipay_info = $user_alipay_model->get_one(['user_id' => $this->user_id]);
+
+		if($user_alipay_info){
+			$this->result_return(null, 1, '你已经认证过,无须再次认证');
+		}
 
 		//access_token请求用户信息
 		$user_info_response = $user_alipay_model->get_user_info_by_access_token($response['alipay_system_oauth_token_response']['access_token']);
