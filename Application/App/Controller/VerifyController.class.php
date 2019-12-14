@@ -20,11 +20,17 @@ class VerifyController extends BaseController {
 
 		$user_weixin_model = D('UsersWeixin');
 
+		//查询是否已经认证过,如果已经认证过,就报错
+		$user_weixin_info = $user_weixin_model->get_one(['user_id' => $this->user_id]);
+
+		if($user_weixin_info){
+			$this->result_return(null, 1, '你已经认证过,无须再次认证');
+		}
+
 		//加载微信配置
 		$weixin_config = C('WXAPP_PAY_CONFIG');
 
 		$response = $user_weixin_model->get_sns_access_token_by_authorization_code($code, $weixin_config['appid'], $weixin_config['appkey']);
-		var_dump($response);
 
 		if (!$response)
 		{
@@ -36,16 +42,8 @@ class VerifyController extends BaseController {
 			$this->result_return(null, 1, $response['errcode'] . $response['errmsg']);
 		}
 
-		//查询是否已经认证过,如果已经认证过,就报错
-		$user_weixin_info = $user_weixin_model->get_one(['user_id' => $this->user_id]);
-
-		if($user_weixin_info){
-			$this->result_return(null, 1, '你已经认证过,无须再次认证');
-		}
-
 		//access_token请求用户信息
 		$user_info_response = $user_weixin_model->get_user_info_by_oauth_openid($response['access_token'], $response['openid']);
-		var_dump($user_info_response);
 
 		if (!$user_info_response)
 		{
@@ -100,6 +98,13 @@ class VerifyController extends BaseController {
 
 		$user_alipay_model = D('UsersAlipay');
 
+		//查询是否已经认证过,如果已经认证过,就报错
+		$user_alipay_info = $user_alipay_model->get_one(['user_id' => $this->user_id]);
+
+		if($user_alipay_info){
+			$this->result_return(null, 1, '你已经认证过,无须再次认证');
+		}
+
 		$response = $user_alipay_model->get_access_token_by_code($code);
 
 		if (!$response)
@@ -110,13 +115,6 @@ class VerifyController extends BaseController {
 		if ($response['alipay_system_oauth_token_response']['code'])
 		{
 			$this->result_return(null, 1, $response['alipay_system_oauth_token_response']['code'] . $response['alipay_system_oauth_token_response']['sub_msg']);
-		}
-
-		//查询是否已经认证过,如果已经认证过,就报错
-		$user_alipay_info = $user_alipay_model->get_one(['user_id' => $this->user_id]);
-
-		if($user_alipay_info){
-			$this->result_return(null, 1, '你已经认证过,无须再次认证');
 		}
 
 		//access_token请求用户信息
