@@ -156,4 +156,24 @@ class VerifyController extends BaseController {
 
 		$this->result_return(['result' => 1]);
 	}
+
+	/**
+	 * 获取支付宝登录授权
+	 * @author cuirj
+	 * @date   2019/12/14 上午1:51
+	 * @url    app/verify/get_alipay_auth_info_str
+	 * @method get
+	 *
+	 * @param  int param
+	 * @return  array
+	 */
+	public function get_alipay_auth_info_str(){
+		$aliConfig = C('ALIPAY_CONFIG');
+
+		$user_alipay_model = D('UsersAlipay');
+
+		$info_str = $user_alipay_model->get_login_info_str1($aliConfig['appId'], $aliConfig['seller_id'], $aliConfig['rsaPrivateKey'], $aliConfig['alipayPublicKey']);
+
+		$this->result_return(['info_str' => $info_str]);
+	}
 }
