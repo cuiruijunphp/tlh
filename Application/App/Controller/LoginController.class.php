@@ -235,6 +235,8 @@ class LoginController extends CommonController {
 			'alipay_real_name' => $user_info['alipay_real_name'],
 			'account_balance' => $user_info['account_balance'],
 			'mobile_number' => $user_info['mobile_number'],
+			'is_weixin_verify' => $user_info['is_weixin_verify'],
+			'is_alipay_verify' => $user_info['is_alipay_verify'],
 		];
 
 		$token = '';

@@ -72,7 +72,7 @@ class UsersAlipayModel extends CommonModel{
 		$aop->alipayrsaPublicKey = $aliConfig['alipayPublicKey'];
 		$aop->apiVersion = '1.0';
 		$aop->signType = 'RSA2';
-		$aop->postCharset='GBK';
+		$aop->postCharset='UTF-8';
 		$aop->format='json';
 		$request = new \AlipaySystemOauthTokenRequest ();
 		$request->setGrantType("authorization_code");
@@ -107,7 +107,7 @@ class UsersAlipayModel extends CommonModel{
 
 		$aop->apiVersion = '1.0';
 		$aop->signType = 'RSA2';
-		$aop->postCharset='GBK';
+		$aop->postCharset='UTF-8';
 		$aop->format='json';
 		$request = new \AlipayUserInfoShareRequest();
 		$result = $aop->execute ($request , $access_token );

@@ -285,6 +285,8 @@ class PersonalController extends BaseController {
 			'alipay_real_name' => $user_info['alipay_real_name'],
 			'view' => $user_info['view'],
 			'type' => $user_info['type'],
+			'is_weixin_verify' => $user_info['is_weixin_verify'],
+			'is_alipay_verify' => $user_info['is_alipay_verify'],
 		];
 
 		// 如果是主态,则返回多余信息

@@ -112,47 +112,47 @@ class VerifyController extends BaseController {
 			$this->result_return(null, 1, '与支付宝通信超时，请稍后再试');
 		}
 
-		if ($response['alipay_system_oauth_token_response']['code'])
+		if ($response->alipay_system_oauth_token_response->code)
 		{
-			$this->result_return(null, 1, $response['alipay_system_oauth_token_response']['code'] . $response['alipay_system_oauth_token_response']['sub_msg']);
+			$this->result_return(null, 1, $response->alipay_system_oauth_token_response->code . $response->alipay_system_oauth_token_response->sub_msg);
 		}
 
 		//access_token请求用户信息
-		$user_info_response = $user_alipay_model->get_user_info_by_access_token($response['alipay_system_oauth_token_response']['access_token']);
+		$user_info_response = $user_alipay_model->get_user_info_by_access_token($response->alipay_system_oauth_token_response->access_token);
 
 		if (!$user_info_response)
 		{
 			$this->result_return(null, 1, '获取用户信息失败');
 		}
 
-		if ($user_info_response['alipay_user_info_share_response']['code'] != 10000)
+		if ($user_info_response->alipay_user_info_share_response->code != 10000)
 		{
-			$this->result_return(null, 1, $user_info_response['alipay_user_info_share_response']['code'] . $user_info_response['alipay_user_info_share_response']['sub_msg']);
+			$this->result_return(null, 1, $user_info_response->alipay_user_info_share_response->code . $user_info_response->alipay_user_info_share_response->sub_msg);
 		}
 
 		//插入数据库,更新认证信息
-		$user_info_response_tmp = $user_info_response['alipay_user_info_share_response'];
+		$user_info_response_tmp = $user_info_response->alipay_user_info_share_response;
 		$insert_data = [
 			'user_id' => $this->user_id,
-			'alipay_user_id' => $user_info_response_tmp['user_id'],
-			'avatar' => $user_info_response_tmp['avatar'],
-			'province' => $user_info_response_tmp['province'],
-			'city' => $user_info_response_tmp['city'],
-			'nick_name' => $user_info_response_tmp['nick_name'],
-			'user_type' => $user_info_response_tmp['user_type'],
-			'user_status' => $user_info_response_tmp['user_status'],
-			'is_certified' => $user_info_response_tmp['is_certified'],
-			'gender' => $user_info_response_tmp['gender'],
+			'alipay_user_id' => $user_info_response_tmp->user_id,
+			'avatar' => $user_info_response_tmp->avatar,
+			'province' => $user_info_response_tmp->province,
+			'city' => $user_info_response_tmp->city,
+			'nick_name' => $user_info_response_tmp->nick_name,
+			'user_type' => $user_info_response_tmp->user_type,
+			'user_status' => $user_info_response_tmp->user_status,
+			'is_certified' => $user_info_response_tmp->is_certified,
+			'gender' => $user_info_response_tmp->gender,
 		];
 
 		$insert_result = $user_alipay_model->insert_one($insert_data);
 
-//		if($insert_result){
-//			// 更新用户表
-//			$user_model = D('User');
-//
-//			$user_model->update_data(['id' => $this->user_id], ['is_weixin_verify' => 1, 'is_vefify' => 1]);
-//		}
+		if($insert_result){
+			// 更新用户表
+			$user_model = D('Users');
+
+			$user_model->update_data(['id' => $this->user_id], ['is_alipay_verify' => 1, 'is_vefify' => 1]);
+		}
 
 		$this->result_return(['result' => 1]);
 	}
