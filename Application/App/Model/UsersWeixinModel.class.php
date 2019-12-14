@@ -2,7 +2,7 @@
 namespace App\Model;
 use Think\Model;
 
-class UserWeixinModel extends CommonModel{
+class UsersWeixinModel extends CommonModel{
 
 	const WEIXIN_API = 'https://api.weixin.qq.com/cgi-bin/';
 

@@ -18,12 +18,13 @@ class VerifyController extends BaseController {
 
 		$code = $params['code'];
 
-		$user_weixin_model = D('UserWeixin');
+		$user_weixin_model = D('UsersWeixin');
 
 		//加载微信配置
 		$weixin_config = C('WXAPP_PAY_CONFIG');
 
 		$response = $user_weixin_model->get_sns_access_token_by_authorization_code($code, $weixin_config['appid'], $weixin_config['appkey']);
+		var_dump($response);
 
 		if (!$response)
 		{
@@ -44,6 +45,7 @@ class VerifyController extends BaseController {
 
 		//access_token请求用户信息
 		$user_info_response = $user_weixin_model->get_user_info_by_oauth_openid($response['access_token'], $response['openid']);
+		var_dump($user_info_response);
 
 		if (!$user_info_response)
 		{
@@ -73,7 +75,7 @@ class VerifyController extends BaseController {
 
 		if($insert_result){
 			// 更新用户表
-			$user_model = D('User');
+			$user_model = D('Users');
 
 			$user_model->update_data(['id' => $this->user_id], ['is_weixin_verify' => 1, 'is_vefify' => 1]);
 		}
@@ -96,7 +98,7 @@ class VerifyController extends BaseController {
 
 		$code = $params['code'];
 
-		$user_alipay_model = D('UserAlipay');
+		$user_alipay_model = D('UsersAlipay');
 
 		$response = $user_alipay_model->get_access_token_by_code($code);
 
