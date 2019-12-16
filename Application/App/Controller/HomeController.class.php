@@ -59,6 +59,8 @@ class HomeController extends BaseController
 
 		$offset = ($page - 1) * $page_size;
 
+		$uid = $this->user_id;
+
 		$skill_model = D('UserSkill');
 		$skill_type_model = D('SkillType');
 
@@ -89,18 +91,18 @@ class HomeController extends BaseController
 
 		}elseif($type == 'distance'){
 			// 距离最近的
-			$result = $skill_model->get_skill_demand_order_by_distance($latitude, $longitude, $offset, $page_size);
+			$result = $skill_model->get_skill_demand_order_by_distance($uid, $latitude, $longitude, $offset, $page_size);
 		}elseif($type == 'hot'){
-			$result = $skill_model->get_skill_demand_by_view($offset, $page_size);
+			$result = $skill_model->get_skill_demand_by_view($uid, $offset, $page_size);
 		}elseif($type == 'demand'){
-			$result = $skill_model->get_demand_list_home($offset, $page_size);
+			$result = $skill_model->get_demand_list_home($uid, $offset, $page_size);
 		}elseif($type == 'skill'){
-			$result = $skill_model->get_skill_list_home($offset, $page_size);
+			$result = $skill_model->get_skill_list_home($uid, $offset, $page_size);
 		}elseif($type == 'keyword'){
-			$result = $skill_model->get_skill_demand_by_keyword($keyword, $offset, $page_size);
+			$result = $skill_model->get_skill_demand_by_keyword($uid, $keyword, $offset, $page_size);
 		}else{
 			$type = 'all';
-			$result = $skill_model->get_skill_demand_all($offset, $page_size);
+			$result = $skill_model->get_skill_demand_all($uid, $offset, $page_size);
 		}
 
 		// 对结果进行处理

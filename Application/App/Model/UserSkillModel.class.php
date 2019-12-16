@@ -7,7 +7,7 @@ class UserSkillModel extends CommonModel{
 	/*
 	 * 根据类型查询发布/需求,距离用php循环来算
 	 */
-	public function get_skill_demand_by_type_id($type_id, $offset = 0, $page_size=10){
+	public function get_skill_demand_by_type_id($uid, $type_id, $offset = 0, $page_size=10){
 
 		if(count(explode(',', $type_id)) > 1){
 			$type_id_where = ' in (' . $type_id . ')';
@@ -15,11 +15,11 @@ class UserSkillModel extends CommonModel{
 			$type_id_where = ' = ' . $type_id;
 		}
 
-		$sql = '(select s.id,skill_name as title,user_id,is_online,head_img,user_name,type_id,s.add_time,longitude,latitude,img,"skill" as type from user_skill s left join users u on s.user_id = u.id where s.status =1 and s.type_id '. $type_id_where . ')';
+		$sql = '(select s.id,skill_name as title,user_id,is_online,head_img,user_name,type_id,s.add_time,longitude,latitude,img,"skill" as type from user_skill s left join users u on s.user_id = u.id where s.user_id != '. $uid .' and s.status =1 and s.type_id '. $type_id_where . ')';
 
 		$sql .= ' union ';
 
-		$sql .= '(select d.id,title,user_id,is_online,head_img,user_name,type_id,d.add_time,longitude,latitude,null as img,"demand" as type from user_demand as d left join users u on d.user_id = u.id  where status=1  and end_time > '.time().' and type_id ' . $type_id_where . ')';
+		$sql .= '(select d.id,title,user_id,is_online,head_img,user_name,type_id,d.add_time,longitude,latitude,null as img,"demand" as type from user_demand as d left join users u on d.user_id = u.id  where d.user_id != ' . $uid . 'status=1  and end_time > '.time().' and type_id ' . $type_id_where . ')';
 
 		$sql .= ' order by add_time desc limit ' . $offset . ',' . $page_size;
 
@@ -30,7 +30,7 @@ class UserSkillModel extends CommonModel{
 	/*
 	 * 根据距离远近排序算
 	 */
-	public function get_skill_demand_order_by_distance($lat, $lng, $offset = 0, $page_size=10){
+	public function get_skill_demand_order_by_distance($uid, $lat, $lng, $offset = 0, $page_size=10){
 
 		$sql = 'select tmp.*, 6378.138 * 2 * ASIN(SQRT(POW(SIN(
             (
@@ -47,11 +47,11 @@ class UserSkillModel extends CommonModel{
       )
     ) *1000 as distance from ';
 
-		$sql .= '((select s.id,skill_name as title,user_id,is_online,head_img,user_name,type_id,s.add_time,longitude,latitude,img,"skill" as type from user_skill s left join users u on s.user_id = u.id where s.status =1)';
+		$sql .= '((select s.id,skill_name as title,user_id,is_online,head_img,user_name,type_id,s.add_time,longitude,latitude,img,"skill" as type from user_skill s left join users u on s.user_id = u.id where s.user_id != ' . $uid . ' and s.status =1)';
 
 		$sql .= ' union ';
 
-		$sql .= '(select d.id,title,user_id,is_online,head_img,user_name,type_id,d.add_time,longitude,latitude,null as img,"demand" as type from user_demand as d left join users u on d.user_id = u.id  where status=1  and end_time > '.time(). ')) as tmp';
+		$sql .= '(select d.id,title,user_id,is_online,head_img,user_name,type_id,d.add_time,longitude,latitude,null as img,"demand" as type from user_demand as d left join users u on d.user_id = u.id  where d.user_id != ' . $uid . ' and  status=1  and end_time > '.time(). ')) as tmp';
 
 		$sql .= ' order by distance limit ' . $offset . ',' . $page_size;
 
@@ -61,13 +61,13 @@ class UserSkillModel extends CommonModel{
 	/*
 	 * 人气最高
 	 */
-	public function get_skill_demand_by_view($offset = 0, $page_size=10){
+	public function get_skill_demand_by_view($uid, $offset = 0, $page_size=10){
 
-		$sql = '(select s.id,skill_name as title,user_id,is_online,head_img,user_name,type_id,s.add_time,longitude,latitude,img,"skill" as type, reservation_count as r_count from user_skill s left join users u on s.user_id = u.id where s.status =1)';
+		$sql = '(select s.id,skill_name as title,user_id,is_online,head_img,user_name,type_id,s.add_time,longitude,latitude,img,"skill" as type, reservation_count as r_count from user_skill s left join users u on s.user_id = u.id where s.user_id != ' . $uid . ' and s.status =1)';
 
 		$sql .= ' union ';
 
-		$sql .= '(select d.id,title,user_id,is_online,head_img,user_name,type_id,d.add_time,longitude,latitude,null as img,"demand" as type,(LENGTH(`applicants`) - LENGTH(REPLACE(`applicants`,",", "")))  as r_count from user_demand as d left join users u on d.user_id = u.id  where status=1  and end_time > '.time().')';
+		$sql .= '(select d.id,title,user_id,is_online,head_img,user_name,type_id,d.add_time,longitude,latitude,null as img,"demand" as type,(LENGTH(`applicants`) - LENGTH(REPLACE(`applicants`,",", "")))  as r_count from user_demand as d left join users u on d.user_id = u.id  where d.user_id != ' . $uid . ' and status=1  and end_time > '.time().')';
 
 		$sql .= 'order by r_count desc limit ' . $offset . ',' . $page_size;
 
@@ -77,13 +77,13 @@ class UserSkillModel extends CommonModel{
 	/*
 	 * 查询发布/需求,距离用php循环来算
 	 */
-	public function get_skill_demand_all($offset = 0, $page_size=10){
+	public function get_skill_demand_all($uid, $offset = 0, $page_size=10){
 
-		$sql = '(select s.id,skill_name as title,user_id,is_online,head_img,user_name,type_id,s.add_time,longitude,latitude,img,"skill" as type from user_skill s left join users u on s.user_id = u.id where s.status =1)';
+		$sql = '(select s.id,skill_name as title,user_id,is_online,head_img,user_name,type_id,s.add_time,longitude,latitude,img,"skill" as type from user_skill s left join users u on s.user_id = u.id where s.user_id != ' . $uid . ' and s.status =1)';
 
 		$sql .= ' union ';
 
-		$sql .= '(select d.id,title,user_id,is_online,head_img,user_name,type_id,d.add_time,longitude,latitude,null as img,"demand" as type from user_demand as d left join users u on d.user_id = u.id  where status=1  and end_time > ' . time(). ')';
+		$sql .= '(select d.id,title,user_id,is_online,head_img,user_name,type_id,d.add_time,longitude,latitude,null as img,"demand" as type from user_demand as d left join users u on d.user_id = u.id  where d.user_id != ' . $uid . ' and status=1  and end_time > ' . time(). ')';
 
 		$sql .= ' order by add_time desc limit ' . $offset . ',' . $page_size;
 
@@ -93,9 +93,9 @@ class UserSkillModel extends CommonModel{
 	/*
 	 * 首页按技能获取结果
 	 */
-	public function get_skill_list_home($offset = 0, $page_size=10){
+	public function get_skill_list_home($uid, $offset = 0, $page_size=10){
 
-		$sql = '(select s.id,skill_name as title,user_id,is_online,head_img,user_name,type_id,s.add_time,longitude,latitude,img,"skill" as type, reservation_count as r_count from user_skill s left join users u on s.user_id = u.id where s.status =1)';
+		$sql = '(select s.id,skill_name as title,user_id,is_online,head_img,user_name,type_id,s.add_time,longitude,latitude,img,"skill" as type, reservation_count as r_count from user_skill s left join users u on s.user_id = u.id where s.user_id != ' . $uid . ' and s.status =1)';
 
 		$sql .= 'order by add_time desc limit ' . $offset . ',' . $page_size;
 
@@ -105,7 +105,7 @@ class UserSkillModel extends CommonModel{
 	/*
 	 * 首页按需求获取结果
 	 */
-	public function get_demand_list_home($offset = 0, $page_size=10){
+	public function get_demand_list_home($uid, $offset = 0, $page_size=10){
 
 		$sql = '(select d.id,title,user_id,is_online,head_img,user_name,type_id,d.add_time,longitude,latitude,null as img,"demand" as type from user_demand as d left join users u on d.user_id = u.id  where status=1  and end_time > ' . time(). ')';
 
@@ -137,13 +137,13 @@ class UserSkillModel extends CommonModel{
 	/*
 	 * 根据关键词查询需求标题/技能名称,距离用php循环来算
 	 */
-	public function get_skill_demand_by_keyword($keyword, $offset = 0, $page_size=10){
+	public function get_skill_demand_by_keyword($uid, $keyword, $offset = 0, $page_size=10){
 
-		$sql = '(select s.id,skill_name as title,user_id,is_online,head_img,user_name,type_id,s.add_time,longitude,latitude,img,"skill" as type from user_skill s left join users u on s.user_id = u.id where s.status =1 and s.skill_name like "%'. $keyword . '%")';
+		$sql = '(select s.id,skill_name as title,user_id,is_online,head_img,user_name,type_id,s.add_time,longitude,latitude,img,"skill" as type from user_skill s left join users u on s.user_id = u.id where s.user_id != ' . $uid . ' and s.status =1 and s.skill_name like "%'. $keyword . '%")';
 
 		$sql .= ' union ';
 
-		$sql .= '(select d.id,title,user_id,is_online,head_img,user_name,type_id,d.add_time,longitude,latitude,null as img,"demand" as type from user_demand as d left join users u on d.user_id = u.id  where status=1  and end_time > '.time().' and d.title like "%' . $keyword . '%")';
+		$sql .= '(select d.id,title,user_id,is_online,head_img,user_name,type_id,d.add_time,longitude,latitude,null as img,"demand" as type from user_demand as d left join users u on d.user_id = u.id  where d.user_id != ' . $uid . ' and status=1  and end_time > '.time().' and d.title like "%' . $keyword . '%")';
 
 		$sql .= ' order by add_time desc limit ' . $offset . ',' . $page_size;
 
