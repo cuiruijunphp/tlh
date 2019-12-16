@@ -172,7 +172,7 @@ class VerifyController extends BaseController {
 
 		$user_alipay_model = D('UsersAlipay');
 
-		$info_str = $user_alipay_model->get_login_info_str1($aliConfig['appId'], $aliConfig['seller_id'], $aliConfig['rsaPrivateKey'], $aliConfig['alipayPublicKey']);
+		$info_str = $user_alipay_model->get_login_info_str($aliConfig['appId'], $aliConfig['seller_id'], $aliConfig['rsaPrivateKey'], $aliConfig['alipayPublicKey']);
 
 		$this->result_return(['info_str' => $info_str]);
 	}

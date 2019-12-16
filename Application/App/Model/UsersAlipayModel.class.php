@@ -4,7 +4,10 @@ use Think\Model;
 
 class UsersAlipayModel extends CommonModel{
 
-	public function get_login_info_str1($appid, $pid, $private_key, $public_key){
+	/*
+	 * app的支付宝授权登录,是需要和支付一样,把授权字符串,直接返回给客户端
+	 */
+	public function get_login_info_str($appid, $pid, $private_key, $public_key){
 
 		Vendor('Alipay.aop.AopClient');
 
@@ -38,6 +41,9 @@ class UsersAlipayModel extends CommonModel{
 		return $infoStr;
 	}
 
+	/*
+	 * 支付宝code换access_token
+	 */
 	public function get_access_token_by_code($code){
 		//导入支付宝类
 		Vendor('Alipay.aop.AopClient');
@@ -72,6 +78,9 @@ class UsersAlipayModel extends CommonModel{
 		//		}
 	}
 
+	/*
+	 * 获取支付宝授权用户信息
+	 */
 	public function get_user_info_by_access_token($access_token){
 		//导入支付宝类
 		Vendor('Alipay.aop.AopClient');
@@ -103,6 +112,9 @@ class UsersAlipayModel extends CommonModel{
 		//		}
 	}
 
+	/*
+	 * 微博code换access_token
+	 */
 	public function get_weibo_access_token_by_code($code, $app_id, $app_secret, $redirect_uri){
 		$url = 'https://api.weibo.com/oauth2/access_token';
 
@@ -126,6 +138,9 @@ class UsersAlipayModel extends CommonModel{
 		return $result;
 	}
 
+	/*
+	 * 获取微博用户信息
+	 */
 	public function get_weibo_user_info($access_token){
 		$url = 'https://api.weibo.com/oauth2/get_token_info';
 
