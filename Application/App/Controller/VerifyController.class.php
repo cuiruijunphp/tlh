@@ -218,6 +218,10 @@ class VerifyController extends BaseController {
 		//access_token请求用户信息
 		$user_info_response = $user_alipay_model->get_weibo_user_info($code);
 
+		if($user_info_response['error_code']){
+			$this->result_return(null, 1, $user_info_response['error_code'] . $user_info_response['error']);
+		}
+
 		if (!$user_info_response || !$user_info_response['uid'] || $user_info_response['uid'] != $weibo_uid)
 		{
 			$this->result_return(null, 1, '获取用户信息失败');

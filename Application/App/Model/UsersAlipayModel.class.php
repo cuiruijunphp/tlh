@@ -148,7 +148,7 @@ class UsersAlipayModel extends CommonModel{
 			'access_token' => $access_token,
 		];
 
-		$result = http_post_request($url, $data);
+		$result = http_post_request($url, http_build_query($data));
 
 		if (!$result)
 		{
