@@ -325,4 +325,19 @@ class LoginController extends CommonController {
 
 		$this->result_return(['result' => 1]);
 	}
+
+	/**
+	 * 邀请页面
+	 * @author cuirj
+	 * @date   2019/12/16 上午10:30
+	 * @url    app/login/invite
+	 * @method get
+	 *
+	 * @param  int param
+	 * @return  array
+	 */
+	public function invite(){
+
+
+	}
 }

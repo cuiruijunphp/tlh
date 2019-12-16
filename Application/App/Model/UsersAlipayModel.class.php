@@ -4,26 +4,6 @@ use Think\Model;
 
 class UsersAlipayModel extends CommonModel{
 
-	public function get_login_info_str($appid, $pid, $private_key){
-
-		$infoStr = http_build_query([
-			'apiname' => 'com.alipay.account.auth',
-			'method' => 'alipay.open.auth.sdk.code.get',
-			'app_id' => $appid,
-			'app_name' => 'mc',
-			'biz_type' => 'openservice',
-			'pid' => $pid,
-			'product_id' => 'APP_FAST_LOGIN',
-			'scope' => 'kuaijie',
-			'target_id' => session_create_random_id(32), //商户标识该次用户授权请求的ID，该值在商户端应保持唯一
-			'auth_type' => 'AUTHACCOUNT', // AUTHACCOUNT代表授权；LOGIN代表登录
-			'sign_type' => 'RSA2',
-		]);
-		$infoStr .= '&sign='.$this->enRSA2($infoStr, $private_key);
-
-		return $infoStr;
-	}
-
 	public function get_login_info_str1($appid, $pid, $private_key, $public_key){
 
 		Vendor('Alipay.aop.AopClient');
@@ -123,12 +103,45 @@ class UsersAlipayModel extends CommonModel{
 		//		}
 	}
 
-	private function enRSA2($data, $private_key){
-		$str = chunk_split(trim($private_key), 64, "\n");
-		$key = "-----BEGIN RSA PRIVATE KEY-----\n$str-----END RSA PRIVATE KEY-----\n";
-		// $key = file_get_contents(storage_path('rsa_private_key.pem')); 为文件时这样引入R
-		$signature = '';
-		$signature = openssl_sign($data, $signature, $key, OPENSSL_ALGO_SHA256)?base64_encode($signature):NULL;
-		return $signature;
+	public function get_weibo_access_token_by_code($code, $app_id, $app_secret, $redirect_uri){
+		$url = 'https://api.weibo.com/oauth2/access_token';
+
+		$data = [
+			'client_id' => $app_id,
+			'client_secret' => $app_secret,
+			'grant_type' => 'authorization_code',
+			'code' => $code,
+			'redirect_uri' => $redirect_uri,
+		];
+
+		$result = http_post_request($url, $data);
+
+		if (!$result)
+		{
+			return false;
+		}
+
+		$result = json_decode($result, true);
+
+		return $result;
+	}
+
+	public function get_weibo_user_info($access_token){
+		$url = 'https://api.weibo.com/oauth2/get_token_info';
+
+		$data = [
+			'access_token' => $access_token,
+		];
+
+		$result = http_post_request($url, $data);
+
+		if (!$result)
+		{
+			return false;
+		}
+
+		$result = json_decode($result, true);
+
+		return $result;
 	}
 }

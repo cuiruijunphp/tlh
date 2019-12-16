@@ -176,4 +176,62 @@ class VerifyController extends BaseController {
 
 		$this->result_return(['info_str' => $info_str]);
 	}
+
+	/**
+	 * 获取微博授权
+	 * @date   2019/12/16 下午4:19
+	 * @url    app/verify/get_alipay_auth_info_str
+	 * @method get
+	 *
+	 * @param  int param
+	 * @return  array
+	 */
+	public function weibo_verify(){
+		$get_param = file_get_contents('php://input');
+		$params = json_decode($get_param, true);
+
+		$code = $params['code'];
+
+		$user_alipay_model = D('UsersAlipay');
+
+		//查询是否已经认证过,如果已经认证过,就报错
+		if($this->user_info['is_weibo_verify']){
+			$this->result_return(null, 1, '你已经认证过,无须再次认证');
+		}
+
+		//加载weibo配置
+		$weibo_config = C('WEIBO_CONFIG');
+
+		$response = $user_alipay_model->get_weibo_access_token_by_code($code, $weibo_config['app_key'], $weibo_config['app_secret'], $weibo_config['redirect_uri']);
+
+		if (!$response)
+		{
+			$this->result_return(null, 1, '与微博通信超时，请稍后再试');
+		}
+
+		if (!$response['access_token'])
+		{
+			$this->result_return(null, 1, '获取access_token失败');
+		}
+
+		//access_token请求用户信息
+		$user_info_response = $user_alipay_model->get_weibo_user_info($response['access_token'], $response['openid']);
+
+		if (!$user_info_response)
+		{
+			$this->result_return(null, 1, '获取用户信息失败');
+		}
+
+		if ($user_info_response['uid'])
+		{
+			$this->result_return(null, 1, $user_info_response['errcode'] . $user_info_response['errmsg']);
+		}
+
+		// 更新用户表
+		$user_model = D('Users');
+
+		$user_model->update_data(['id' => $this->user_id], ['is_weibo_verify' => 1, 'is_vefify' => 1]);
+
+		$this->result_return(['result' => 1]);
+	}
 }
