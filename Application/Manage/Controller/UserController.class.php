@@ -108,6 +108,12 @@ class UserController extends BaseController {
 			if($is_exist_user_name){
 				$this->result_return(null, 500, '该用户名已经存在');
 			}
+
+			$is_exist_mobile = $user_model->get_one(['mobile_number' => $params['mobile_number']]);
+
+			if($is_exist_mobile){
+				$this->result_return(null, 500, '手机号不能重复');
+			}
 		}
 
 		$users_insert_result = $user_model->insert_one($insert_user_data);

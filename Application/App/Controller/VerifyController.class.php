@@ -191,6 +191,7 @@ class VerifyController extends BaseController {
 		$params = json_decode($get_param, true);
 
 		$code = $params['code'];
+		$weibo_uid = $params['weibo_uid'];
 
 		$user_alipay_model = D('UsersAlipay');
 
@@ -202,22 +203,22 @@ class VerifyController extends BaseController {
 		//加载weibo配置
 		$weibo_config = C('WEIBO_CONFIG');
 
-		$response = $user_alipay_model->get_weibo_access_token_by_code($code, $weibo_config['app_key'], $weibo_config['app_secret'], $weibo_config['redirect_uri']);
-
-		if (!$response)
-		{
-			$this->result_return(null, 1, '与微博通信超时，请稍后再试');
-		}
-
-		if (!$response['access_token'])
-		{
-			$this->result_return(null, 1, '获取access_token失败');
-		}
+//		$response = $user_alipay_model->get_weibo_access_token_by_code($code, $weibo_config['app_key'], $weibo_config['app_secret'], $weibo_config['redirect_uri']);
+//
+//		if (!$response)
+//		{
+//			$this->result_return(null, 1, '与微博通信超时，请稍后再试');
+//		}
+//
+//		if (!$response['access_token'])
+//		{
+//			$this->result_return(null, 1, '获取access_token失败');
+//		}
 
 		//access_token请求用户信息
-		$user_info_response = $user_alipay_model->get_weibo_user_info($response['access_token'], $response['openid']);
+		$user_info_response = $user_alipay_model->get_weibo_user_info($code);
 
-		if (!$user_info_response || !$user_info_response['uid'])
+		if (!$user_info_response || !$user_info_response['uid'] || $user_info_response['uid'] != $weibo_uid)
 		{
 			$this->result_return(null, 1, '获取用户信息失败');
 		}
