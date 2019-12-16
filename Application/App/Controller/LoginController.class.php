@@ -237,6 +237,7 @@ class LoginController extends CommonController {
 			'mobile_number' => $user_info['mobile_number'],
 			'is_weixin_verify' => $user_info['is_weixin_verify'],
 			'is_alipay_verify' => $user_info['is_alipay_verify'],
+			'is_weibo_verify' => $user_info['is_weibo_verify'],
 		];
 
 		$token = '';

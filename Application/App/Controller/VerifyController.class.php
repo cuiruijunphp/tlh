@@ -180,7 +180,7 @@ class VerifyController extends BaseController {
 	/**
 	 * 获取微博授权
 	 * @date   2019/12/16 下午4:19
-	 * @url    app/verify/get_alipay_auth_info_str
+	 * @url    app/verify/weibo_verify
 	 * @method get
 	 *
 	 * @param  int param

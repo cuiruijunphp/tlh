@@ -287,6 +287,7 @@ class PersonalController extends BaseController {
 			'type' => $user_info['type'],
 			'is_weixin_verify' => $user_info['is_weixin_verify'],
 			'is_alipay_verify' => $user_info['is_alipay_verify'],
+			'is_weibo_verify' => $user_info['is_weibo_verify'],
 		];
 
 		// 如果是主态,则返回多余信息
