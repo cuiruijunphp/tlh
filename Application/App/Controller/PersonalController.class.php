@@ -462,7 +462,12 @@ class PersonalController extends BaseController {
 	 * @return  array
 	 */
 	public function del_trend(){
-		$trend_id = I('post.trend_id');
+//		$trend_id = I('post.trend_id');
+
+		$get_param = file_get_contents('php://input');
+		$params = json_decode($get_param, true);
+
+		$trend_id = $params['trend_id'];
 
 		$user_trends_model = D('UserTrends');
 
