@@ -87,7 +87,7 @@ class HomeController extends BaseController
 				$type_ids = $type_id;
 			}
 
-			$result = $skill_model->get_skill_demand_by_type_id($type_ids, $offset, $page_size);
+			$result = $skill_model->get_skill_demand_by_type_id($uid, $type_ids, $offset, $page_size);
 
 		}elseif($type == 'distance'){
 			// 距离最近的
