@@ -1,0 +1,156 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui"/>
+    <title>新人活动详情</title>
+    <link rel="stylesheet" href="/Public/static/assets/css/invite.css" />
+    <!--<script src="https://j.rednet.cn/site/static/js/lib/jquery.js"></script>-->
+    <!--<script src="/Public/static/vendors/jquery/dist/jquery.min.js"></script>-->
+    <!--<script src="/Public/static/build/js/jquery.form.js"></script>-->
+    <!--<script src="/Public/static/assets/js/common.js"></script>-->
+</head>
+
+<body>
+    <div class="contact_lk">
+        <div class="top_lk"><img src="/Public/static/assets/images/bg1_lk.jpg"></div>
+        <div class="tiyan_lk">
+            <ul>
+                <li><input type="text" class="input_border" id="phone" name="hotel_phone_number" placeholder="请填写手机号码"></li>
+                <li>
+                    <div class="yzm">
+                        <input type="text" class="input_border" id="code" onchange="validCode()" name="hotel_phone_number" placeholder="填写验证码">
+                        <button id="sendNewEmail" onclick="sendCode()" class="yz" type="button">获取验证码</button>
+                    </div>
+                </li>
+
+                <li><input type="text" class="input_border" id="password" name="hotel_password" placeholder="请填写密码"></li>
+                <li>
+
+                <li>
+                    <button class="submit_btn" id="submit_btn" onClick="submitData()" disabled="disabled">立即体验</button>
+                <li>
+            </ul>
+        </div>
+    </div>
+</body>
+
+<script src="/Public/static/vendors/jquery/dist/jquery.min.js"></script>
+<script src="/Public/static/build/js/jquery.form.js"></script>
+<script src="/Public/static/assets/js/common.js"></script>
+<script type="text/javascript">
+
+    function GetQueryString(name)
+    {
+        var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if(r!=null)return  unescape(r[2]); return null;
+    }
+
+    //倒计时
+    function resetCode(){
+        var second = 60;
+        var timer = null;
+        timer = setInterval(function(){
+            second -= 1;
+            if(second >0 ){
+                $('#sendNewEmail').text(second + 's后重发短信');
+                $('#sendNewEmail').attr('disabled',"true");
+            }else{
+                clearInterval(timer);
+                $('#sendNewEmail').removeAttr('disabled');
+                $('#sendNewEmail').text('获取验证码');
+            }
+        },1000);
+    }
+
+    function submitData() {
+        var phone = $('#phone').val();
+        var code = $('#code').val();
+        var password = $('#password').val();
+        var invite_mobile_number = GetQueryString('mobile');
+        if (!phone) {
+            alert('请先写手机号');
+            return false
+        }
+
+        let reg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
+        if (!reg.test(phone)) {
+            alert('手机号码不正确');
+            return false
+        }
+
+        if (!code) {
+            alert('短信验证码不能为空');
+            return false
+        }
+
+        $.ajax({
+            url: '<?php echo U("app/login/register")?>',
+            type: 'POST',
+            dataType: 'JSON',
+            data: '{"mobile_number": ' + phone + ',"type":"register","source":"web","code":' + code + ',"invite_mobile_number":' + invite_mobile_number + '}',
+            success: function (e) {
+                if (e.code != 200) {
+                    alert(e.message)
+                } else {
+                    window.location.href = '<?php echo U("app/login/download")?>';
+                }
+            }
+        })
+    }
+
+    function sendCode() {
+        var phone = $('#phone').val();
+        if (!phone) {
+            alert('请先写手机号');
+            return false
+        }
+
+        var reg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
+        if (!reg.test(phone)) {
+            alert('手机号码不正确');
+            return false
+        }
+
+        $.ajax({
+            url: '<?php echo U("app/login/send_code")?>',
+            type: 'POST',
+            dataType: 'JSON',
+            data: '{"mobile_number": ' + phone + ',"type":"register"}',
+            success: function (e) {
+                if (e.code != 200) {
+                    alert(e.message)
+                }else{
+                    // 验证码倒计时
+                    resetCode();
+                }
+            }
+        })
+
+        return false;
+    }
+
+    function validCode() {
+        var phone = $('#phone').val();
+        var code = $('#code').val();
+        var password = $('#password').val();
+
+        $.ajax({
+            url: '<?php echo U("app/login/valid_code")?>',
+            type: 'POST',
+            dataType: 'JSON',
+            data: '{"mobile_number": ' + phone + ',"type":"register","code":' + code + '}',
+            success: function (e) {
+                if (e.code != 200) {
+                    alert(e.message)
+                }else{
+                    //把体验按钮变成可用
+                    $('#submit_btn').removeAttr('disabled')
+                }
+            }
+        })
+        return false
+    }
+</script>
+</html>

@@ -92,6 +92,7 @@ class LoginController extends CommonController {
 
 		$type = $params['type'];
 		$phone_number = $params['mobile_number'];
+//		$this->result_return(['result' => 1]);
 
 		// type对应的短信模板id
 		$template_arr = [
@@ -146,6 +147,8 @@ class LoginController extends CommonController {
 		$type = $params['type'];
 		$phone_number = $params['mobile_number'];
 		$code = $params['code'];
+
+//		$this->result_return(['result' => 1]);
 
 		$code_model = D('Code');
 		$send_result = $code_model->get_one(['mobile_number' => $phone_number, 'type' => $type], 'add_time desc');
@@ -346,6 +349,11 @@ class LoginController extends CommonController {
 	 * @return  array
 	 */
 	public function invite(){
+
+		$this->display();
+	}
+
+	public function download(){
 
 		$this->display();
 	}
