@@ -20,7 +20,7 @@ class UserSkillModel extends CommonModel{
 
 		$sql .= ' union ';
 
-		$sql .= '(select d.id,title,user_id,is_online,head_img,user_name,type_id,d.add_time,longitude,latitude,null as img,"demand" as type from user_demand as d left join users u on d.user_id = u.id  where d.user_id != ' . $uid . 'status=1  and end_time > '.time().' and type_id ' . $type_id_where . ')';
+		$sql .= '(select d.id,title,user_id,is_online,head_img,user_name,type_id,d.add_time,longitude,latitude,null as img,"demand" as type from user_demand as d left join users u on d.user_id = u.id  where d.user_id != ' . $uid . ' and status=1  and end_time > '.time().' and type_id ' . $type_id_where . ')';
 
 		$sql .= ' order by add_time desc limit ' . $offset . ',' . $page_size;
 
