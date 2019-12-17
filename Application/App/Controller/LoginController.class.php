@@ -345,6 +345,6 @@ class LoginController extends CommonController {
 	 */
 	public function invite(){
 
-
+		$this->display();
 	}
 }
