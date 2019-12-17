@@ -139,7 +139,7 @@
         var password = $('#password').val();
 
         $.ajax({
-            url: host + 'app/login/valid_code',
+            url: host + '/app/login/valid_code',
             type: 'POST',
             dataType: 'JSON',
             data: '{"mobile_number": ' + phone + ',"type":"register","code":' + code + '}',
