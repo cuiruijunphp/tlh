@@ -474,6 +474,10 @@ class PersonalController extends BaseController {
 		$user_trends_result = $user_trends_model->get_one(['id' => $trend_id]);
 
 		if($user_trends_result){
+			if($user_trends_result['user_id'] != $this->user_id){
+				$this->result_return(null, 1, '不能删除别人的动态');
+			}
+
 			$img_list = explode(',', $user_trends_result['img_list']);
 
 			//删除该条动态以及相应图片
