@@ -40,6 +40,8 @@
 <script src="/Public/static/assets/js/common.js"></script>
 <script type="text/javascript">
 
+    var host = 'http://' + '<?php echo $_SERVER["HTTP_HOST"]?>' + '/index.php';
+
     function GetQueryString(name)
     {
         var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
@@ -86,7 +88,7 @@
         }
 
         $.ajax({
-            url: '<?php echo U("app/login/register")?>',
+            url: host + '/app/login/register',
             type: 'POST',
             dataType: 'JSON',
             data: '{"mobile_number": ' + phone + ',"type":"register","source":"web","code":' + code + ',"invite_mobile_number":' + invite_mobile_number + '}',
@@ -94,7 +96,7 @@
                 if (e.code != 200) {
                     alert(e.message)
                 } else {
-                    window.location.href = '<?php echo U("app/login/download")?>';
+                    window.location.href = host + '/app/login/download';
                 }
             }
         })
@@ -114,7 +116,7 @@
         }
 
         $.ajax({
-            url: '<?php echo U("app/login/send_code")?>',
+            url: host + '/app/login/send_code',
             type: 'POST',
             dataType: 'JSON',
             data: '{"mobile_number": ' + phone + ',"type":"register"}',
@@ -137,7 +139,7 @@
         var password = $('#password').val();
 
         $.ajax({
-            url: '<?php echo U("app/login/valid_code")?>',
+            url: host + 'app/login/valid_code',
             type: 'POST',
             dataType: 'JSON',
             data: '{"mobile_number": ' + phone + ',"type":"register","code":' + code + '}',
