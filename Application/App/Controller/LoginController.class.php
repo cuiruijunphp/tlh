@@ -3,6 +3,12 @@ namespace App\Controller;
 use Think\Controller;
 class LoginController extends CommonController {
 
+	public function __construct()
+	{
+		parent::__construct();
+		header("Access-Control-Allow-Origin: *");
+	}
+
 	/**
 	 * 注册
 	 * @author cuirj
