@@ -10,6 +10,7 @@ class UserSkillModel extends CommonModel{
 	public function get_skill_demand_by_type_id($uid, $type_id, $offset = 0, $page_size=10){
 
 		if(count(explode(',', $type_id)) > 1){
+			$type_id = trim($type_id, ',');
 			$type_id_where = ' in (' . $type_id . ')';
 		}else{
 			$type_id_where = ' = ' . $type_id;
