@@ -34,7 +34,7 @@ class VerifyController extends BaseController {
 
 		if (!$response)
 		{
-			$this->result_return(null, 1, '与微信通信超时，请稍后再试');
+			$this->result_return(null, 1, '认证失败');
 		}
 
 		if ($response['errcode'])
@@ -47,7 +47,7 @@ class VerifyController extends BaseController {
 
 		if (!$user_info_response)
 		{
-			$this->result_return(null, 1, '获取用户信息失败');
+			$this->result_return(null, 1, '认证失败');
 		}
 
 		if ($user_info_response['errcode'])
@@ -109,7 +109,7 @@ class VerifyController extends BaseController {
 
 		if (!$response)
 		{
-			$this->result_return(null, 1, '与支付宝通信超时，请稍后再试');
+			$this->result_return(null, 1, '认证失败');
 		}
 
 		if ($response->alipay_system_oauth_token_response->code)
@@ -122,7 +122,7 @@ class VerifyController extends BaseController {
 
 		if (!$user_info_response)
 		{
-			$this->result_return(null, 1, '获取用户信息失败');
+			$this->result_return(null, 1, '认证失败');
 		}
 
 		if ($user_info_response->alipay_user_info_share_response->code != 10000)
@@ -224,7 +224,7 @@ class VerifyController extends BaseController {
 
 		if (!$user_info_response || !$user_info_response['uid'] || $user_info_response['uid'] != $weibo_uid)
 		{
-			$this->result_return(null, 1, '获取用户信息失败');
+			$this->result_return(null, 1, '认证失败');
 		}
 
 		// 更新用户表
