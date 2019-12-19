@@ -354,7 +354,49 @@ class LoginController extends CommonController {
 	}
 
 	public function download(){
+		$url = $_SERVER['HTTP_SERVER'] . '/index.php/app/login/download_app';
 
+		$data['download_url'] = $url;
+		$this->assign($data);
 		$this->display();
+	}
+
+	/**
+	 * 下载app
+	 * @author cuirj
+	 * @date   2019/12/18 上午11:50
+	 * @url    app/login/download_app/
+	 * @method get
+	 *
+	 * @param  int param
+	 *             return  array
+	 */
+	public function download_app(){
+
+		$filePath = "download/tlh.apk";
+
+		$filename = 'tlh.apk';
+
+		//以只读方式打开文件，并强制使用二进制模式
+		$fileHandle=fopen($filePath,"rb");
+		if($fileHandle===false){
+			exit("Can not open file: $filename");
+		}
+
+		//文件类型是二进制流。设置为utf8编码（支持中文文件名称）
+		header('Content-type:application/octet-stream; charset=utf-8');
+		header("Content-Transfer-Encoding: binary");
+		header("Accept-Ranges: bytes");
+		//文件大小
+		header("Content-Length: ".filesize($filePath));
+		//触发浏览器文件下载功能
+		header('Content-Disposition:attachment;filename="'.$filename.'"');
+		//循环读取文件内容，并输出
+		while(!feof($fileHandle)) {
+			//从文件指针 handle 读取最多 length 个字节（每次输出10k）
+			echo fread($fileHandle, 10240);
+		}
+		//关闭文件流
+		fclose($fileHandle);
 	}
 }
