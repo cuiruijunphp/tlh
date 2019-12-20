@@ -266,15 +266,17 @@ class HomeController extends BaseController
 
 		switch ($type){
 			case 'hot':
-				// 如果是按热度排序,则将此字段置空为1
+				// 如果是按热度排序,则将此字段置为1
 				$is_hot = 1;
 			break;
 
 			case 'demand':
+				// 单独需求类别
 				$is_demand = 1;
 			break;
 
 			case 'skill':
+				// 单独的技能类别
 				$is_skill = 1;
 			break;
 
