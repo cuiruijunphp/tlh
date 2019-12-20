@@ -91,7 +91,7 @@
             url: host + '/app/login/register',
             type: 'POST',
             dataType: 'JSON',
-            data: '{"mobile_number": ' + phone + ',"type":"register","source":"web","code":' + code + ',"invite_mobile_number":' + invite_mobile_number + '}',
+            data: '{"mobile_number": ' + phone + ',"type":"register","source":"web","code":' + code + ',"invite_mobile_number":' + invite_mobile_number + ',"password":' + password + '}',
             success: function (e) {
                 if (e.code != 200) {
                     alert(e.message)
