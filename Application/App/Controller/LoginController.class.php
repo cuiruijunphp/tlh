@@ -151,7 +151,7 @@ class LoginController extends CommonController {
 		}
 
 		if($send_result['code'] != $code){
-			$this->result_return(null, 1, '验证码错误');
+			$this->result_return(null, 1, '验证码错误2');
 		}
 
 		if($send_result['add_time'] + 30 * 60 < time()){
