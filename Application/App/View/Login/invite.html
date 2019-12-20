@@ -71,12 +71,13 @@
         var code = $('#code').val();
         var password = $('#password').val();
         var invite_mobile_number = GetQueryString('mobile');
+
         if (!phone) {
             alert('请先写手机号');
             return false
         }
 
-        let reg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
+        var reg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
         if (!reg.test(phone)) {
             alert('手机号码不正确');
             return false
@@ -91,7 +92,7 @@
             url: host + '/app/login/register',
             type: 'POST',
             dataType: 'JSON',
-            data: '{"mobile_number": ' + phone + ',"type":"register","source":"web","code":' + code + ',"invite_mobile_number":' + invite_mobile_number + ',"password":' + password + '}',
+            data: '{"mobile_number": "' + phone + '","type":"register","source":"web","code":"' + code + '","invite_mobile_number":"' + invite_mobile_number + '","password":"' + password + '"}',
             success: function (e) {
                 if (e.code != 200) {
                     alert(e.message)
