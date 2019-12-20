@@ -28,11 +28,11 @@ class LoginController extends CommonController {
 		$send_result = $code_model->get_one(['mobile_number' => $phone_number, 'type' => 'register'], 'add_time desc');
 
 		if(!$send_result){
-			$this->result_return(null, 1, '验证码错误');
+			$this->result_return(null, 1, '注册验证码错误');
 		}
 
 		if($send_result['code'] != $code){
-			$this->result_return(null, 1, '验证码错误');
+			$this->result_return(null, 1, '验证码错误1');
 		}
 
 		if($send_result['add_time'] + 30 * 60 < time()){
