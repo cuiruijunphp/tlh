@@ -113,6 +113,13 @@
                 </div>
               </div>
 
+          <div class="form-group" id="sort_show" <if condition="$list['parent_id'] neq 0">style="display:none"</if>>
+            <label for="sort" class="control-label col-md-3 col-sm-3 col-xs-12">排序</label>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+              <input type="text" id="sort" name="sort" class="form-control col-md-7 col-xs-12 parsley-success" value="{$list['sort']}" placeholder="排序">
+            </div>
+          </div>
+
               <div class="btns col-xs-12" style="text-align: center;margin-top: 20px;">
                 <button class="btn btn-default btn-sm" type="button">取消</button>
                 <button class="btn btn-success btn-sm" id="save" type="submit">保存</button>
@@ -154,8 +161,10 @@
         parent_id = $(this).val();
         if(parent_id == 0){
           $('#img_show').show();
+          $('#sort_show').show();
         }else{
           $('#img_show').hide();
+          $('#sort_show').hide();
         }
       })
 
