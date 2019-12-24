@@ -12,15 +12,16 @@ class HomeController extends BaseController
 	 * @date   2019/9/27 下午12:48
 	 * @url    /app/home/get_banner_list/
 	 *
-	 * @param  int param
+	 * @param  int type 1-首页,2-农林
 	 * @method post
 	 *
 	 * @return  array
 	 */
 	public function get_banner_list()
 	{
+		$type = I('get.type') ? I('get.type') : 1;
 		$banner_model = D('Banner');
-		$banner_list = $banner_model->get_list(['is_show' => 1], null, 'sort desc');
+		$banner_list = $banner_model->get_list(['is_show' => 1, 'type' => intval($type)], null, 'sort desc');
 
 		foreach($banner_list as $k => $v){
 			$banner_list[$k]['img'] = UPLOAD_URL . $v['img'];
@@ -54,6 +55,7 @@ class HomeController extends BaseController
 		$latitude = $params['latitude'];
 		$longitude = $params['longitude'];
 		$keyword = $params['keyword'];
+		$free_type = $params['free_type'];
 		$page = $params['page'] ? $params['page'] : 1;
 		$page_size = $params['page_size'] ? $params['page_size'] : 5;
 
@@ -237,6 +239,7 @@ class HomeController extends BaseController
 		$latitude = $params['latitude'];
 		$longitude = $params['longitude'];
 		$keyword = $params['keyword'];
+		$free_type = $params['free_type'];
 		$page = $params['page'] ? $params['page'] : 1;
 		$page_size = $params['page_size'] ? $params['page_size'] : 5;
 
@@ -295,7 +298,7 @@ class HomeController extends BaseController
 
 		}
 
-		$result = $skill_model->get_common_list($uid, $type_ids, $latitude, $longitude, $is_distance, $is_hot, $is_demand, $is_skill, $keyword, $offset, $page_size);
+		$result = $skill_model->get_common_list($uid, $type_ids, $latitude, $longitude, $is_distance, $is_hot, $is_demand, $is_skill, $keyword, $free_type, $offset, $page_size);
 
 		// 对结果进行处理
 		if($result){

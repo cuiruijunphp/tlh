@@ -161,10 +161,11 @@ class UserSkillModel extends CommonModel{
 	 * $is_distance 按距离排序
 	 * $is_demand 只取需求
 	 * $is_skill 只取技能
+	 * $free_type 1-付费,2-农林
 	 * $offset 偏移量
 	 * $page_size 每页多少条
 	 */
-	public function get_common_list($uid, $type_id, $lat, $lng, $is_distance, $is_hot, $is_demand, $is_skill, $keyword, $offset = 0, $page_size=10){
+	public function get_common_list($uid, $type_id, $lat, $lng, $is_distance, $is_hot, $is_demand, $is_skill, $keyword, $free_type, $offset = 0, $page_size=10){
 
 		$s_where = ' and s.user_id != ' . $uid;
 		$d_where = ' and d.user_id != ' . $uid;
@@ -186,9 +187,15 @@ class UserSkillModel extends CommonModel{
 			$d_where .= ' and d.title  like "%'. $keyword . '%"';
 		}
 
+		// 农林模块或者付费模块
+		if($free_type){
+			$s_where = ' and p.free_type ='. $free_type;
+			$d_where .= ' and p.free_type ='. $free_type;
+		}
+
 		// 公用的查询字段和排序方式
 		//技能表获取的字段
-		$s_field = ' s.id,skill_name as title,user_id,is_online,head_img,user_name,type_id,s.add_time,longitude,latitude,img,"skill" as type';
+		$s_field = ' s.id,skill_name as title,user_id,is_online,head_img,user_name,type_id,s.add_time,longitude,latitude,s.img,"skill" as type';
 
 		$d_field = ' d.id,title,user_id,is_online,head_img,user_name,type_id,d.add_time,longitude,latitude,null as img,"demand" as type';
 
@@ -228,11 +235,11 @@ class UserSkillModel extends CommonModel{
 		}
 
 		// 将sql 分开,便于后面拼接
-		$sql_skill = '(select ' . $s_field . ' from user_skill s left join users u on s.user_id = u.id where  s.status =1 ' . $s_where . ')';
+		$sql_skill = '(select ' . $s_field . ' from user_skill s left join users u on s.user_id = u.id left join skill_type as p on s.type_id = p.id where  s.status =1 ' . $s_where . ')';
 
 		$sql_union = ' union ';
 
-		$sql_demand = '(select ' . $d_field . ' from user_demand as d left join users u on d.user_id = u.id  where status=1 ' . $d_where . ' and end_time > ' . time(). ')';
+		$sql_demand = '(select ' . $d_field . ' from user_demand as d left join users u on d.user_id = u.id left join skill_type as p on d.type_id = p.id  where status=1 ' . $d_where . ' and end_time > ' . time(). ')';
 
 		$sql_order = ' order by ' . $order . ' limit ' . $offset . ',' . $page_size;
 
