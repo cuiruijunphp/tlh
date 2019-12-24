@@ -41,6 +41,7 @@ class UsersModel extends CommonModel{
 			->where($where)
 			->join('user_address as s on u.id=s.user_id', 'left')
 			->page($page, $page_size)
+			->order('u.add_time desc')
 			->select();
 	}
 

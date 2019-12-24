@@ -24,7 +24,7 @@ class BannerController extends BaseController {
 		if (IS_POST) {
 			$params = I('post.');
 
-			if (!$params['desc'] || !$params['url'] ||! $params['sort']) {
+			if (!$params['desc'] || !$params['url'] || !$params['sort']) {
 				$this->result_return(null, 500, '请检查参数是否填写完整');
 			}
 
@@ -33,6 +33,7 @@ class BannerController extends BaseController {
 				'url' => $params['url'],
 				'sort' => (int)$params['sort'],
 				'is_show' => (int)$params['is_show'],
+				'type' => (int)$params['type'],
 			];
 
 			//判断是否有图片

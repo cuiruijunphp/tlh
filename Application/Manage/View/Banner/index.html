@@ -61,6 +61,7 @@
                      <th>描述</th>
                      <th>url</th>
                      <th>是否显示</th>
+                     <th>位置</th>
                      <th>排序(越大越靠前)</th>
                      <th>添加时间</th>
                      <th>操作</th>
@@ -72,6 +73,7 @@
                    <td>{$v["desc"]}</td>
                    <td>{$v["url"]}</td>
                    <td>{$v["is_show"] ? '显示' : '不显示'}</td>
+                   <td>{$v["type"] == 1 ? '首页' : '农林'}</td>
                    <td>{$v["sort"]}</td>
                    <td>{$v["add_time"]|date='Y年m月d日 H时i分',###}</td>
                    <!--<td>-->
