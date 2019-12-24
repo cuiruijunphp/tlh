@@ -183,13 +183,13 @@ class UserSkillModel extends CommonModel{
 
 		//关键词
 		if($keyword){
-			$s_where = ' and s.skill_name like "%'. $keyword . '%"';
+			$s_where .= ' and s.skill_name like "%'. $keyword . '%"';
 			$d_where .= ' and d.title  like "%'. $keyword . '%"';
 		}
 
 		// 农林模块或者付费模块
 		if($free_type){
-			$s_where = ' and p.free_type ='. $free_type;
+			$s_where .= ' and p.free_type ='. $free_type;
 			$d_where .= ' and p.free_type ='. $free_type;
 		}
 
@@ -235,7 +235,7 @@ class UserSkillModel extends CommonModel{
 		}
 
 		// 将sql 分开,便于后面拼接
-		$sql_skill = '(select ' . $s_field . ' from user_skill s left join users u on s.user_id = u.id left join skill_type as p on s.type_id = p.id where  s.status =1 ' . $s_where . ')';
+		$sql_skill = '(select ' . $s_field . ' from user_skill s left join users u on s.user_id = u.id left join skill_type as p on s.type_id = p.id where s.status =1 ' . $s_where . ')';
 
 		$sql_union = ' union ';
 
