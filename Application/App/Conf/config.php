@@ -16,8 +16,8 @@ return array(
 			'time' => 365,//套餐时间
 			'note' => '一年',//套餐描述
 			'invite_income' => '1',//邀请收益
-			'vip_invite_income' => '2',//会员邀请收益
-			'proxy_income' => '2',//代理收益
+			'vip_invite_income' => '10',//会员邀请收益
+			'proxy_income' => '0',//代理收益,线下结算
 		]
 	],
 
