@@ -322,10 +322,15 @@ class MessageController extends BaseController {
 			$unread = $dialog_info['sender_unread'];
 			$message_where['sender_remove'] = 0;
 			$other_uid = $dialog_info['recived_uid'];
+
+			// 未读消息置为0
+			$dialog_update_data['sender_unread'] = 0;
 		}else{
 			$unread = $dialog_info['recived_unread'];
 			$message_where['recived_remove'] = 0;
 			$other_uid = $dialog_info['sender_uid'];
+
+			$dialog_update_data['recived_unread'] = 0;
 		}
 
 		// 如果未读消息是 0,则返回空数组
@@ -333,6 +338,10 @@ class MessageController extends BaseController {
 			$this->result_return([]);
 		}
 
+		//更新未读消息为0
+		$dialog_model->update_data(['id' => $dialog_id], $dialog_update_data);
+
+		// 取对话的用户信息
 		$user_model = D('Users');
 		$user_info = $user_model->get_one(['id' => $other_uid]);
 		$part_user_info = [
@@ -345,11 +354,12 @@ class MessageController extends BaseController {
 		$message_where['dialog_id'] = $dialog_id;
 
 		$message_model = D('Message');
+
+		// 取未读消息的条数
 		$message_list = $message_model->get_list($message_where, '0,' . $unread,  'add_time desc');
 		$demand_model = D('UserDemand');
 
 		$message_list = array_reverse($message_list);
-//		var_dump($message_list);
 
 		foreach($message_list as $s_k => $s_v){
 			if($s_v['type'] == 2){
