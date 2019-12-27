@@ -244,7 +244,7 @@ class DemandController extends BaseController
 			'uid' => $user_id,//我应征需求,应该是我给需求发布者发消息
 			'content' => '需求类型',
 		];
-		$message_model->insert_one($insert_message);
+		$message_model->insert_message($insert_message);
 
 		// 这个时候需要把诚意金打到应征者账户中
 		$order_model = D('Order');

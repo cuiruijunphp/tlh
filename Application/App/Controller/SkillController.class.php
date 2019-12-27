@@ -422,7 +422,7 @@ class SkillController extends BaseController {
 				'uid' => $this->user_id,
 				'content' => '技能类型',
 			];
-			$message_model->insert_one($insert_message);
+			$message_model->insert_message($insert_message);
 		}
 
 		$this->result_return(['result' => 1]);

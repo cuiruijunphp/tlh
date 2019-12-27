@@ -57,7 +57,7 @@ class MessageController extends BaseController {
 			'dialog_id' => $dialog_id,
 		];
 
-		$message_insert_result = $message_model->insert_one($message_insert_data);
+		$message_insert_result = $message_model->insert_message($message_insert_data);
 
 		if($message_insert_result === false){
 			$this->result_return(null, 1, '发送消息失败');
@@ -180,10 +180,15 @@ class MessageController extends BaseController {
 		if($dialog_info['sender_uid'] == $this->user_id){
 			$is_del = $dialog_info['sender_remove'];
 			$message_where['sender_remove'] = 0;
+			$dialog_update_data['sender_unread'] = 0;
 		}else{
 			$is_del = $dialog_info['recived_remove'];
 			$message_where['recived_remove'] = 0;
+			$dialog_update_data['recived_unread'] = 0;
 		}
+
+		// 更新未读消息数量
+		$dialog_model->update_data(['id' => $dialog_id], $dialog_update_data);
 
 		if($is_del == 1){
 			$this->result_return(['message_list' => [], 'user_info' => $part_user_info]);
