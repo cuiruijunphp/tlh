@@ -93,7 +93,7 @@ class MessageController extends BaseController {
 		$dialog_model = D('Dialog');
 		$message_model = D('Message');
 
-		$dialog_list = $dialog_model->get_list($where, $limit. ',' . $page_size);
+		$dialog_list = $dialog_model->get_list($where, $limit. ',' . $page_size, 'update_time desc');
 
 		if($dialog_list){
 			$user_model = D('Users');
