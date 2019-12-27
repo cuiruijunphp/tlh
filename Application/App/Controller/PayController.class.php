@@ -114,7 +114,7 @@ class PayController extends BaseController {
 		$aliConfig = C('ALIPAY_CONFIG');
 
 		Vendor('Alipay.aop.AopClient');
-		Vendor('Alipay.aop.Request.AlipayTradeQueryRequest');
+		Vendor('Alipay.aop.request.AlipayTradeQueryRequest');
 
 		$aop = new \AopClient ();
 		$aop->gatewayUrl = $aliConfig['gatewayUrl'];
