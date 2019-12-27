@@ -68,7 +68,7 @@
                  <tr>
                    <td>{$v["id"]}</td>
                    <td>{$v["title"]}</td>
-                   <td>{$v["content"]}</td>
+                   <td>{$v["content"]|mb_substr=0,38}</td>
                    <td>{$v["add_time"]|date='Y年m月d日 H时i分',###}</td>
                    <td>
                       <a href="{:U('Manage/notice/edit?id='.$v['id'])}"><button class="btn btn-success btn-sm">编辑</button></a>

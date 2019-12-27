@@ -76,7 +76,7 @@
                    <td>{$v["skill_name"]}</td>
                    <td>{$v["type_name"]}</td>
                    <td>{$v["price"]}</td>
-                   <td>{$v["desc"]}</td>
+                   <td>{$v["desc"]|mb_substr=0,38}</td>
                    <td>{$skill_status_arr[$v["status"]]}</td>
                    <td>{$v["add_time"]|date='Y年m月d日 H时i分',###}</td>
                    <td>

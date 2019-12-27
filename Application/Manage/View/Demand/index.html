@@ -73,7 +73,7 @@
                  </thead>
                  <foreach name="list" key="k" item="v">
                  <tr>
-                   <td>{$v["title"]}</td>
+                   <td>{$v["title"]|mb_substr=0,38}</td>
                    <td>{$v["user_name"]}</td>
                    <td>{$v["type_name"]}</td>
                    <td>{$v["earnest_money"]}</td>
