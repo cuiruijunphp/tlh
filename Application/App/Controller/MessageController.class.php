@@ -210,6 +210,7 @@ class MessageController extends BaseController {
 			$skill_demand = $message_model->get_list($special_message_where, null, 'add_time desc');
 			$demand_model = D('UserDemand');
 			$skill_model = D('UserSkill');
+			$skill_reserve_model = D('SkillReserve');
 
 			$type_result = [];
 
@@ -228,7 +229,6 @@ class MessageController extends BaseController {
 						}
 					}else{
 						// 技能
-						$skill_reserve_model = D('SkillReserve');
 						$skill_reserve_info = $skill_reserve_model->get_skill_info_by_reserve_id($s_v['type_id']);
 
 						if($skill_reserve_info['status'] == 3){
@@ -303,4 +303,98 @@ class MessageController extends BaseController {
 		$this->result_return(['result' => 1]);
 	}
 
+	/**
+	 * 获取新消息
+	 * @date   2019/12/27 上午11:03
+	 * @url    app/message/get_new_message/
+	 * @method get
+	 *
+	 * @param  int param
+	 *             return  array
+	 */
+	public function get_new_message(){
+		$dialog_id = I('get.dialog_id');
+
+		$dialog_model = D('Dialog');
+		$dialog_info = $dialog_model->get_one(['id' => $dialog_id]);
+
+		if($dialog_info['sender_uid'] == $this->user_id){
+			$unread = $dialog_info['sender_unread'];
+			$message_where['sender_remove'] = 0;
+			$other_uid = $dialog_info['recived_uid'];
+		}else{
+			$unread = $dialog_info['recived_unread'];
+			$message_where['recived_remove'] = 0;
+			$other_uid = $dialog_info['sender_uid'];
+		}
+
+		// 如果未读消息是 0,则返回空数组
+		if($unread == 0){
+			$this->result_return([]);
+		}
+
+		$user_model = D('Users');
+		$user_info = $user_model->get_one(['id' => $other_uid]);
+		$part_user_info = [
+			'user_name' => $user_info['user_name'],
+			'is_online' => $user_info['is_online'],
+			'head_img' => $user_info['head_img'] ? UPLOAD_URL . $user_info['head_img'] : '',
+			'uid' => $user_info['id'],
+		];
+
+		$message_where['dialog_id'] = $dialog_id;
+
+		$message_model = D('Message');
+		$message_list = $message_model->get_list($message_where, '0,' . $unread,  'add_time desc');
+		$demand_model = D('UserDemand');
+
+		$message_list = array_reverse($message_list);
+//		var_dump($message_list);
+
+		foreach($message_list as $s_k => $s_v){
+			if($s_v['type'] == 2){
+				// 查看需求是否完成
+				$demand_info = $demand_model->get_one(['id' => $s_v['type_id']]);
+				if($demand_info['status'] == 3){
+					$type_result = $s_v;
+
+					$type_result['title'] = $demand_info['title'];
+					$type_result['earnest_money'] = $demand_info['earnest_money'];
+				}
+			}elseif($s_v['type'] == 3){
+				// 技能
+				$skill_reserve_model = D('SkillReserve');
+				$skill_reserve_info = $skill_reserve_model->get_skill_info_by_reserve_id($s_v['type_id']);
+
+				if($skill_reserve_info['status'] == 3){
+					$type_result = $s_v;
+
+					$type_result['title'] = $skill_reserve_info['skill_name'];
+					$type_result['earnest_money'] = $skill_reserve_info['price'];
+					$type_result['desc'] = $skill_reserve_info['desc'];
+				}
+			}else{
+				// 取普通的消息
+				$result[] = $s_v;
+			}
+		}
+
+		if($type_result){
+			if($result){
+				$message_list_result[] = $type_result;
+				$message_list_result = array_merge($message_list_result, $message_list_result);
+			}else{
+				$message_list_result[] = $type_result;
+			}
+		}else{
+			$message_list_result = $result;
+		}
+
+		$data = [
+			'message_list' => $message_list_result,
+			'user_info' => $part_user_info,
+		];
+
+		$this->result_return($data);
+	}
 }
