@@ -106,6 +106,7 @@ class WalletController extends BaseController {
 		$order_where = [
 			'source_type_id' => ['in', '2,3'],
 			'user_id' => $this->user_id,
+			'status' => 1,
 			'add_time' => [
 				['gt', $start_time],
 				['lt', $end_time],
@@ -140,6 +141,7 @@ class WalletController extends BaseController {
 			}
 
 			$where['user_id'] = $this->user_id;
+			$where['status'] = 1;
 
 			$where['add_time'] = [
 				['gt', $start_time],
