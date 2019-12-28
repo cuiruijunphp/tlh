@@ -164,8 +164,14 @@ class WalletController extends BaseController {
 			$order_list = $order_model->get_list($order_where, $limit. ',' . $page_size, 'add_time desc');
 
 			foreach($order_list as $o_k => $o_v){
+				if($o_v['source_type'] == 1){
+					$note = '充值会员';
+				}else{
+					$note = '诚意金';
+				}
+				
 				$balance_list[$o_k] = [
-					'note' => '诚意金',
+					'note' => $note,
 					'add_time' => $o_v['add_time'],
 					'balance' => '-' . $o_v['price'],
 				];
