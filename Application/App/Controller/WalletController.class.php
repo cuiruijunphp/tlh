@@ -104,7 +104,7 @@ class WalletController extends BaseController {
 
 		//消费记录的查询条件
 		$order_where = [
-			'source_type_id' => ['in', '2,3'],
+			'source_type' => ['in', '2,3'],
 			'user_id' => $this->user_id,
 			'status' => 1,
 			'add_time' => [
