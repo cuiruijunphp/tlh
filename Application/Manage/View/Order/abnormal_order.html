@@ -155,16 +155,12 @@
 
       $("#pair").click(function () {
           order_id = '<?php echo $order_info["order_id"];?>';
-          payment_id = '<?php echo $order_info["payment_id"];?>';
-          pay_time = '<?php echo $order_info["pay_time"];?>';
-          total_amount = '<?php echo $order_info["total_amount"];?>';
           order_data = '<?php echo json_encode($order_info["res"]);?>';
 
           $.ajax({
               url: '<?php echo U("Manage/order/pair_order"); ?>',
               type: 'post',
               dataType: 'JSON',
-//              data: {"order_id":order_id, "payment_id":payment_id, "pay_time": pay_time, "total_amount": total_amount},
               data: {"order_id":order_id, "order_data":order_data},
               success: function (e) {
                   if (e.code != 200) {
