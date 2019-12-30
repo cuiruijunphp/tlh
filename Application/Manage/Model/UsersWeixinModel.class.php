@@ -35,7 +35,7 @@ class UsersWeixinModel extends CommonModel{
 		if($data){
 			//返回成功,将xml数据转换为数组.
 			$res = from_xml($data);
-			if($res['return_code'] == 'SUCCESS' && $res['result_code'] == 'SUCCESS'){
+			if($res['return_code'] == 'SUCCESS' && $res['result_code'] == 'SUCCESS' && $res['transaction_id']){
 				//接收微信返回的数据,传给APP
 				return  [
 					'result' => 'success',
