@@ -329,4 +329,59 @@ class OrderController extends BaseController {
 
 		$this->exportExcel('提现管理',$xlsCell,$company_export);
 	}
+
+	/**
+	 * 查看付款结果-修复异常订单数据使用
+	 * @author cuirj
+	 * @date   2019/12/30 上午10:08
+	 * @url    app/order/get_order_result
+	 * @method get
+	 *
+	 * @param  string order_id
+	 * @return  array
+	 */
+	public function get_order_result(){
+		$order_id = I('get.order_id');
+
+		$order_model = D('Order');
+		$order_info = $order_model->get_one(['order_id' => $order_id]);
+		$pay_type = $order_info['pay_type'];
+
+		$result = $order_model->get_order_result_by_order_id($order_id, $pay_type);
+
+		if($result){
+			$order_info['res'] = $result;
+		}
+
+
+		$this->assign(['order_info' => $order_info]);
+
+		$this->display('abnormal_order');
+	}
+
+	/**
+	 * 修复数据
+	 * @author cuirj
+	 * @date   2019/12/30 上午11:49
+	 * @url    app/order/pair_order
+	 * @method get
+	 *
+	 * @param  int param
+	 * @return  array
+	 */
+	public function pair_order(){
+		$order_data_tmp = I('post.order_data');
+
+		$order_data = json_decode(htmlspecialchars_decode($order_data_tmp), true);
+		$order_id = I('post.order_id');
+
+		$order_model = D('Order');
+		$res = $order_model->update_result($order_id, 'success', $order_data['total_amount'], ($order_data['pay_time']), $order_data['payment_id']);
+
+		if($res){
+			$this->result_return(['result' => 1]);
+		}else{
+			$this->result_return(null, 1, '修复数据失败');
+		}
+	}
 }

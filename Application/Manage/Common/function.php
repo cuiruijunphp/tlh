@@ -81,3 +81,86 @@ function compile_password($password)
 
 	return $password;
 }
+
+function rand_code(){
+	//62个字符
+	$str = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	$str = str_shuffle($str);
+	$str = substr($str,0,32);
+	return  $str;
+}
+
+// 传输给微信的参数要组装成xml格式发送,传如参数数组
+function to_xml($data = [])
+{
+	if(!is_array($data) || count($data) <= 0)
+	{
+		return '数组异常';
+	}
+	$xml = "<xml>";
+	foreach ($data as $key=>$val)
+	{
+		//		if (is_numeric($val)){
+		//			$xml.="<".$key.">".$val."</".$key.">";
+		//		}else{
+		//			$xml.="<".$key."><![CDATA[".$val."]]></".$key.">";
+		//		}
+
+		$xml.="<".$key.">".$val."</".$key.">";
+	}
+	$xml.="</xml>";
+	return $xml;
+}
+
+/**
+ * 函数的含义说明：CURL发送post请求    获取数据
+ *
+ * @access public
+ * @param str          $url     发送接口地址
+ * @param array/json   $data    要发送的数据
+ * @param false/true   $json    false $data数组格式  true $data json格式
+ * @return  返回json数据
+ */
+function http_post_request($url, $data){
+
+	//	header("Content-type:text/xml");
+	$ch = curl_init();
+	curl_setopt($ch,CURLOPT_URL, $url);
+	if(stripos($url,"https://")!==FALSE){
+		curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+	} else {
+		curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,TRUE);
+		curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,2);//严格校验
+	}
+	//设置header
+	curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1);
+	curl_setopt($ch, CURLOPT_HEADER, FALSE);
+	//要求结果为字符串且输出到屏幕上
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+	//设置超时
+	curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+	curl_setopt($ch, CURLOPT_POST, TRUE);
+	//传输文件
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+	//运行curl
+	$data = curl_exec($ch);
+	//关闭这个curl会话资源
+	curl_close($ch);
+	return $data;
+}
+
+
+// 将xml数据转换为数组,接收微信返回数据时用到
+function from_xml($xml)
+{
+	if(!$xml){
+		echo "xml数据异常！";
+	}
+	//将XML转为array
+	//禁止引用外部xml实体
+	libxml_disable_entity_loader(true);
+	$data = json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
+	return $data;
+}

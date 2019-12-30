@@ -53,42 +53,6 @@
         <!-- 页面内容 -->
         <div class="right_col" role="main">
 
-
-            <!--START search form-->
-            <form class="m-b-sm form-inline" id="form" method="get" action="{:U('Manage/order/index')}">
-                <div class="form-group input-daterange input-group" id="datepicker">
-                    <input type="text" name="begin_date" class="form-control form_datetime" value="{$begin_date}" id="begin-date" placeholder="下单起始日期">
-                    <span class="input-group-addon">至</span>
-                    <input type="text" name="end_date" class="form-control form_datetime" value="{$end_date}" id="end-date" placeholder="下单截止日期">
-                </div>
-
-                <div class="form-group m-l-md">
-                <input id="order_id" class="form-control" type="text" name="order_id" value="{$order_id}" placeholder="请输入订单号">
-                </div>
-
-                <div class="form-group">
-                    <select id="pay_type" name="pay_type" class="form-control">
-                        <option value="">支付方式</option>
-                        <option value="alipay_app" <if condition="$pay_type eq 'alipay_app' ">selected</if>>支付宝</option>
-                        <option value="wx_app" <if condition="$pay_type eq 'wx_app' ">selected</if>>微信</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <select id="status" name="status" class="form-control">
-                        <option value="-1">全部</option>
-                        <foreach name="status_arr" key="s_k" item="s_v">
-                            <option value="{$s_k}" <if condition="$s_k eq $status">selected</if>>{$s_v}</option>
-                        </foreach>
-                    </select>
-                </div>
-
-                <button id="search-btn" type="button" class="btn btn-primary">查询</button>
-                <button id="import-btn" type="button" class="btn btn-primary">导出</button>
-            </form>
-            <!--END search form-->
-
-
           <div id="course_list">
             <!--<a href="{:U('Manage/skill/edit')}"><button class="btn btn-success btn-sm fr" id="add_course">新增技能类型</button></a>-->
               <table class="full_width_table">
@@ -108,26 +72,24 @@
                      <th>操作</th>
                    </tr>
                  </thead>
-                 <foreach name="list" key="k" item="v">
                  <tr>
-                   <td>{$v["order_id"]}</td>
-                   <td>{$v["user_id"]}</td>
-                   <td>{$v["price"]}</td>
-                   <td>{$status_arr[$v["status"]]}</td>
-                   <td>{$source_type[$v["source_type"]]}</td>
-                   <td>{$v["pay_type"] == 'alipay_app' ? '支付宝' : (($v["pay_type"] == 'wx_app') ? '微信支付' : '')}</td>
-                   <td>{$v["add_time"]|date='Y年m月d日 H时i分',###}</td>
-                   <td>{$v["pay_time"] ? $v["pay_time"]|date='Y年m月d日 H时i分',### : ''}</td>
-                   <td>{$v["refund_time"] ? $v["refund_time"]|date='Y年m月d日 H时i分',### : ''}</td>
-                   <td>{$v["payment_id"]}</td>
+                   <td>{$order_info["order_id"]}</td>
+                   <td>{$order_info["user_id"]}</td>
+                   <td>{$order_info["price"]}</td>
+                   <td>{$order_info["res"] ? '成功' : '失败'}</td>
+                   <td>{$order_info[$order_info["source_type"]]}</td>
+                   <td>{$order_info["pay_type"] == 'alipay_app' ? '支付宝' : (($order_info["pay_type"] == 'wx_app') ? '微信支付' : '')}</td>
+                   <td>{$order_info["add_time"]|date='Y年m月d日 H时i分',###}</td>
+                   <td>{$order_info["pay_time"] ? $order_info["pay_time"]|date='Y年m月d日 H时i分',### : ''}</td>
+                   <td>{$order_info["refund_time"] ? $order_info["refund_time"]|date='Y年m月d日 H时i分',### : ''}</td>
+                   <td>{$order_info["payment_id"]}</td>
                      <td>
                         <!--<a href="{:U('Manage/order/edit?id='.$v['id'])}"><button class="btn btn-success btn-sm">查看详情</button></a>-->
-                         <if condition="$v['status'] eq 0">
-                            <a href="{:U('Manage/order/get_order_result?order_id='.$v['order_id'])}"><button class="btn btn-success btn-sm">查看付款结果</button></a>
+                         <if condition="$order_info['res'] && $order_info['status'] == 0">
+                             <button class="btn btn-success btn-sm" id="pair">修复数据</button>
                          </if>
                  </td>
                  </tr>
-                 </foreach>
                </table>
               {$page}
           </div>
@@ -188,6 +150,30 @@
           order_id = $('#order_id').val();
 
           window.location.href = '<?php echo U("Manage/order/import_order_data");?>' + '&begin_date='+begin_date+'&end_date='+end_date+'&status='+status+'&order_id='+order_id+'&pay_type='+pay_type;
+          return false
+      })
+
+      $("#pair").click(function () {
+          order_id = '<?php echo $order_info["order_id"];?>';
+          payment_id = '<?php echo $order_info["payment_id"];?>';
+          pay_time = '<?php echo $order_info["pay_time"];?>';
+          total_amount = '<?php echo $order_info["total_amount"];?>';
+          order_data = '<?php echo json_encode($order_info["res"]);?>';
+
+          $.ajax({
+              url: '<?php echo U("Manage/order/pair_order"); ?>',
+              type: 'post',
+              dataType: 'JSON',
+//              data: {"order_id":order_id, "payment_id":payment_id, "pay_time": pay_time, "total_amount": total_amount},
+              data: {"order_id":order_id, "order_data":order_data},
+              success: function (e) {
+                  if (e.code != 200) {
+                      alert(e.message)
+                  } else {
+                      window.location.href = '';
+                  }
+              }
+          })
           return false
       })
   </script>
