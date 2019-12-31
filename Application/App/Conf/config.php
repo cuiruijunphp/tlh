@@ -12,21 +12,22 @@ return array(
 	//会员套餐列表
 	'source_type_arr' => [
 		1 => [
-			'price' => '20',//套餐价格
+			'price' => '200',//套餐价格
 			'time' => 365,//套餐时间
 			'note' => '一年',//套餐描述
-			'invite_income' => '1',//邀请收益
-			'vip_invite_income' => '10',//会员邀请收益
+			'invite_income' => '20',//邀请收益5%
+			'vip_invite_income' => '100',//会员邀请收益50%
 			'proxy_income' => '0',//代理收益,线下结算
 		]
 	],
 
 	//诚意金列表
 	'earnest_money_arr' => [
-		'1',
-		'2',
-		'3',
-		'4'
+		'50',
+		'100',
+		'150',
+		'200',
+		'250',
 	],
 
 	//每天能发布技能和需求限制
