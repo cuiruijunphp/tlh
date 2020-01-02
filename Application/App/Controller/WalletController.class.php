@@ -220,6 +220,10 @@ class WalletController extends BaseController {
 			['lt', $end_time],
 		];
 
+		$where['item_id'] = [
+			'neq', $this->user_id
+		];
+
 		$proxy_user_list = $account_log_model->get_proxy_user_info($where, $page, $page_size);
 		//代理模式返回数据格式
 		$proxy_where_user_count = $account_log_model->get_condition_count($where);
