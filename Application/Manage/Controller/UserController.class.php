@@ -168,18 +168,10 @@ class UserController extends BaseController {
 
 		$id = $params['id'];
 
-		$user_address_model = D('UserAddress');
-		$user_address_info = $user_address_model->get_one(['user_id' => $id]);
-
 		// 查询条件
-		$province = $user_address_info['province'];
-		$city = $user_address_info['city'];
-		$area = $user_address_info['area'];
 
 		$begin_date = strtotime($params['begin_date']);
 		$end_date = strtotime($params['end_date']);
-
-		$type = $params['type'];
 
 		if($begin_date && $end_date){
 			$where['u.add_time']= [
@@ -189,18 +181,7 @@ class UserController extends BaseController {
 		}
 
 		$where['u.type']= 1;
-
-		if($province){
-			$where['s.province'] = $province;
-		}
-
-		if($city){
-			$where['s.city'] = $city;
-		}
-
-		if($area){
-			$where['s.area'] = $area;
-		}
+		$where['u.proxy_id']= $id;
 
 		$user_list = $user_model->get_user_info_by_where($where, $page);
 		$user_count = $user_model->get_user_count_by_where($where);
