@@ -34,6 +34,10 @@ class OrderModel extends CommonModel{
 			return true;
 		}
 
+		if($order_info['status'] == 1){
+			return true;
+		}
+
 		$user_id = $order_info['user_id'];
 
 		// 改变订单状态

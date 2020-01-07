@@ -46,7 +46,7 @@ class Alipay
 			'product_code' => 'QUICK_MSECURITY_PAY',
 		]);
 		//异步回调地址
-		$request->setNotifyUrl('http://tlh.cuithink.com' . $aliConfig['notifyUrl']);
+		$request->setNotifyUrl($_SERVER['HTTP_HOST'] . $aliConfig['notifyUrl']);
 		//发送数据内容到支付宝
 		$request->setBizContent($bizcontent);
 		$result = $aop->sdkExecute($request);
