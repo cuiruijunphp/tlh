@@ -102,6 +102,10 @@ class OrderModel extends CommonModel{
 			return '订单金额非法';
 		}
 
+//		if($order_info['payment_id'] && $order_info['pay_time']){
+//			return '订单已经更新过了';
+//		}
+
 		$user_id = $order_info['user_id'];
 
 		// 改变订单状态

@@ -68,7 +68,7 @@ class PaymentController extends CommonController {
 					echo $fail_xml;
 				}
 
-				if($res ===false){
+				if($res === false){
 					write_log('log/wxpay/', '微信同步失败,更新数据库失败,参数为:' . json_encode($data));
 					echo $fail_xml;
 				}else{
