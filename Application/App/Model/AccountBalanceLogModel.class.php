@@ -24,7 +24,7 @@ class AccountBalanceLogModel extends CommonModel{
 
 		$where_tmp = array_combine($where_keys, array_values($where));
 
-		return $this->field('a.user_id,u.head_img,u.birthday,a.add_time,u.user_name')
+		return $this->field('u.user_id,u.head_img,u.birthday,a.add_time,u.user_name')
 			->alias('a')
 			->join('users u on a.item_id = u.id', 'left')
 			->where($where_tmp)
