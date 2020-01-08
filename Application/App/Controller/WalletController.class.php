@@ -229,7 +229,16 @@ class WalletController extends BaseController {
 		$proxy_where_user_count = $account_log_model->get_condition_count($where);
 
 		unset($where['add_time']);
+		//桃分用户总数
 		$proxy_user_count = $account_log_model->get_condition_count($where);
+
+		// 查询总用户数
+		$user_model = D('Users');
+
+		$count_where = [
+			'proxy_id' => $this->user_id
+		];
+		$count = $user_model->get_condition_count($count_where);
 
 		if($proxy_user_list){
 			foreach($proxy_user_list as $p_k => $p_v){
@@ -240,6 +249,7 @@ class WalletController extends BaseController {
 		$proxy_res_data = [
 			'proxy_user_list' => $proxy_user_list ? $proxy_user_list : [],
 			'proxy_user_list_count' => $proxy_user_count,
+			'proxy_user_count' => $count,
 			'proxy_user_list_date_count' => $proxy_where_user_count,
 		];
 
