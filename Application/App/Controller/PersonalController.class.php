@@ -650,7 +650,7 @@ class PersonalController extends BaseController {
 		$user_model = D('Users');
 
 		$where = ['invite_user_id' => $user_id];
-		$user_list = $user_model->get_list($where, $limit. ',' . $page_size, 'add_time desc');
+		$user_list = $user_model->get_list($where, $limit. ',' . $page_size, 'vip_expire_time desc,add_time desc');
 
 		$invite_count = $user_model->get_condition_count($where);
 
