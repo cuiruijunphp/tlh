@@ -28,6 +28,7 @@ class AccountBalanceLogModel extends CommonModel{
 			->alias('a')
 			->join('users u on a.item_id = u.id', 'left')
 			->where($where_tmp)
+			->order('a.add_time desc')
 			->page($page, $page_size)
 			->select();
 	}
