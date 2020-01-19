@@ -79,4 +79,11 @@ class CommonModel extends Model{
 	public function delete_data($where){
 		return $this->where($where)->delete();
 	}
+
+	/*
+	 * 获取某个条件下总数
+	 */
+	public function get_condition_count($where){
+		return $this->where($where)->count();
+	}
 }

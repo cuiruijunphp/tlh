@@ -54,10 +54,20 @@ class LoginController extends CommonController {
 			$this->result_return(null, 1, '手机号已经被注册了');
 		}
 
+		//如果邀请人有代理信息,则被邀请人是同样的代理。 如果邀请人是代理人,则将邀请人的id,写入代理字段。如果没有代理,则置为0
+		if($invite_info['proxy_id']){
+			$proxy_id = $invite_info['proxy_id'];
+		}else{
+			if($invite_info['type'] == 3){
+				$proxy_id = $invite_info['id'];
+			}
+		}
+
 		$insert_user_data = [
 			'mobile_number' => $phone_number,
 			'password' => compile_password($password),
 			'invite_user_id' => (int)$invite_info['id'],
+			'proxy_id' => (int)$proxy_id,
 			'source' => $params['source'] ? $params['source'] : 'app',
 		];
 		$insert_result = $user_model->insert_one($insert_user_data);

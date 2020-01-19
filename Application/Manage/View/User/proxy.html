@@ -89,27 +89,33 @@
               <table class="full_width_table">
                  <thead>
                    <tr>
+                     <th>用户id</th>
                      <th>账户名</th>
-                     <th>账户类型</th>
+                     <!--<th>账户类型</th>-->
                      <th>手机号</th>
                      <th>是否vip</th>
                      <th>vip过期时间</th>
                      <th>认证</th>
                      <th>性别</th>
                      <th>注册时间</th>
+                     <th>vip充值时间</th>
+                     <th>订单号</th>
                      <!--<th>操作</th>-->
                    </tr>
                  </thead>
                  <foreach name="list" key="k" item="v">
                  <tr>
+                   <td>{$v.id}</td>
                    <td>{$v.user_name}</td>
-                   <td>{$user_type_arr[$v["type"]]}</td>
+                   <!--<td>{$user_type_arr[$v["type"]]}</td>-->
                    <td>{$v["mobile_number"]}</td>
                    <td>{$v["is_vip"] ? '是' : '否'}</td>
                    <td>{$v["vip_expire_time"] ? ($v["vip_expire_time"]|date='Y年m月d日 H时i分',###) : ''}</td>
                    <td>{$v["is_vefify"] ? '是' : '否'}</td>
                    <td>{$v["sex"] == 1 ? '男' : '女'}</td>
+                   <td>{$v["register_time"]|date='Y年m月d日 H时i分',###}</td>
                    <td>{$v["add_time"]|date='Y年m月d日 H时i分',###}</td>
+                   <td>{$v["order_id"]}</td>
                    <!--<td>-->
                       <!--<a href="{:U('Manage/user/edit?id='.$v['id'])}"><button class="btn btn-success btn-sm">编辑</button></a>-->
                      <!--<button class="btn btn-danger btn-sm del" idvalue="{$v['id']}">删除</button>-->

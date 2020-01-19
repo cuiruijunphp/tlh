@@ -168,45 +168,48 @@ class UserController extends BaseController {
 
 		$id = $params['id'];
 
-		$user_address_model = D('UserAddress');
-		$user_address_info = $user_address_model->get_one(['user_id' => $id]);
-
 		// 查询条件
-		$province = $user_address_info['province'];
-		$city = $user_address_info['city'];
-		$area = $user_address_info['area'];
 
 		$begin_date = strtotime($params['begin_date']);
 		$end_date = strtotime($params['end_date']);
+//
+//		if($begin_date && $end_date){
+//			$where['u.add_time']= [
+//				['gt', $begin_date],
+//				['lt', $begin_date],
+//			];
+//		}
+//
+//		$where['u.type']= 1;
+//		$where['u.proxy_id']= $id;
+//
+//		$user_list = $user_model->get_user_info_by_where($where, $page);
+//		$user_count = $user_model->get_user_count_by_where($where);
 
-		$type = $params['type'];
+		$account_log_model = D('AccountBalanceLog');
+
+		$where['user_id'] = $id;
+		$where['action'] = 'PROXY_RECHARGE_VIP';
 
 		if($begin_date && $end_date){
-			$where['u.add_time']= [
+			$where['add_time']= [
 				['gt', $begin_date],
-				['lt', $end_date],
+				['lt', $begin_date],
 			];
 		}
 
-		$where['u.type']= 1;
+		$where['item_id'] = [
+			'neq', $id
+		];
 
-		if($province){
-			$where['s.province'] = $province;
-		}
+		$proxy_user_list = $account_log_model->get_proxy_user_info($where, $page, 10);
+		//代理模式返回数据格式
+		$proxy_where_user_count = $account_log_model->get_condition_count($where);
 
-		if($city){
-			$where['s.city'] = $city;
-		}
 
-		if($area){
-			$where['s.area'] = $area;
-		}
-
-		$user_list = $user_model->get_user_info_by_where($where, $page);
-		$user_count = $user_model->get_user_count_by_where($where);
-		$data['list'] = $user_list;
+		$data['list'] = $proxy_user_list;
 		// 加上分页
-		$data['page'] = $this->page_new($user_count);
+		$data['page'] = $this->page_new($proxy_where_user_count);
 
 		// 加上查询参数
 		$data['begin_date'] = $params['begin_date'];
@@ -315,41 +318,40 @@ class UserController extends BaseController {
 
 		$id = $params['id'];
 
-		$user_address_model = D('UserAddress');
-		$user_address_info = $user_address_model->get_one(['user_id' => $id]);
-
-		// 查询条件
-		$province = $user_address_info['province'];
-		$city = $user_address_info['city'];
-		$area = $user_address_info['area'];
-
 		$begin_date = strtotime($params['begin_date']);
 		$end_date = strtotime($params['end_date']);
 
-		$type = $params['type'];
+//		$type = $params['type'];
+//
+//		if($begin_date && $end_date){
+//			$where['u.add_time']= [
+//				['gt', $begin_date],
+//				['lt', $end_date],
+//			];
+//		}
+//
+//		$where['u.type']= 1;
+//		$where['u.proxy_id']= $id;
+//
+//		$user_list = $user_model->get_user_info_by_where($where, null, null);
+
+		$account_log_model = D('AccountBalanceLog');
+
+		$where['user_id'] = $id;
+		$where['action'] = 'PROXY_RECHARGE_VIP';
 
 		if($begin_date && $end_date){
-			$where['u.add_time']= [
+			$where['add_time']= [
 				['gt', $begin_date],
-				['lt', $end_date],
+				['lt', $begin_date],
 			];
 		}
 
-		$where['u.type']= 1;
+		$where['item_id'] = [
+			'neq', $id
+		];
 
-		if($province){
-			$where['s.province'] = $province;
-		}
-
-		if($city){
-			$where['s.city'] = $city;
-		}
-
-		if($area){
-			$where['s.area'] = $area;
-		}
-
-		$user_list = $user_model->get_user_info_by_where($where, null, null);
+		$user_list = $account_log_model->get_proxy_user_info($where, null, null);
 
 		$company_export = [];
 		foreach($user_list as $k => $v){
@@ -362,8 +364,9 @@ class UserController extends BaseController {
 				'vip_expire_time' => $v['vip_expire_time'] ? date('Y-m-d H:i:s', $v['vip_expire_time']) : '',
 				'is_vefify' => $v['is_vefify'] ? '是' : '否',
 				'sex' => $v['sex'] == 1 ? '男' : '女',
+				'register_time' => date('Y-m-d H:i:s', $v['register_time']),
 				'add_time' => date('Y-m-d H:i:s', $v['add_time']),
-				'address' => $v['province'] . $v['city'] . $v['area'] . $v['address'],
+				'order_id' => $v['order_id'],
 			];
 		}
 
@@ -376,8 +379,9 @@ class UserController extends BaseController {
 			array('vip_expire_time', 'vip过期时间'),
 			array('is_vefify', '是否认证'),
 			array('sex', '性别'),
-			array('add_time', '注册时间'),
-			array('address', '地址'),
+			array('register_time', '注册时间'),
+			array('add_time', 'vip充值时间'),
+			array('order_id', '订单号'),
 		);
 
 		$this->exportExcel('代理用户',$xlsCell,$company_export);

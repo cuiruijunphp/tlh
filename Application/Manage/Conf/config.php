@@ -19,4 +19,24 @@ return array(
 
 	//url大小写敏感设置
 //	'URL_CASE_INSENSITIVE'  =>  true,   // 默认false 表示URL区分大小写 true则表示不区分大小写
+
+	//会员套餐列表
+	'source_type_arr' => [
+		//		1 => [
+		//			'price' => '200',//套餐价格
+		//			'time' => 365,//套餐时间
+		//			'note' => '一年',//套餐描述
+		//			'invite_income' => '20',//邀请收益5%
+		//			'vip_invite_income' => '100',//会员邀请收益50%
+		//			'proxy_income' => '0',//代理收益,线下结算
+		//		]
+		1 => [
+			'price' => '200',//套餐价格
+			'time' => 365,//套餐时间
+			'note' => '一年',//套餐描述
+			'invite_income' => '20',//邀请收益5%
+			'vip_invite_income' => '100',//会员邀请收益50%
+			'proxy_income' => '0',//代理收益,线下结算
+		]
+	],
 );
