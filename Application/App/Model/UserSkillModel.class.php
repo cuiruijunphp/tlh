@@ -204,7 +204,7 @@ class UserSkillModel extends CommonModel{
 		// 如果按热度排序
 		if($is_hot){
 			// 技能表获取的字段,多了个访问总数字段
-			$s_field = ' s.id,skill_name as title,user_id,is_online,head_img,user_name,type_id,s.add_time,longitude,latitude,img,"skill" as type, reservation_count as r_count';
+			$s_field = ' s.id,skill_name as title,user_id,is_online,head_img,user_name,type_id,s.add_time,longitude,latitude,s.img,"skill" as type, reservation_count as r_count';
 
 			// 需求表字段,多了个访问总数字段
 			$d_field = ' d.id,title,user_id,is_online,head_img,user_name,type_id,d.add_time,longitude,latitude,null as img,"demand" as type,(LENGTH(`applicants`) - LENGTH(REPLACE(`applicants`,",", "")))  as r_count';
