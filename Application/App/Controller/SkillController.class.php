@@ -384,9 +384,10 @@ class SkillController extends BaseController {
 		//如果拒绝了预约,则需要将钱退给预约者
 		// 如果有订单信息,说明是付过款的
 		$order_model = D('Order');
-		$order_info = $order_model->get_one(['source_type' => 3, 'source_id' => $reserve_id, 'user_id' => $skill_reserve_info['user_id'], 'status' => 1], 'add_time desc');
+		$user_skill_model = D('UserSkill');
 
-		$skill_reserve_model = D('SkillReserve');
+		$skill_info = $user_skill_model->get_one(['id' => $skill_reserve_info['skill_id']]);
+		$order_info = $order_model->get_one(['source_type' => 3, 'source_id' => $reserve_id, 'user_id' => $skill_reserve_info['user_id'], 'status' => 1], 'add_time desc');
 
 		if($order_info){
 			if($status == 4){
@@ -394,7 +395,7 @@ class SkillController extends BaseController {
 				$skill_reserve_model->update_refund_info(3, $reserve_id, $skill_reserve_info['user_id']);
 			}elseif($status == 3){
 				// 将钱打到技能发布者账号里
-				$skill_reserve_model->update_ear_money_info($order_info['order_id'], 3, $reserve_id, $skill_reserve_info['user_id']);
+				$skill_reserve_model->update_ear_money_info($order_info['order_id'], 3, $reserve_id, $skill_info['user_id']);
 			}
 		}
 
