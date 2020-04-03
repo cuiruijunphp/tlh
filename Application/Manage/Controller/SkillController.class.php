@@ -20,7 +20,7 @@ class SkillController extends BaseController {
 		$skill_model = D('UserSkill');
 
 		$page = I('get.p') ? I('get.p') : 1;
-		$skill_list = $skill_model->get_skill_list(null, $page);
+		$skill_list = $skill_model->get_skill_list(null, $page, 10, 's.update_time desc');
 		$skill_count = $skill_model->get_count();
 		$data['list'] = $skill_list;
 		// 加上分页
