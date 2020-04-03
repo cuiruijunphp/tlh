@@ -481,6 +481,7 @@ class SkillController extends BaseController {
 			'good_at' => $good_at,
 			'longitude' => $longitude,
 			'latitude' => $latitude,
+			'status' => 0,
 		];
 
 		// 上传技能图片
