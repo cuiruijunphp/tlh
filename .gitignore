@@ -3,6 +3,6 @@
 /Application/Runtime/
 /Application/Common/Conf/config.php
 /log
-/vendor
+/vendor/
 /composer.lock
 /download
