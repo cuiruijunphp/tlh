@@ -482,6 +482,7 @@ class SkillController extends BaseController {
 			'longitude' => $longitude,
 			'latitude' => $latitude,
 			'status' => 0,
+			'add_time' => time(),
 		];
 
 		// 上传技能图片
