@@ -723,7 +723,7 @@ class PersonalController extends BaseController {
 	public function get_view_user_list(){
 	    $user_id = I('get.user_id');
 	    $page = I('get.page') ? I('get.page') : 1;
-	    $page_size = I('get.page_size') ? I('get.page_size') ： 10;
+	    $page_size = I('get.page_size') ? I('get.page_size') : 10;
 
         $user_view_model = D('UserView');
         $user_view_list = $user_view_model->get_view_user_info($user_id, $page_size, $page);
