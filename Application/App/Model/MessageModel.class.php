@@ -22,4 +22,17 @@ class MessageModel extends CommonModel{
 
 		return $result;
 	}
+
+	/*
+	 * 获取用户今日已经跟多少人联系过了 
+	 * @param user_id 要获取的用户的id
+	 * @param begin_time 开始的时间
+	 * @param end_time 结束的时间
+	 */
+	public function get_user_message_count($user_id, $begin_time, $end_time){
+        return $this->distinct(true)
+            ->field('dialog_id')
+            ->where(['type' => 1, 'user_id' => $user_id, 'add_time' => ['gt' => $begin_time, 'lt' => $end_time]])
+            ->count();
+    }
 }

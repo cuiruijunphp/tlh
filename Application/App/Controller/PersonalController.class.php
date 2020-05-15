@@ -646,11 +646,24 @@ class PersonalController extends BaseController {
 			}
 		}
 
+		// 今天已经联系的人
+//        $message_model = D('Message');
+//        $message_count = $message_model->get_user_message_count($user_id, $start_time, $end_time);
+//
+//        $limit_count = $is_vip ? C('max_publish_limit')['vip_contact_limit'] : C('max_publish_limit')['isnot_vip_contact_limit'];
+//        if($message_count < $limit_count){
+//            //如果没有超过限制，则说明可以继续联系其他人
+//            $message_limit_use_up = 0;
+//        }else{
+//            $message_limit_use_up = 1;
+//        }
+
 		$data = [
 			'is_skill_pulish' => intval($is_skill_pulish),
 			'is_vip_demand_pulish_free' => intval($is_vip_demand_pulish_free),
 			'is_vip_reserve_free' => intval($is_vip_reserve_free),
 			'is_demand_pulish' => intval($is_demand_pulish),
+//            'message_limit_use_up' => $message_limit_use_up
 		];
 
 		$this->result_return($data);
@@ -709,16 +722,18 @@ class PersonalController extends BaseController {
      */
 	public function get_view_user_list(){
 	    $user_id = I('get.user_id');
+	    $page = I('get.page');
+	    $page_size = I('get.page_size');
 
         $user_view_model = D('UserView');
-        $user_view_list = $user_view_model->get_view_user_info($user_id);
+        $user_view_list = $user_view_model->get_view_user_info($user_id, $page_size, $page);
 
         if($user_view_list){
             foreach($user_view_list as $user_k => $user_v){
                 $user_view_list[$user_k]['head_img'] = UPLOAD_URL . $user_v['head_img'];
             }
         }
-        
+
         $this->result_return(['user_view_list' => $user_view_list ? $user_view_list : []]);
     }
 }

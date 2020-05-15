@@ -29,6 +29,28 @@ class MessageController extends BaseController {
 		$dialog_model = D('Dialog');
 		$message_model = D('Message');
 
+		// 如果当天联系的人已经超过了20条，则给出提示
+//        $vip_expire_time = $this->user_info['vip_expire_time'];
+//
+//        if($vip_expire_time < time()){
+//            $is_vip = 0;
+//        }else{
+//            $is_vip = 1;
+//        }
+
+        // 今天已经联系的人
+//        $message_model = D('Message');
+//        $start_time = strtotime(date('Y-m-d', time()));
+//        $end_time = $start_time + 24 * 3600;
+
+        // vip每天只能和20个人联系
+//        $message_count = $message_model->get_user_message_count($this->user_id, $start_time, $end_time);
+//
+//        $limit_count = $is_vip ? C('max_publish_limit')['vip_contact_limit'] : C('max_publish_limit')['isnot_vip_contact_limit'];
+//        if($message_count >= $limit_count){
+//            $this->result_return(null, 1, '今天已经超过联系人数上限，请明日再重试');
+//        }
+
 //		$where = '(sender_uid = ' . $sender_uid . ' and recived_uid = ' . $received_uid . ') or (sender_uid = ' . $received_uid . ' and recived_uid = ' . $sender_uid . ')';
 
 		$dialog_query_result = $dialog_model->get_dialog_by_uids($sender_uid, $received_uid);
