@@ -267,6 +267,7 @@ class PersonalController extends BaseController {
 		//如果不是自己访问的主页,则需要将view+1，同时需要写入访客表
 		if(!$is_self){
 			$user_model->update_data(['id' => $user_id], ['view' => $user_info['view'] + 1]);
+			$user_info['view'] += 1;
 
 			//为了取浏览访客方便。这里做的复杂些，访问同一个用户，只写入一条记录
             $user_view_info = $user_view_model->get_one(['view_user_id' => $this->user_id, 'user_id' => $user_id]);
