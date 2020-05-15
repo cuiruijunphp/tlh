@@ -262,9 +262,25 @@ class PersonalController extends BaseController {
 			$this->result_return(null, 1, '未查询到个人信息');
 		}
 
-		//如果不是自己访问的主页,则需要将view+1
+        $user_view_model = D('UserView');
+
+		//如果不是自己访问的主页,则需要将view+1，同时需要写入访客表
 		if(!$is_self){
 			$user_model->update_data(['id' => $user_id], ['view' => $user_info['view'] + 1]);
+
+			//为了取浏览访客方便。这里做的复杂些，访问同一个用户，只写入一条记录
+            $user_view_info = $user_view_model->get_one(['view_user_id' => $this->user_id, 'user_id' => $user_id]);
+
+            if($user_view_info) {
+                // 如果有记录，则更新update_time
+                $user_view_model->update_data(['id' => $user_view_info['id']],['update_time' => time()]);
+            }else{
+                $insert_data = [
+                    'view_user_id' => $this->user_id,
+                    'user_id' => $user_id
+                ];
+                $user_view_model->insert_one($insert_data);
+            }
 		}
 
 		//返回个人信息和token信息
@@ -324,6 +340,16 @@ class PersonalController extends BaseController {
 		}else{
 			$data['trends_img_list'] = [];
 		}
+
+		//显示浏览者信息
+        if($user_info['view'] > 0){
+            $user_view_list = $user_view_model->get_view_user_info($user_id);
+            foreach($user_view_list as $user_k => $user_v){
+                $user_view_list[$user_k]['head_img'] = UPLOAD_URL . $user_v['head_img'];
+            }
+        }
+
+        $data['view_user_info'] = $user_view_list ? $user_view_list : [];
 
 		$this->result_return($data);
 	}
@@ -677,4 +703,22 @@ class PersonalController extends BaseController {
 		$this->result_return(['invite_count' => (int)$invite_count, 'invite_user_list' => $data]);
 
 	}
+
+    /**
+     * 获取用户的访客列表
+     */
+	public function get_view_user_list(){
+	    $user_id = I('get.user_id');
+
+        $user_view_model = D('UserView');
+        $user_view_list = $user_view_model->get_view_user_info($user_id);
+
+        if($user_view_list){
+            foreach($user_view_list as $user_k => $user_v){
+                $user_view_list[$user_k]['head_img'] = UPLOAD_URL . $user_v['head_img'];
+            }
+        }
+        
+        $this->result_return(['user_view_list' => $user_view_list ? $user_view_list : []]);
+    }
 }
