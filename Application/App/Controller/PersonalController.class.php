@@ -729,9 +729,14 @@ class PersonalController extends BaseController {
         $user_view_model = D('UserView');
         $user_view_list = $user_view_model->get_view_user_info($user_id, $page_size, $page);
 
+        //获取当前用户的位置信息
+        $user_location_model = D('UserLocation');
+        $user_location_info = $user_location_model->get_one(['user_id' => $this->user_id]);
+
         if($user_view_list){
             foreach($user_view_list as $user_k => $user_v){
                 $user_view_list[$user_k]['head_img'] = UPLOAD_URL . $user_v['head_img'];
+                $user_view_list[$user_k]['distance'] = get_distance($user_v['longitude'], $user_v['latitude'], $user_location_info['longitude'], $user_location_info['latitude']);
             }
         }
 

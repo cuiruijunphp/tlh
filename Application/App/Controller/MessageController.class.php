@@ -429,4 +429,11 @@ class MessageController extends BaseController {
 
 		$this->result_return($data);
 	}
+
+	/*
+	 * 获取是否有新消息提醒
+	 */
+	public function get_new_message_notice(){
+
+    }
 }
