@@ -460,6 +460,8 @@ class MessageController extends BaseController {
             }
         }
 
-        $this->result_return($new_message_notice);
+        $data['new_message_notice'] = $new_message_notice;
+
+        $this->result_return($data);
     }
 }
