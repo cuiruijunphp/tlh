@@ -265,24 +265,24 @@ class PersonalController extends BaseController {
         $user_view_model = D('UserView');
 
 		//如果不是自己访问的主页,则需要将view+1，同时需要写入访客表
-		if(!$is_self){
-			$user_model->update_data(['id' => $user_id], ['view' => $user_info['view'] + 1]);
-			$user_info['view'] += 1;
-
-			//为了取浏览访客方便。这里做的复杂些，访问同一个用户，只写入一条记录
-            $user_view_info = $user_view_model->get_one(['view_user_id' => $this->user_id, 'user_id' => $user_id]);
-
-            if($user_view_info) {
-                // 如果有记录，则更新update_time
-                $user_view_model->update_data(['id' => $user_view_info['id']],['update_time' => time()]);
-            }else{
-                $insert_data = [
-                    'view_user_id' => $this->user_id,
-                    'user_id' => $user_id
-                ];
-                $user_view_model->insert_one($insert_data);
-            }
-		}
+//		if(!$is_self){
+//			$user_model->update_data(['id' => $user_id], ['view' => $user_info['view'] + 1]);
+//			$user_info['view'] += 1;
+//
+//			//为了取浏览访客方便。这里做的复杂些，访问同一个用户，只写入一条记录
+//            $user_view_info = $user_view_model->get_one(['view_user_id' => $this->user_id, 'user_id' => $user_id]);
+//
+//            if($user_view_info) {
+//                // 如果有记录，则更新update_time
+//                $user_view_model->update_data(['id' => $user_view_info['id']],['update_time' => time()]);
+//            }else{
+//                $insert_data = [
+//                    'view_user_id' => $this->user_id,
+//                    'user_id' => $user_id
+//                ];
+//                $user_view_model->insert_one($insert_data);
+//            }
+//		}
 
 		//返回个人信息和token信息
 		$data = [
@@ -343,14 +343,14 @@ class PersonalController extends BaseController {
 		}
 
 		//显示浏览者信息
-        if($user_info['view'] > 0){
-            $user_view_list = $user_view_model->get_view_user_info($user_id);
-            foreach($user_view_list as $user_k => $user_v){
-                $user_view_list[$user_k]['head_img'] = UPLOAD_URL . $user_v['head_img'];
-            }
-        }
-
-        $data['view_user_info'] = $user_view_list ? $user_view_list : [];
+//        if($user_info['view'] > 0){
+//            $user_view_list = $user_view_model->get_view_user_info($user_id);
+//            foreach($user_view_list as $user_k => $user_v){
+//                $user_view_list[$user_k]['head_img'] = UPLOAD_URL . $user_v['head_img'];
+//            }
+//        }
+//
+//        $data['view_user_info'] = $user_view_list ? $user_view_list : [];
 
 		$this->result_return($data);
 	}
@@ -725,9 +725,11 @@ class PersonalController extends BaseController {
 	    $user_id = I('get.user_id');
 	    $page = I('get.page') ? I('get.page') : 1;
 	    $page_size = I('get.page_size') ? I('get.page_size') : 10;
+	    $type = I('get.type') ? I('get.type') : 1;
+	    $type_id = I('get.type_id');
 
         $user_view_model = D('UserView');
-        $user_view_list = $user_view_model->get_view_user_info($user_id, $page_size, $page);
+        $user_view_list = $user_view_model->get_view_user_info($user_id, $type_id, $type, $page_size, $page);
 
         //获取当前用户的位置信息
         $user_location_model = D('UserLocation');
@@ -740,6 +742,48 @@ class PersonalController extends BaseController {
             }
         }
 
-        $this->result_return(['user_view_list' => $user_view_list ? $user_view_list : []]);
+        $user_view_count = $user_view_model->get_view_user_count($user_id, $type_id, $type);
+
+        $this->result_return(['user_view_list' => $user_view_list ? $user_view_list : [], 'user_view_count' => intval($user_view_count)]);
+    }
+
+    /*
+	 * 当前登录用户查看预览的用户
+	 */
+    public function set_user_view(){
+        $get_param = file_get_contents('php://input');
+        $params = json_decode($get_param, true);
+
+        $user_id = $params['user_id'];
+        $type = $params['type'] ? $params['type'] : 1;
+        $type_id = $params['type_id'];
+
+        if($user_id == $this->user_id){
+            $this->result_return(null, 1, '不能访问自己的主页');
+        }
+
+        $user_model = D('Users');
+        $user_view_model = D('UserView');
+        $user_info = $user_model->get_one(['id' => $user_id]);
+
+        $user_model->update_data(['id' => $user_id], ['view' => $user_info['view'] + 1]);
+
+        //为了取浏览访客方便。这里做的复杂些，访问同一个用户，只写入一条记录
+        $user_view_info = $user_view_model->get_one(['view_user_id' => $this->user_id, 'user_id' => $user_id, 'type' => $type, 'type_id' => $type_id]);
+
+        if($user_view_info) {
+            // 如果有记录，则更新update_time
+            $user_view_model->update_data(['id' => $user_view_info['id']],['update_time' => time()]);
+        }else{
+            $insert_data = [
+                'view_user_id' => $this->user_id,
+                'user_id' => $user_id,
+                'type' => $type,
+                'type_id' => $type_id,
+            ];
+            $user_view_model->insert_one($insert_data);
+        }
+
+        $this->result_return(['result' => 1]);
     }
 }
