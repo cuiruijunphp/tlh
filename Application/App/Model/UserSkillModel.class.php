@@ -120,14 +120,14 @@ class UserSkillModel extends CommonModel{
 	 */
 	public function get_skill_list($where, $page = 1, $page_size = 3){
 	    foreach($where as $k => $v){
-	        $where['s.'.$k] = $v;
+	        $where_tmp['s.'.$k] = $v;
         }
 
 		return $this->field('s.*, t.type_name')
 			->alias('s')
 			->join('skill_type as t on s.type_id = t.id', 'left')
 			->join('skill_reserve as v on s.id = v.skill_id', 'left')
-			->where($where)
+			->where($where_tmp)
 			->order('v.update_time desc, s.add_time desc')
 			->page($page, $page_size)
 			->select();
