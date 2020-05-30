@@ -130,14 +130,14 @@ class UserSkillModel extends CommonModel{
                 ->select();
         }else{
 	        // 查看别人技能列表时，按照预约时间进行排序
-            return $this->field('s.*, t.type_name')
+            return $this->field('s.*, t.type_name,v.update_time as u_time')
                 ->alias('s')
                 ->distinct(true)
                 ->field('s.id')
                 ->join('skill_type as t on s.type_id = t.id', 'left')
                 ->join('skill_reserve as v on s.id = v.skill_id', 'left')
                 ->where($where)
-                ->order('v.update_time desc, s.add_time desc')
+                ->order('u_time desc, s.add_time desc')
                 ->page($page, $page_size)
                 ->select();
         }
