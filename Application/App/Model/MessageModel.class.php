@@ -6,6 +6,7 @@ class MessageModel extends CommonModel{
 
 	/*
 	 * 将消息插入到消息列表中
+	 * @insert_message_data 要插入的数据
 	 */
 	public function insert_message($insert_message_data){
 
@@ -17,7 +18,17 @@ class MessageModel extends CommonModel{
 			$dialog_model = D('Dialog');
 			$dialog_res = $dialog_model->get_one(['id' => $insert_message_data['dialog_id']]);
 
-			$dialog_model->update_data(['id' => $insert_message_data['dialog_id']], ['sender_unread' => $dialog_res['sender_unread'] + 1, 'recived_unread' => $dialog_res['recived_unread'] + 1]);
+			if($insert_message_data['uid'] == $dialog_res['recived_uid']){
+			    $unread = [
+                    'sender_unread' => $dialog_res['sender_unread'] + 1
+                ];
+            }else{
+                $unread = [
+                    'recived_unread' => $dialog_res['recived_unread'] + 1
+                ];
+            }
+
+			$dialog_model->update_data(['id' => $insert_message_data['dialog_id']], $unread);
 		}
 
 		return $result;
