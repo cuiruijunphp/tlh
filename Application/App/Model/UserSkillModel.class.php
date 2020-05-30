@@ -133,7 +133,6 @@ class UserSkillModel extends CommonModel{
             return $this->field('s.*, t.type_name,v.update_time as u_time')
                 ->alias('s')
                 ->distinct(true)
-                ->field('s.id')
                 ->join('skill_type as t on s.type_id = t.id', 'left')
                 ->join('skill_reserve as v on s.id = v.skill_id', 'left')
                 ->where($where)
