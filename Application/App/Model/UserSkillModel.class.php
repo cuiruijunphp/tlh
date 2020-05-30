@@ -123,8 +123,9 @@ class UserSkillModel extends CommonModel{
 		return $this->field('s.*, t.type_name')
 			->alias('s')
 			->join('skill_type as t on s.type_id = t.id', 'left')
+			->join('skill_reserve as v on s.id = v.skill_id', 'left')
 			->where($where)
-			->order('s.add_time desc')
+			->order('v.update_time desc, s.add_time desc')
 			->page($page, $page_size)
 			->select();
 	}
