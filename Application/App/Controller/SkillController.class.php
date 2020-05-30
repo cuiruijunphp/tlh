@@ -153,11 +153,11 @@ class SkillController extends BaseController {
 		}
 
 		$where = [
-			'user_id' => $user_id,
+			's.user_id' => $user_id,
 		];
 
 		if(!$is_self){
-			$where['status'] = 1;
+			$where['s.status'] = 1;
 		}
 
 		$skill_mode = D('UserSkill');
