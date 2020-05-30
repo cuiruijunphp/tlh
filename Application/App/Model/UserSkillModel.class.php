@@ -119,6 +119,9 @@ class UserSkillModel extends CommonModel{
 	 * 获取列表
 	 */
 	public function get_skill_list($where, $page = 1, $page_size = 3){
+	    foreach($where as $k => $v){
+	        $where['s.'.$k] = $v;
+        }
 
 		return $this->field('s.*, t.type_name')
 			->alias('s')
