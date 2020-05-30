@@ -121,25 +121,18 @@ class UserSkillModel extends CommonModel{
 	public function get_skill_list($where, $page = 1, $page_size = 3, $is_self = 0){
 
 	    if($is_self){
-            return $this->field('s.*, t.type_name')
-                ->alias('s')
-                ->join('skill_type as t on s.type_id = t.id', 'left')
-                ->where($where)
-                ->order('s.add_time desc')
-                ->page($page, $page_size)
-                ->select();
+            $order = 's.add_time desc';
         }else{
-	        // 查看别人技能列表时，按照预约时间进行排序
-            return $this->field('s.*, t.type_name,v.update_time as u_time')
-                ->alias('s')
-                ->distinct(true)
-                ->join('skill_type as t on s.type_id = t.id', 'left')
-                ->join('skill_reserve as v on s.id = v.skill_id', 'left')
-                ->where($where)
-                ->order('u_time desc, s.add_time desc')
-                ->page($page, $page_size)
-                ->select();
+            $order = 'reservation_count desc, s.update_time desc';
         }
+
+        return $this->field('s.*, t.type_name')
+            ->alias('s')
+            ->join('skill_type as t on s.type_id = t.id', 'left')
+            ->where($where)
+            ->order($order)
+            ->page($page, $page_size)
+            ->select();
 	}
 
 	/*
