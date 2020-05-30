@@ -162,7 +162,7 @@ class SkillController extends BaseController {
 
 		$skill_mode = D('UserSkill');
 		$skill_reserve_mode = D('SkillReserve');
-		$skill_list = $skill_mode->get_skill_list($where, $page, $page_size);
+		$skill_list = $skill_mode->get_skill_list($where, $page, $page_size, (int)$is_self);
 
 		if($skill_list){
 			foreach($skill_list  as $k => $v){
