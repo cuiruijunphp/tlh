@@ -434,10 +434,11 @@ class MessageController extends BaseController {
 	 * 获取是否有新消息提醒
 	 */
 	public function get_new_message_notice(){
-//        $last_request_time = I('get.last_time');
+        $last_request_time = I('get.last_time');
         $message_model = D('Dialog');
 
         $new_message_info = $message_model->get_new_message($this->user_id);
+        $last_flush_new_message_info = $message_model->get_last_flush_new_message($this->user_id, $last_request_time);
 
         $new_message_notice = [];
         if($new_message_info){
@@ -460,7 +461,29 @@ class MessageController extends BaseController {
             }
         }
 
+        $last_flush_new_message_notice = [];
+        if($last_flush_new_message_info){
+            foreach($last_flush_new_message_info as $kk => $vv){
+                if($vv['sender_uid'] == $this->user_id){
+                    if($vv['sender_unread'] > 0){
+                        $last_flush_new_message_notice[] = [
+                            'dialog_id' => $vv['id'],
+                            'unread' => $vv['sender_unread'],
+                        ];
+                    }
+                }else{
+                    if($vv['recived_unread'] > 0){
+                        $last_flush_new_message_notice[] = [
+                            'dialog_id' => $vv['id'],
+                            'unread' => $vv['recived_unread'],
+                        ];
+                    }
+                }
+            }
+        }
+
         $data['new_message_notice'] = $new_message_notice;
+        $data['last_flush_new_message_notice'] = $new_message_notice;
 
         $this->result_return($data);
     }
