@@ -434,10 +434,10 @@ class MessageController extends BaseController {
 	 * 获取是否有新消息提醒
 	 */
 	public function get_new_message_notice(){
-        $last_request_time = I('get.last_time');
+//        $last_request_time = I('get.last_time');
         $message_model = D('Dialog');
 
-        $new_message_info = $message_model->get_new_message($this->user_id, $last_request_time);
+        $new_message_info = $message_model->get_new_message($this->user_id);
 
         $new_message_notice = [];
         if($new_message_info){

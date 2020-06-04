@@ -48,13 +48,13 @@ class DialogModel extends CommonModel{
     /*
      * 上次刷新时间以后有没有新的消息
      */
-    public function get_new_message($user_id, $last_request_time){
+    public function get_new_message($user_id){
 
         $where['sender_uid']  = $user_id;
         $where['recived_uid']  = $user_id;
         $where['_logic'] = 'or';
         $map['_complex'] = $where;
-        $map['update_time'] = ['gt',$last_request_time];
+//        $map['update_time'] = ['gt',$last_request_time];
 
         return $this->where($map)->select();
     }
