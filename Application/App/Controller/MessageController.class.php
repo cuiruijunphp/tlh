@@ -483,7 +483,7 @@ class MessageController extends BaseController {
         }
 
         $data['new_message_notice'] = $new_message_notice;
-        $data['last_flush_new_message_notice'] = $new_message_notice;
+        $data['last_flush_new_message_notice'] = $last_flush_new_message_notice;
 
         $this->result_return($data);
     }
